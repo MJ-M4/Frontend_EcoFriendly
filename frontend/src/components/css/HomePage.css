@@ -1,0 +1,31 @@
+/* src/components/HomePage.css */
+.home-page {
+    text-align: center;
+    padding: 50px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .home-page h1 {
+    font-size: 2.5rem;
+    color: #333;
+  }
+  
+  .home-page p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .home-page button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .home-page button:hover {
+    background-color: #0056b3;
+  }

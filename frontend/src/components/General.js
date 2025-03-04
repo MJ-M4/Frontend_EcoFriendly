@@ -18,7 +18,7 @@ const Dashboard = () => {
   ];
 
   // Mock user data
-  const user = { name: 'fdfd jayusi', avatar: 'https://via.placeholder.com/50' };
+  const user = { name: 'jayusi', avatar: 'https://via.placeholder.com/50' };
 
   // Function to handle bin selection
   const handleSelectBin = (bin) => {

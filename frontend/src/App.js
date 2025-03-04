@@ -5,6 +5,11 @@ import './App.css';
 import GeneralPage from './components/General';
 import HomePage from './components/HomePage';
 import Login from './components/Login';
+<<<<<<< HEAD
+=======
+import BinLocations from './components/BinLocations';
+import './App.css';
+>>>>>>> 8492e3056eb0100072704294092c769b1d036392
 
 function App() {
   // State to track if the user is logged in
@@ -18,6 +23,7 @@ function App() {
   return (
     <Router>
       <Routes>
+<<<<<<< HEAD
         {/* Root path redirects to HomePage */}
         <Route path="/" element={<Navigate to="/HomePage" replace />} />
         
@@ -41,6 +47,11 @@ function App() {
             )
           }
         />
+=======
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/bins" element={<BinLocations />} />
+>>>>>>> 8492e3056eb0100072704294092c769b1d036392
       </Routes>
     </Router>
   );

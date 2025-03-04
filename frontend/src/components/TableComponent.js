@@ -1,14 +1,20 @@
-import { faBatteryEmpty, faBatteryFull, faBatteryHalf, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// src/components/TableComponent.js
 import React from 'react';
-import wazeIcon from '../Photos/Waze.jpeg';
+import { FaTrash } from 'react-icons/fa';
+import wazeIcon from '../Photos/Waze.jpeg'; // Confirm this path is correct
 
 const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
-  // Choose battery icon based on level
-  const getBatteryIcon = (battery) => {
-    if (battery > 75) return faBatteryFull;
-    if (battery > 25) return faBatteryHalf;
-    return faBatteryEmpty;
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'Full':
+        return <FaTrash style={{ color: '#ff4d4f', marginRight: '8px' }} />;
+      case 'Near Full':
+        return <FaTrash style={{ color: '#ffeb3b', marginRight: '8px' }} />;
+      case 'Not Full':
+        return <FaTrash style={{ color: '#4caf50', marginRight: '8px' }} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -25,43 +31,43 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
         </tr>
       </thead>
       <tbody>
-        {bins.map(bin => (
+        {bins.map((bin) => (
           <tr
             key={bin.id}
-            onClick={() => onSelectBin(bin)}
             className={selectedBin && selectedBin.id === bin.id ? 'selected' : ''}
+            onClick={() => onSelectBin(bin)}
           >
             <td>{bin.id}</td>
             <td>
-              <div
-                style={{
-                  backgroundColor: bin.status === 'Full' ? 'red' : bin.status === 'Near Full' ? 'yellow' : 'green',
-                  width: '20px',
-                  height: '20px',
-                  display: 'inline-block',
-                  marginRight: '5px',
-                }}
-              ></div>
-              <FontAwesomeIcon icon={faTrash} /> {bin.status}
+              {getStatusIcon(bin.status)}
+              {bin.status}
             </td>
             <td>{bin.capacity}%</td>
             <td>{bin.time}</td>
             <td>{bin.date}</td>
             <td>
-            <a
+              <a
                 href={`https://waze.com/ul?ll=${bin.lat},${bin.lon}&navigate=yes`}
                 target="_blank"
                 rel="noopener noreferrer"
+                style={{ textDecoration: 'underline', color: '#3498db', display: 'flex', alignItems: 'center' }}
               >
                 <img
                   src={wazeIcon}
                   alt="Navigate with Waze"
-                  style={{ width: '24px', height: '24px',marginLeft:'60px'}}
+                  style={{ width: '24px', height: '24px', marginRight: '8px' }}
+                  onError={(e) => { console.error('Failed to load Waze icon'); e.target.src = '/images/fallback-icon.png'; }}
                 />
               </a>
             </td>
             <td>
-              {bin.battery}% <FontAwesomeIcon icon={getBatteryIcon(bin.battery)} />
+              {bin.battery}%{' '}
+              <div className="battery-bar">
+                <div
+                  className="battery-fill"
+                  style={{ width: `${bin.battery}%`, backgroundColor: bin.battery > 50 ? '#4caf50' : '#ff4d4f' }}
+                ></div>
+              </div>
             </td>
           </tr>
         ))}

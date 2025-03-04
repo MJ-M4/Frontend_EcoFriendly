@@ -37,5 +37,4 @@ const GeneralPage = ({ onLogout }) => {
     </div>
   );
 };
-
 export default GeneralPage;

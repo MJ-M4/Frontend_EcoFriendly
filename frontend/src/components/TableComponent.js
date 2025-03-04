@@ -56,7 +56,7 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
                 <img
                   src={wazeIcon}
                   alt="Navigate with Waze"
-                  style={{ width: '24px', height: '24px' }}
+                  style={{ width: '24px', height: '24px',marginLeft:'60px'}}
                 />
               </a>
             </td>

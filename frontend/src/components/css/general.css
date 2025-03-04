@@ -1,10 +1,11 @@
 .dashboard {
     display: flex;
   }
+
   
   .sidebar {
     width: 250px;
-    background-color: #f5f5f5;
+    background-color: #b3cabb;
     padding: 20px;
   }
   
@@ -50,13 +51,14 @@
   
   .content {
     flex: 1;
-    padding: 20px;
+    padding: 2px;
   }
   
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 10px;
+    background-color: rgb(166, 207, 184);
   }
   
   th, td {
@@ -74,3 +76,6 @@
     vertical-align: middle; /* Aligns icon with text in the table */
   }
   
+#btn{
+  margin-top: 150%;;
+}

@@ -26,7 +26,7 @@ const Sidebar = ({ user }) => {
           </li>
         </ul>
       </nav>
-      <button>Sign Out</button>
+      <button id='btn'>Sign Out</button>
     </div>
   );
 };

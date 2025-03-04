@@ -1,81 +1,223 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Dashboard Layout */
 .dashboard {
-    display: flex;
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.user-profile img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  border: 2px solid #ecf0f1;
+}
+
+.user-profile h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+nav ul li {
+  margin-bottom: 15px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #ecf0f1;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+nav ul li a svg {
+  margin-right: 10px;
+}
+
+nav ul li.active a,
+nav ul li a:hover {
+  background-color: #3498db;
+  color: #fff;
+}
+
+/* Sign Out Button */
+.sign-out {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.sign-out:hover {
+  background-color: #c0392b;
+}
+
+.sign-out svg {
+  margin-right: 5px;
+}
+
+/* Content Area */
+.content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Map Container - Make it more "filled" */
+.map-container {
+  flex: 2; /* Give the map more space compared to the table */
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow for prominence */
+  overflow: hidden;
+  border: 2px solid #3498db; /* Add a subtle border to make it stand out */
+  height: 60vh; /* Increase the height to make it more dominant */
+}
+
+/* Ensure the map fills its container */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Table Container */
+.table-container {
+  flex: 1; /* Table takes less space compared to the map */
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  height: 30vh; /* Reduce the table height to balance with the map */
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+th,
+td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+  background-color: #3498db;
+  color: #fff;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f5f7fa;
+  cursor: pointer;
+}
+
+tr.selected {
+  background-color: #dfe6e9;
+}
+
+/* Status Indicator */
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Route Icon */
+.route-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  color: #3498db;
+}
+
+/* Battery Bar */
+.battery-bar {
+  display: inline-block;
+  width: 50px;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.battery-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
   }
 
-  
   .sidebar {
-    width: 250px;
-    background-color: #b3cabb;
-    padding: 20px;
-  }
-  
-  .user-profile {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .user-profile img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  nav ul li {
-    margin-bottom: 10px;
-  }
-  
-  nav ul li a {
-    text-decoration: none;
-    color: #333;
-    display: flex;
-    align-items: center;
-  }
-  
-  nav ul li a svg {
-    margin-right: 10px;
-  }
-  
-  nav ul li.active a {
-    background-color: #007bff;
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-  }
-  
-  .content {
-    flex: 1;
-    padding: 2px;
-  }
-  
-  table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: rgb(166, 207, 184);
+    height: auto;
   }
-  
-  th, td {
+
+  .content {
     padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
   }
-  
-  tr.selected {
-    background-color: #e0e0e0;
+
+  .map-container {
+    flex: none;
+    height: 50vh; /* Adjust height for smaller screens */
   }
-  .route-icon {
-    width: 24px;  /* Adjust size as needed */
-    height: 24px;
-    vertical-align: middle; /* Aligns icon with text in the table */
+
+  .table-container {
+    flex: none;
+    height: 40vh; /* Adjust table height for smaller screens */
   }
-  
-#btn{
-  margin-top: 150%;;
+
+  table {
+    font-size: 0.9rem;
+  }
 }

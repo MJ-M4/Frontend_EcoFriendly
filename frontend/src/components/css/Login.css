@@ -1,60 +1,108 @@
-/* src/components/Login.css */
+/* src/css/Login.css */
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height */
-    background-image: url('C:\Users\TOGOMORI\Desktop\Ecofriendly\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Add your background image */
-    background-size: cover;
-    background-position: center;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  background-image: url('C:\Users\TOGOMORI\Desktop\Ecofriendly\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Keep background fixed during scroll */
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.95); /* Slightly more opaque white background */
+  padding: 3rem 2rem; /* More padding for a spacious look */
+  border-radius: 15px; /* Softer corners */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Deeper shadow for a floating effect */
+  width: 100%;
+  max-width: 450px; /* Slightly wider for a professional look */
+  text-align: center;
+  transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+.login-box:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+}
+
+.login-logo {
+  width: 150px; /* Adjust size as needed */
+  margin-bottom: 1.5rem;
+}
+
+.login-box h2 {
+  margin-bottom: 2rem;
+  color: #2c3e50; /* Darker color for professionalism */
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #3498db; /* Blue border on focus */
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3); /* Soft glow on focus */
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #3498db; /* Blue to match the app theme */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+  background-color: #2980b9; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+button:active {
+  transform: translateY(0); /* Reset lift on click */
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
   .login-box {
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
+    padding: 2rem 1.5rem;
+    max-width: 90%;
   }
-  
+
+  .login-logo {
+    width: 120px;
+  }
+
   .login-box h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
+    font-size: 1.5rem;
   }
-  
-  .form-group {
-    margin-bottom: 1rem;
-    text-align: left;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #555;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
+
   button {
-    width: 100%;
     padding: 0.75rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
     font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
   }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
+}

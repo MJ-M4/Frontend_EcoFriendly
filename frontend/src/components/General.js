@@ -12,8 +12,8 @@ const Dashboard = () => {
 
   // Mock bin data (replace with API data later)
   const mockBins = [
-    { id: 'bin_1', status: 'Full', capacity: 90, time: '20:00', date: '15-1-2025', route: 'Route A', battery: 95, lat: 31.771959, lon: 35.217018 },
-    { id: 'bin_2', status: 'Full', capacity: 87, time: '20:00', date: '15-1-2025', route: 'Route B', battery: 88, lat: 31.772000, lon: 35.218000 },
+    { id: 'bin_1', status: 'Not Full', capacity: 90, time: '20:00', date: '15-1-2025', route: 'Route A', battery: 95, lat: 31.771959, lon: 35.217018 },
+    { id: 'bin_2', status: 'Near Full', capacity: 87, time: '20:00', date: '15-1-2025', route: 'Route B', battery: 88, lat: 31.772000, lon: 35.218000 },
     { id: 'bin_3', status: 'Full', capacity: 60, time: '22:30', date: '15-1-2025', route: 'Route C', battery: 94, lat: 31.773000, lon: 35.219000 },
   ];
 

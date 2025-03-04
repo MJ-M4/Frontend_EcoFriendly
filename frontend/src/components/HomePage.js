@@ -11,6 +11,7 @@ const HomePage = () => {
                 <h1>Urban Waste Management System</h1>
                 <p>Monitor garbage containers in real-time and optimize waste collection processes.</p>
                 <button onClick={() => navigate('/login')}>Login</button>
+                <button onClick={() => navigate('/bins')}>View Bin Locations</button>
             </header>
 
             <section className="features-section">

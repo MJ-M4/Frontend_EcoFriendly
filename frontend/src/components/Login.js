@@ -1,12 +1,19 @@
 // src/components/Login.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/Login.css'; // For styling
 
-const Login = () => {
+const Login = ({ onLogin, isAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  // Redirect to General Page if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/general');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,8 +21,13 @@ const Login = () => {
     console.log('Username:', username);
     console.log('Password:', password);
 
-    // Redirect to another page after login (e.g., dashboard)
-    navigate('/dashboard');
+    // Mock login validation - in a real app, this would involve an API call
+    if (username && password) {
+      onLogin(); // Update authentication state
+      // navigate('/general'); // Not needed here since useEffect handles the redirect
+    } else {
+      alert('Please enter username and password');
+    }
   };
 
   return (

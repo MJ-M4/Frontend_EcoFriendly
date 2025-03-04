@@ -12,6 +12,10 @@
     "leaflet": "^1.9.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+<<<<<<< HEAD
+=======
+    "react-icons": "^5.5.0",
+>>>>>>> 8492e3056eb0100072704294092c769b1d036392
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.1.5",
     "react-scripts": "^5.0.1",

@@ -1,9 +1,16 @@
-import { faChartBar, faCog, faExclamationTriangle, faHome } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// src/components/Sidebar.js
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ user }) => {
+const Sidebar = ({ user, activePage, onLogout }) => {
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    onLogout();
+    navigate('/HomePage');
+  };
+
   return (
     <div className="sidebar">
       <div className="user-profile">
@@ -12,21 +19,31 @@ const Sidebar = ({ user }) => {
       </div>
       <nav>
         <ul>
-          <li className="active">
-          <NavLink to="#"><FontAwesomeIcon icon={faHome} /> General</NavLink>
+          <li className={activePage === 'general' ? 'active' : ''}>
+            <Link to="/general">
+              <FaChartBar /> General
+            </Link>
           </li>
-          <li>
-          <NavLink to="#"><FontAwesomeIcon icon={faChartBar} /> Reports</NavLink>
+          <li className={activePage === 'reports' ? 'active' : ''}>
+            <Link to="/reports">
+              <FaChartBar /> Reports
+            </Link>
           </li>
-          <li>
-          <NavLink to="#"><FontAwesomeIcon icon={faExclamationTriangle} /> Alerts</NavLink>
+          <li className={activePage === 'alerts' ? 'active' : ''}>
+            <Link to="/alerts">
+              <FaExclamationTriangle /> Alerts
+            </Link>
           </li>
-          <li>
-          <NavLink to="#"><FontAwesomeIcon icon={faCog} /> Settings</NavLink>
+          <li className={activePage === 'settings' ? 'active' : ''}>
+            <Link to="/settings">
+              <FaCog /> Settings
+            </Link>
           </li>
         </ul>
       </nav>
-      <button id='btn'>Sign Out</button>
+      <button className="sign-out" onClick={handleSignOut}>
+        <FaSignOutAlt /> Sign Out
+      </button>
     </div>
   );
 };

@@ -1,10 +1,11 @@
+// src/components/General.js
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
 
-const Dashboard = () => {
+const GeneralPage = ({ onLogout }) => {
   const [selectedBin, setSelectedBin] = useState(null);
 
   // Mock bin data
@@ -24,7 +25,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} />
+      <Sidebar user={user} activePage="general" onLogout={onLogout} />
       <div className="content">
         <div className="map-container">
           <MapComponent bins={mockBins} selectedBin={selectedBin} />
@@ -37,4 +38,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default GeneralPage;

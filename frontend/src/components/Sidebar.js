@@ -1,6 +1,7 @@
 import { faChartBar, faCog, faExclamationTriangle, faHome } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar = ({ user }) => {
   return (
@@ -12,16 +13,16 @@ const Sidebar = ({ user }) => {
       <nav>
         <ul>
           <li className="active">
-            <a href="#"><FontAwesomeIcon icon={faHome} /> General</a>
+          <NavLink to="#"><FontAwesomeIcon icon={faHome} /> General</NavLink>
           </li>
           <li>
-            <a href="#"><FontAwesomeIcon icon={faChartBar} /> Reports</a>
+          <NavLink to="#"><FontAwesomeIcon icon={faChartBar} /> Reports</NavLink>
           </li>
           <li>
-            <a href="#"><FontAwesomeIcon icon={faExclamationTriangle} /> Alerts</a>
+          <NavLink to="#"><FontAwesomeIcon icon={faExclamationTriangle} /> Alerts</NavLink>
           </li>
           <li>
-            <a href="#"><FontAwesomeIcon icon={faCog} /> Settings</a>
+          <NavLink to="#"><FontAwesomeIcon icon={faCog} /> Settings</NavLink>
           </li>
         </ul>
       </nav>

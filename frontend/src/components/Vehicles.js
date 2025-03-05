@@ -6,7 +6,7 @@ import './css/general.css';
 const VehiclesPage = ({ onLogout, userRole }) => {
   // Mock vehicles data
   const initialVehicles = [
-    { id: 1, type: 'Truck', licensePlate: 'ABC-123', status: 'Available', lastMaintenance: '2025-02-01' },
+    { id: 1, type: 'Garbage Truck', licensePlate: 'ABC-123', status: 'Available', lastMaintenance: '2025-02-01' },
     { id: 2, type: 'Van', licensePlate: 'XYZ-789', status: 'In Use', lastMaintenance: '2025-01-15' },
     { id: 3, type: 'Maintenance Vehicle', licensePlate: 'MNT-456', status: 'Under Maintenance', lastMaintenance: '2025-03-01' },
   ];
@@ -14,9 +14,9 @@ const VehiclesPage = ({ onLogout, userRole }) => {
   const [vehicles, setVehicles] = useState(initialVehicles);
   const [searchTerm, setSearchTerm] = useState('');
   const [newVehicle, setNewVehicle] = useState({
-    type: 'Truck', // Default value
+    type: 'Garbage Truck', // Updated default value
     licensePlate: '',
-    status: 'Available', // Default value
+    status: 'Available',
     lastMaintenance: '',
   });
 
@@ -39,7 +39,7 @@ const VehiclesPage = ({ onLogout, userRole }) => {
       const newId = vehicles.length + 1; // Simple ID generation
       setVehicles([...vehicles, { id: newId, ...newVehicle }]);
       setNewVehicle({
-        type: 'Truck',
+        type: 'Garbage Truck', // Updated default value
         licensePlate: '',
         status: 'Available',
         lastMaintenance: '',
@@ -84,9 +84,17 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             onChange={(e) => setNewVehicle({ ...newVehicle, type: e.target.value })}
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
           >
-            <option value="Truck">Truck</option>
+            <option value="Garbage Truck">Garbage Truck</option>
             <option value="Van">Van</option>
             <option value="Maintenance Vehicle">Maintenance Vehicle</option>
+            <option value="Electric Vehicle">Electric Vehicle</option>
+            <option value="Sweeper Vehicle">Sweeper Vehicle</option>
+            <option value="Recycling Truck">Recycling Truck</option>
+            <option value="Utility Vehicle">Utility Vehicle</option>
+            <option value="Compactor Truck">Compactor Truck</option>
+            <option value="Skip Truck">Skip Truck</option>
+            <option value="Water Tanker">Water Tanker</option>
+            <option value="Mini Truck">Mini Truck</option>
           </select>
           <input
             type="text"

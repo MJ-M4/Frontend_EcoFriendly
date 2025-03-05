@@ -1,6 +1,6 @@
 // src/components/Sidebar.js
 import React from 'react';
-import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt, FaUsers } from 'react-icons/fa';
+import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt, FaUsers, FaClock, FaTruck, FaDollarSign, FaTrash, FaHouseUser } from 'react-icons/fa'; // Add FaDollarSign
 import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ user, activePage, onLogout, userRole }) => {
@@ -21,7 +21,7 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
         <ul>
           <li className={activePage === 'general' ? 'active' : ''}>
             <Link to="/general">
-              <FaChartBar /> General
+              <FaHouseUser /> General
             </Link>
           </li>
           <li className={activePage === 'reports' ? 'active' : ''}>
@@ -39,14 +39,37 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
               <FaCog /> Settings
             </Link>
           </li>
-          {/* Conditionally render Workers link for manager */}
           {userRole === 'manager' && (
-            <li className={activePage === 'workers' ? 'active' : ''}>
-              <Link to="/workers">
-                <FaUsers /> Workers
-              </Link>
-            </li>
+            <>
+              <li className={activePage === 'workers' ? 'active' : ''}>
+                <Link to="/workers">
+                  <FaUsers /> Workers
+                </Link>
+              </li>
+              <li className={activePage === 'shifts' ? 'active' : ''}>
+                <Link to="/shifts">
+                  <FaClock /> Shifts
+                </Link>
+              </li>
+              {/* Add Vehicles link if implemented */}
+              <li className={activePage === 'vehicles' ? 'active' : ''}>
+                <Link to="/vehicles">
+                  <FaTruck /> Vehicles
+                </Link>
+              </li>
+              <li className={activePage === 'payment' ? 'active' : ''}>
+                <Link to="/payment">
+                  <FaDollarSign /> Payments
+                </Link>
+              </li>
+              <li className={activePage === 'bin-management' ? 'active' : ''}>
+                <Link to="/bin-management">
+                  <FaTrash /> Bin Management
+                </Link>
+              </li>
+            </>
           )}
+          
         </ul>
       </nav>
       <button className="sign-out" onClick={handleSignOut}>

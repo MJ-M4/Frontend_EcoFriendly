@@ -1,18 +1,28 @@
 // src/App.js
-import React, { useState } from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import './App.css';
-import AlertsPage from './components/Alerts';
-import GeneralPage from './components/General';
-import HomePage from './components/HomePage';
-import Login from './components/Login';
-import ReportsPage from './components/Reports';
-import SettingsPage from './components/Settings';
-import WorkersPage from './components/WorkersPage'; // Import the WorkersPage
+import React, { useState } from "react";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import "./App.css";
+import AlertsPage from "./components/Alerts";
+import GeneralPage from "./components/General";
+import HomePage from "./components/HomePage";
+import Login from "./components/Login";
+import ReportsPage from "./components/Reports";
+import SettingsPage from "./components/Settings";
+import WorkersPage from "./components/WorkersPage";
+import ShiftsPage from "./components/Shifts"; // Import the new ShiftsPage
+import VehiclesPage from "./components/Vehicles";
+import PaymentPage from "./components/Payment";
+import BinManagementPage from "./components/BinManagement";
+import ForgotPassword from "./components/ForgotPassword";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState('worker'); // Track user role
+  const [userRole, setUserRole] = useState("worker"); // Track user role
 
   const handleLogin = (role) => {
     setIsAuthenticated(true);
@@ -21,7 +31,7 @@ function App() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setUserRole('worker'); // Reset role on logout
+    setUserRole("worker"); // Reset role on logout
   };
 
   return (
@@ -29,9 +39,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/HomePage" replace />} />
         <Route path="/HomePage" element={<HomePage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/login"
-          element={<Login onLogin={handleLogin} isAuthenticated={isAuthenticated} />}
+          element={
+            <Login onLogin={handleLogin} isAuthenticated={isAuthenticated} />
+          }
         />
         <Route
           path="/general"
@@ -73,12 +86,52 @@ function App() {
             )
           }
         />
-        {/* Add route for WorkersPage (only accessible to managers) */}
         <Route
           path="/workers"
           element={
-            isAuthenticated && userRole === 'manager' ? (
+            isAuthenticated && userRole === "manager" ? (
               <WorkersPage onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        {/* Add route for ShiftsPage (only accessible to managers) */}
+        <Route
+          path="/shifts"
+          element={
+            isAuthenticated && userRole === "manager" ? (
+              <ShiftsPage onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/vehicles"
+          element={
+            isAuthenticated && userRole === "manager" ? (
+              <VehiclesPage onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            isAuthenticated && userRole === "manager" ? (
+              <PaymentPage onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/bin-management"
+          element={
+            isAuthenticated && userRole === "manager" ? (
+              <BinManagementPage onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )

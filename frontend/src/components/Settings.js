@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
-const SettingsPage = ({ onLogout }) => {
+const SettingsPage = ({ onLogout, userRole }) => { // Add userRole prop
   const [name, setName] = useState('Mohamed Mhagne');
   const [message, setMessage] = useState('');
 
@@ -21,7 +21,7 @@ const SettingsPage = ({ onLogout }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="settings" onLogout={onLogout} />
+      <Sidebar user={user} activePage="settings" onLogout={onLogout} userRole={userRole} /> {/* Pass userRole */}
       <div className="content">
         <div className="table-container">
           <h2>Settings</h2>

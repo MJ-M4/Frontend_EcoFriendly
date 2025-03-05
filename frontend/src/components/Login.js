@@ -1,12 +1,13 @@
 // src/components/Login.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg'; // Fixed the filename to match Ecofriendly.jpg
+import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
 
 const Login = ({ onLogin, isAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('worker'); // Default role is worker
   const navigate = useNavigate();
 
   // Redirect to General Page if already authenticated
@@ -20,10 +21,11 @@ const Login = ({ onLogin, isAuthenticated }) => {
     e.preventDefault();
     console.log('Username:', username);
     console.log('Password:', password);
+    console.log('Role:', role);
 
     // Mock login validation - in a real app, this would involve an API call
     if (username && password) {
-      onLogin(); // Update authentication state
+      onLogin(role); // Pass the role to the onLogin function
     } else {
       alert('Please enter username and password');
     }
@@ -60,6 +62,17 @@ const Login = ({ onLogin, isAuthenticated }) => {
               required
               placeholder="Enter your password"
             />
+          </div>
+          <div className="form-group">
+            <label htmlFor="role">Role</label>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="worker">Worker</option>
+              <option value="manager">Manager</option>
+            </select>
           </div>
           <button type="submit">Login</button>
         </form>

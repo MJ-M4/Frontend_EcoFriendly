@@ -8,16 +8,20 @@ import HomePage from './components/HomePage';
 import Login from './components/Login';
 import ReportsPage from './components/Reports';
 import SettingsPage from './components/Settings';
+import WorkersPage from './components/WorkersPage'; // Import the WorkersPage
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState('worker'); // Track user role
 
-  const handleLogin = () => {
+  const handleLogin = (role) => {
     setIsAuthenticated(true);
+    setUserRole(role); // Set the user role
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUserRole('worker'); // Reset role on logout
   };
 
   return (
@@ -33,7 +37,7 @@ function App() {
           path="/general"
           element={
             isAuthenticated ? (
-              <GeneralPage onLogout={handleLogout} />
+              <GeneralPage onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -43,7 +47,7 @@ function App() {
           path="/reports"
           element={
             isAuthenticated ? (
-              <ReportsPage onLogout={handleLogout} />
+              <ReportsPage onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -53,7 +57,7 @@ function App() {
           path="/alerts"
           element={
             isAuthenticated ? (
-              <AlertsPage onLogout={handleLogout} />
+              <AlertsPage onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -63,7 +67,18 @@ function App() {
           path="/settings"
           element={
             isAuthenticated ? (
-              <SettingsPage onLogout={handleLogout} />
+              <SettingsPage onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        {/* Add route for WorkersPage (only accessible to managers) */}
+        <Route
+          path="/workers"
+          element={
+            isAuthenticated && userRole === 'manager' ? (
+              <WorkersPage onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )

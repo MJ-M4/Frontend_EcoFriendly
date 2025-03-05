@@ -4,7 +4,7 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 import './css/general.css';
 import Sidebar from './Sidebar';
 
-const AlertsPage = ({ onLogout }) => {
+const AlertsPage = ({ onLogout, userRole }) => { // Add userRole prop
   // Mock data (since we're not using a backend)
   const mockAlerts = [
     { id: 1, binId: 'bin_1', type: 'Critical', message: 'Bin is full', time: '10:00', date: '15-1-2025' },
@@ -50,7 +50,7 @@ const AlertsPage = ({ onLogout }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="alerts" onLogout={onLogout} />
+      <Sidebar user={user} activePage="alerts" onLogout={onLogout} userRole={userRole} /> {/* Pass userRole */}
       <div className="content">
         <div className="table-container">
           <table>

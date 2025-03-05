@@ -4,7 +4,7 @@ import { FaTrash } from 'react-icons/fa';
 import './css/general.css';
 import Sidebar from './Sidebar';
 
-const ReportsPage = ({ onLogout }) => {
+const ReportsPage = ({ onLogout, userRole }) => { // Add userRole prop
   // Mock data (since we're not using a backend)
   const mockReports = [
     { id: 'bin_10', status: 'Full', capacity: 90, location: 'nazareth, 4 088', lastCollected: '18-1-2025' },
@@ -19,28 +19,6 @@ const ReportsPage = ({ onLogout }) => {
   const [error, setError] = useState(null);
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
-
-  // Comment out the API fetch for now (you can uncomment this when you have a backend)
-  /*
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/reports');
-        if (!response.ok) {
-          throw new Error('Failed to fetch reports');
-        }
-        const data = await response.json();
-        setReports(data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
-    fetchReports();
-  }, []);
-  */
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -65,7 +43,7 @@ const ReportsPage = ({ onLogout }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="reports" onLogout={onLogout} />
+      <Sidebar user={user} activePage="reports" onLogout={onLogout} userRole={userRole} /> {/* Pass userRole */}
       <div className="content">
         <div className="table-container reports-table">
           <table>

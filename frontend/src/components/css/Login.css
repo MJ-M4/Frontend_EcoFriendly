@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh; /* Full viewport height */
-  background-image: url('C:\Users\TOGOMORI\Desktop\Ecofriendly\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */
+  background-image: url('C:\Users\RScho\Desktop\Final_Project\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */
   background-size: cover;
   background-position: center;
   background-attachment: fixed; /* Keep background fixed during scroll */

@@ -1,9 +1,9 @@
 // src/components/Sidebar.js
 import React from 'react';
-import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt, FaUsers } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ user, activePage, onLogout }) => {
+const Sidebar = ({ user, activePage, onLogout, userRole }) => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -39,6 +39,14 @@ const Sidebar = ({ user, activePage, onLogout }) => {
               <FaCog /> Settings
             </Link>
           </li>
+          {/* Conditionally render Workers link for manager */}
+          {userRole === 'manager' && (
+            <li className={activePage === 'workers' ? 'active' : ''}>
+              <Link to="/workers">
+                <FaUsers /> Workers
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
       <button className="sign-out" onClick={handleSignOut}>

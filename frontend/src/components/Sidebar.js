@@ -1,6 +1,6 @@
 // src/components/Sidebar.js
 import React from 'react';
-import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt, FaUsers, FaClock, FaTruck, FaDollarSign, FaTrash, FaHouseUser } from 'react-icons/fa'; // Add FaDollarSign
+import { FaChartBar, FaClock, FaCog, FaDollarSign, FaExclamationTriangle, FaHouseUser, FaLock, FaSignOutAlt, FaTools, FaTrash, FaTruck, FaUsers } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ user, activePage, onLogout, userRole }) => {
@@ -51,7 +51,6 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
                   <FaClock /> Shifts
                 </Link>
               </li>
-              {/* Add Vehicles link if implemented */}
               <li className={activePage === 'vehicles' ? 'active' : ''}>
                 <Link to="/vehicles">
                   <FaTruck /> Vehicles
@@ -67,9 +66,18 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
                   <FaTrash /> Bin Management
                 </Link>
               </li>
+              <li className={activePage === 'hardware-examination' ? 'active' : ''}>
+                <Link to="/hardware-examination">
+                  <FaTools /> Hardware Examination
+                </Link>
+              </li>
+              <li className={activePage === 'secure-access-code' ? 'active' : ''}>
+                <Link to="/secure-access-code">
+                  <FaLock /> Generate Access Code
+                </Link>
+              </li>
             </>
           )}
-          
         </ul>
       </nav>
       <button className="sign-out" onClick={handleSignOut}>

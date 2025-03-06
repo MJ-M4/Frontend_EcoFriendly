@@ -8,17 +8,19 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import AlertsPage from "./components/Alerts";
-import GeneralPage from "./components/General";
-import HomePage from "./components/HomePage";
-import Login from "./components/Login";
-import ReportsPage from "./components/Reports";
-import SettingsPage from "./components/Settings";
-import WorkersPage from "./components/WorkersPage";
-import ShiftsPage from "./components/Shifts"; // Import the new ShiftsPage
-import VehiclesPage from "./components/Vehicles";
-import PaymentPage from "./components/Payment";
 import BinManagementPage from "./components/BinManagement";
 import ForgotPassword from "./components/ForgotPassword";
+import GeneralPage from "./components/General";
+import HardwareExamination from "./components/HardwareExamination";
+import HomePage from "./components/HomePage";
+import Login from "./components/Login";
+import PaymentPage from "./components/Payment";
+import ReportsPage from "./components/Reports";
+import SecureAccessCodeGenerator from "./components/SecureAccessCodeGenerator";
+import SettingsPage from "./components/Settings";
+import ShiftsPage from "./components/Shifts";
+import VehiclesPage from "./components/Vehicles";
+import WorkersPage from "./components/WorkersPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -96,7 +98,6 @@ function App() {
             )
           }
         />
-        {/* Add route for ShiftsPage (only accessible to managers) */}
         <Route
           path="/shifts"
           element={
@@ -132,6 +133,26 @@ function App() {
           element={
             isAuthenticated && userRole === "manager" ? (
               <BinManagementPage onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/hardware-examination"
+          element={
+            isAuthenticated && userRole === "manager" ? (
+              <HardwareExamination onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/secure-access-code"
+          element={
+            isAuthenticated && userRole === "manager" ? (
+              <SecureAccessCodeGenerator onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )

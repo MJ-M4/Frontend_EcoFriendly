@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import './css/general.css';
 
 const WorkersPage = ({ onLogout, userRole }) => {
-  // Updated mock workers data with workerType
+  // Mock workers data with workerType
   const initialWorkers = [
     { id: 1, identity: 'ID001', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver' },
     { id: 2, identity: 'ID002', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner' },
@@ -12,7 +12,8 @@ const WorkersPage = ({ onLogout, userRole }) => {
   ];
 
   const [workers, setWorkers] = useState(initialWorkers);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchRegion, setSearchRegion] = useState(''); // Search by region
+  const [searchId, setSearchId] = useState(''); // Search by ID
   const [newWorker, setNewWorker] = useState({
     identity: '',
     name: '',
@@ -24,10 +25,12 @@ const WorkersPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter workers by location
-  const filteredWorkers = workers.filter((worker) =>
-    worker.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter workers by location and/or ID
+  const filteredWorkers = workers.filter((worker) => {
+    const matchesRegion = worker.location.toLowerCase().includes(searchRegion.toLowerCase());
+    const matchesId = worker.identity.toLowerCase().includes(searchId.toLowerCase());
+    return matchesRegion && matchesId; // Both conditions must match for now (AND logic)
+  });
 
   // Handle adding a new worker
   const handleAddWorker = () => {
@@ -52,19 +55,37 @@ const WorkersPage = ({ onLogout, userRole }) => {
     setWorkers(workers.filter((worker) => worker.id !== id));
   };
 
+  // Restrict access to managers only
+  if (userRole !== 'manager') {
+    return <div className="error">Access Denied: Managers Only</div>;
+  }
+
   return (
     <div className="dashboard">
       <Sidebar user={user} activePage="workers" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Workers</h1>
 
-        {/* Search Box */}
-        <div style={{ marginBottom: '20px' }}>
+        {/* Search Boxes */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
           <input
             type="text"
             placeholder="Search by region..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchRegion}
+            onChange={(e) => setSearchRegion(e.target.value)}
+            style={{
+              padding: '10px',
+              width: '300px',
+              borderRadius: '5px',
+              border: '1px solid #e0e0e0',
+              fontSize: '1rem',
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Search by ID..."
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
             style={{
               padding: '10px',
               width: '300px',
@@ -76,45 +97,45 @@ const WorkersPage = ({ onLogout, userRole }) => {
         </div>
 
         {/* Add Worker Form */}
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
           <input
             type="text"
             placeholder="Identity"
             value={newWorker.identity}
             onChange={(e) => setNewWorker({ ...newWorker, identity: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Name"
             value={newWorker.name}
             onChange={(e) => setNewWorker({ ...newWorker, name: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Phone Number"
             value={newWorker.phone}
             onChange={(e) => setNewWorker({ ...newWorker, phone: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Location"
             value={newWorker.location}
             onChange={(e) => setNewWorker({ ...newWorker, location: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="date"
             value={newWorker.joiningDate}
             onChange={(e) => setNewWorker({ ...newWorker, joiningDate: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <select
             value={newWorker.workerType}
             onChange={(e) => setNewWorker({ ...newWorker, workerType: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>

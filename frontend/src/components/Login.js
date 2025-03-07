@@ -1,7 +1,8 @@
 // src/components/Login.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './css/Login.css'; // For styling
+import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg'; // Fixed the filename to match Ecofriendly.jpg
+import './css/Login.css';
 
 const Login = ({ onLogin, isAuthenticated }) => {
   const [username, setUsername] = useState('');
@@ -17,14 +18,12 @@ const Login = ({ onLogin, isAuthenticated }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here (e.g., API call to authenticate the user)
     console.log('Username:', username);
     console.log('Password:', password);
 
     // Mock login validation - in a real app, this would involve an API call
     if (username && password) {
       onLogin(); // Update authentication state
-      // navigate('/general'); // Not needed here since useEffect handles the redirect
     } else {
       alert('Please enter username and password');
     }
@@ -33,7 +32,12 @@ const Login = ({ onLogin, isAuthenticated }) => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h2>Login</h2>
+        <img
+          src={ecoFriendlyLogo}
+          alt="EcoFriendly System Logo"
+          className="login-logo"
+        />
+        <h2>Login to EcoFriendly System</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
@@ -43,6 +47,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              placeholder="Enter your username"
             />
           </div>
           <div className="form-group">
@@ -53,6 +58,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              placeholder="Enter your password"
             />
           </div>
           <button type="submit">Login</button>

@@ -1,17 +1,18 @@
-// src/components/Shifts.js
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
-  // Mock workers data (ideally passed as props or fetched from a shared state)
   const workers = [
     { id: 1, identity: 'ID001', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver' },
     { id: 2, identity: 'ID002', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner' },
     { id: 3, identity: 'ID003', name: 'Worker 3', phone: '054-555-1212', location: 'Haifa', joiningDate: '10-06-2023', workerType: 'Maintenance Worker' },
   ];
 
-  // Mock shifts data
   const initialShifts = [
     { id: 1, workerId: 1, workerName: 'Worker 1', workerType: 'Driver', date: '2025-03-06', startTime: '08:00', endTime: '16:00', location: 'Tel Aviv' },
     { id: 2, workerId: 2, workerName: 'Worker 2', workerType: 'Cleaner', date: '2025-03-06', startTime: '09:00', endTime: '17:00', location: 'Jerusalem' },
@@ -30,45 +31,21 @@ const ShiftsPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter shifts by worker name
   const filteredShifts = shifts.filter((shift) =>
     shift.workerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle adding a new shift
   const handleAddShift = () => {
-    if (
-      newShift.workerId &&
-      newShift.date &&
-      newShift.startTime &&
-      newShift.endTime &&
-      newShift.location
-    ) {
+    if (newShift.workerId && newShift.date && newShift.startTime && newShift.endTime && newShift.location) {
       const selectedWorker = workers.find((w) => w.id === parseInt(newShift.workerId));
       const newId = shifts.length + 1;
-      setShifts([
-        ...shifts,
-        {
-          id: newId,
-          workerId: selectedWorker.id,
-          workerName: selectedWorker.name,
-          workerType: selectedWorker.workerType,
-          ...newShift,
-        },
-      ]);
-      setNewShift({
-        workerId: workers[0]?.id || '',
-        date: '',
-        startTime: '',
-        endTime: '',
-        location: '',
-      });
+      setShifts([...shifts, { id: newId, workerId: selectedWorker.id, workerName: selectedWorker.name, workerType: selectedWorker.workerType, ...newShift }]);
+      setNewShift({ workerId: workers[0]?.id || '', date: '', startTime: '', endTime: '', location: '' });
     } else {
       alert('Please fill in all fields to add a shift.');
     }
   };
 
-  // Handle deleting a shift
   const handleDeleteShift = (id) => {
     setShifts(shifts.filter((shift) => shift.id !== id));
   };
@@ -78,30 +55,20 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="shifts" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Shifts</h1>
-
-        {/* Search Box */}
-        <div style={{ marginBottom: '20px' }}>
+        <div className="form-container">
           <input
             type="text"
             placeholder="Search by worker name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '300px',
-              borderRadius: '5px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem',
-            }}
+            className="search-input"
           />
         </div>
-
-        {/* Add Shift Form */}
-        <div style={{ marginBottom: '20px' }}>
+        <div className="form-container shift-form">
           <select
             value={newShift.workerId}
             onChange={(e) => setNewShift({ ...newShift, workerId: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            className="form-input"
           >
             {workers.map((worker) => (
               <option key={worker.id} value={worker.id}>
@@ -113,37 +80,31 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             type="date"
             value={newShift.date}
             onChange={(e) => setNewShift({ ...newShift, date: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            className="form-input"
           />
           <input
             type="time"
             value={newShift.startTime}
             onChange={(e) => setNewShift({ ...newShift, startTime: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            className="form-input"
           />
           <input
             type="time"
             value={newShift.endTime}
             onChange={(e) => setNewShift({ ...newShift, endTime: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            className="form-input"
           />
           <input
             type="text"
             placeholder="Location"
             value={newShift.location}
             onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            className="form-input"
           />
-          <button
-            onClick={handleAddShift}
-            className="download-report-btn"
-            style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
-          >
+          <button onClick={handleAddShift} className="download-report-btn">
             Add Shift
           </button>
         </div>
-
-        {/* Shifts Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -169,17 +130,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                   <td>{shift.endTime}</td>
                   <td>{shift.location}</td>
                   <td>
-                    <button
-                      onClick={() => handleDeleteShift(shift.id)}
-                      style={{
-                        padding: '5px 10px',
-                        backgroundColor: '#ff4d4f',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                      }}
-                    >
+                    <button onClick={() => handleDeleteShift(shift.id)} className="action-btn delete">
                       Delete
                     </button>
                   </td>

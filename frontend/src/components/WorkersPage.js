@@ -1,10 +1,12 @@
-// src/components/WorkersPage.js
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
 
 const WorkersPage = ({ onLogout, userRole }) => {
-  // Mock workers data with workerType
   const initialWorkers = [
     { id: 1, identity: 'ID001', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver' },
     { id: 2, identity: 'ID002', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner' },
@@ -12,27 +14,25 @@ const WorkersPage = ({ onLogout, userRole }) => {
   ];
 
   const [workers, setWorkers] = useState(initialWorkers);
-  const [searchRegion, setSearchRegion] = useState(''); // Search by region
-  const [searchId, setSearchId] = useState(''); // Search by ID
+  const [searchRegion, setSearchRegion] = useState('');
+  const [searchId, setSearchId] = useState('');
   const [newWorker, setNewWorker] = useState({
     identity: '',
     name: '',
     phone: '',
     location: '',
     joiningDate: '',
-    workerType: 'Driver', // Default worker type
+    workerType: 'Driver',
   });
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter workers by location and/or ID
   const filteredWorkers = workers.filter((worker) => {
     const matchesRegion = worker.location.toLowerCase().includes(searchRegion.toLowerCase());
     const matchesId = worker.identity.toLowerCase().includes(searchId.toLowerCase());
-    return matchesRegion && matchesId; // Both conditions must match for now (AND logic)
+    return matchesRegion && matchesId;
   });
 
-  // Handle adding a new worker
   const handleAddWorker = () => {
     if (
       newWorker.identity &&
@@ -50,12 +50,10 @@ const WorkersPage = ({ onLogout, userRole }) => {
     }
   };
 
-  // Handle deleting a worker
   const handleDeleteWorker = (id) => {
     setWorkers(workers.filter((worker) => worker.id !== id));
   };
 
-  // Restrict access to managers only
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -65,92 +63,70 @@ const WorkersPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="workers" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Workers</h1>
-
-        {/* Search Boxes */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
+        <div className="form-container">
           <input
             type="text"
             placeholder="Search by region..."
             value={searchRegion}
             onChange={(e) => setSearchRegion(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '300px',
-              borderRadius: '5px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem',
-            }}
+            className="search-input"
           />
           <input
             type="text"
             placeholder="Search by ID..."
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '300px',
-              borderRadius: '5px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem',
-            }}
+            className="search-input"
           />
         </div>
-
-        {/* Add Worker Form */}
-        <div style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+        <div className="form-container worker-form">
           <input
             type="text"
             placeholder="Identity"
             value={newWorker.identity}
             onChange={(e) => setNewWorker({ ...newWorker, identity: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="text"
             placeholder="Name"
             value={newWorker.name}
             onChange={(e) => setNewWorker({ ...newWorker, name: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="text"
             placeholder="Phone Number"
             value={newWorker.phone}
             onChange={(e) => setNewWorker({ ...newWorker, phone: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="text"
             placeholder="Location"
             value={newWorker.location}
             onChange={(e) => setNewWorker({ ...newWorker, location: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="date"
             value={newWorker.joiningDate}
             onChange={(e) => setNewWorker({ ...newWorker, joiningDate: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <select
             value={newWorker.workerType}
             onChange={(e) => setNewWorker({ ...newWorker, workerType: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
             <option value="Maintenance Worker">Maintenance Worker</option>
           </select>
-          <button
-            onClick={handleAddWorker}
-            className="download-report-btn"
-            style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
-          >
+          <button onClick={handleAddWorker} className="download-report-btn">
             Add Worker
           </button>
         </div>
-
-        {/* Workers Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -174,17 +150,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
                   <td>{worker.joiningDate}</td>
                   <td>{worker.workerType}</td>
                   <td>
-                    <button
-                      onClick={() => handleDeleteWorker(worker.id)}
-                      style={{
-                        padding: '5px 10px',
-                        backgroundColor: '#ff4d4f',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                      }}
-                    >
+                    <button onClick={() => handleDeleteWorker(worker.id)} className="action-btn delete">
                       Delete
                     </button>
                   </td>

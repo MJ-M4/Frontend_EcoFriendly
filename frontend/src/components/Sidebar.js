@@ -1,9 +1,9 @@
 // src/components/Sidebar.js
 import React from 'react';
-import { FaChartBar, FaCog, FaExclamationTriangle, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartBar, FaClock, FaCog, FaDollarSign, FaExclamationTriangle, FaHouseUser, FaLock, FaSignOutAlt, FaTools, FaTrash, FaTruck, FaUsers } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ user, activePage, onLogout }) => {
+const Sidebar = ({ user, activePage, onLogout, userRole }) => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -21,7 +21,7 @@ const Sidebar = ({ user, activePage, onLogout }) => {
         <ul>
           <li className={activePage === 'general' ? 'active' : ''}>
             <Link to="/general">
-              <FaChartBar /> General
+              <FaHouseUser /> General
             </Link>
           </li>
           <li className={activePage === 'reports' ? 'active' : ''}>
@@ -39,6 +39,45 @@ const Sidebar = ({ user, activePage, onLogout }) => {
               <FaCog /> Settings
             </Link>
           </li>
+          {userRole === 'manager' && (
+            <>
+              <li className={activePage === 'workers' ? 'active' : ''}>
+                <Link to="/workers">
+                  <FaUsers /> Workers
+                </Link>
+              </li>
+              <li className={activePage === 'shifts' ? 'active' : ''}>
+                <Link to="/shifts">
+                  <FaClock /> Shifts
+                </Link>
+              </li>
+              <li className={activePage === 'vehicles' ? 'active' : ''}>
+                <Link to="/vehicles">
+                  <FaTruck /> Vehicles
+                </Link>
+              </li>
+              <li className={activePage === 'payment' ? 'active' : ''}>
+                <Link to="/payment">
+                  <FaDollarSign /> Payments
+                </Link>
+              </li>
+              <li className={activePage === 'bin-management' ? 'active' : ''}>
+                <Link to="/bin-management">
+                  <FaTrash /> Bin Management
+                </Link>
+              </li>
+              <li className={activePage === 'hardware-examination' ? 'active' : ''}>
+                <Link to="/hardware-examination">
+                  <FaTools /> Hardware Examination
+                </Link>
+              </li>
+              <li className={activePage === 'secure-access-code' ? 'active' : ''}>
+                <Link to="/secure-access-code">
+                  <FaLock /> Generate Access Code
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
       <button className="sign-out" onClick={handleSignOut}>

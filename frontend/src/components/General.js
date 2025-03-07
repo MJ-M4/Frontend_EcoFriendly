@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
 
-const GeneralPage = ({ onLogout }) => {
+const GeneralPage = ({ onLogout, userRole }) => { // Add userRole prop
   const [selectedBin, setSelectedBin] = useState(null);
 
   // Mock bin data
@@ -25,7 +25,7 @@ const GeneralPage = ({ onLogout }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="general" onLogout={onLogout} />
+      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} /> {/* Pass userRole */}
       <div className="content">
         <div className="map-container">
           <MapComponent bins={mockBins} selectedBin={selectedBin} />
@@ -37,4 +37,5 @@ const GeneralPage = ({ onLogout }) => {
     </div>
   );
 };
+
 export default GeneralPage;

@@ -5,15 +5,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-<<<<<<< HEAD
-  height: 100vh;
-  background-image: url('C:\Users\RScho\Desktop\Final_Project\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Relative path for production */
-  background-size: cover;
-  background-position: center;
-=======
   min-height: 100vh;
-  background-image: url('C:\Users\TOGOMORI\Desktop\Reactjs\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */  padding: 20px;
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
+  background-image: url('C:\Users\RScho\Desktop\Final_Project\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */  padding: 20px;
 }
 
 /* Login Box */

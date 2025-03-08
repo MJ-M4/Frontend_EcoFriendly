@@ -18,10 +18,7 @@ const simpleHash = (str) => {
 };
 
 const WorkersPage = ({ onLogout, userRole }) => {
-<<<<<<< HEAD
-=======
   // Mock workers data with workerType and accessCode
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
   const initialWorkers = [
     { id: 1, identity: '207705096', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver', accessCode: '' },
     { id: 2, identity: '205548491', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner', accessCode: '' },
@@ -38,10 +35,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
     location: '',
     joiningDate: '',
     workerType: 'Driver',
-<<<<<<< HEAD
-=======
     accessCode: '',
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
   });
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
@@ -52,8 +46,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
     return matchesRegion && matchesId;
   });
 
-<<<<<<< HEAD
-=======
   // Handle generating a random password for the new worker in the Add Worker bar
   const handleGenerateAccessCodeForNewWorker = () => {
     // Generate a random 8-character password (letters, numbers, and special characters)
@@ -66,7 +58,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
   };
 
   // Handle adding a new worker with hashed password
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
   const handleAddWorker = () => {
     if (
       newWorker.id &&
@@ -99,41 +90,21 @@ const WorkersPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="workers" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Workers</h1>
-<<<<<<< HEAD
-        <div className="form-container">
-=======
 
         {/* Search Bar (Unchanged) */}
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
           <input
             type="text"
             placeholder="Search by region..."
             value={searchRegion}
             onChange={(e) => setSearchRegion(e.target.value)}
-<<<<<<< HEAD
-            className="search-input"
-=======
             style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
           />
           <input
             type="text"
             placeholder="Search by ID..."
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-<<<<<<< HEAD
-            className="search-input"
-          />
-        </div>
-        <div className="form-container worker-form">
-          <input
-            type="text"
-            placeholder="Identity"
-            value={newWorker.identity}
-            onChange={(e) => setNewWorker({ ...newWorker, identity: e.target.value })}
-            className="form-input"
-=======
             style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
           />
         </div>
@@ -146,7 +117,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
             value={newWorker.id}
             onChange={(e) => setNewWorker({ ...newWorker, id: e.target.value })}
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
           />
           <input
             type="text"
@@ -184,13 +154,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
             <option value="Cleaner">Cleaner</option>
             <option value="Maintenance Worker">Maintenance Worker</option>
           </select>
-<<<<<<< HEAD
-          <button onClick={handleAddWorker} className="download-report-btn">
-            Add Worker
-          </button>
-        </div>
-        <div className="table-container">
-=======
           <input
             type="text"
             placeholder="Access Code (Generate to fill)"
@@ -216,7 +179,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
 
         {/* Workers Table */}
         <div className="table-container" style={{ marginBottom: '30px' }}>
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
           <table>
             <thead>
               <tr>

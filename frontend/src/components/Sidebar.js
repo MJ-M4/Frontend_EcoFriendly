@@ -71,11 +71,6 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
                   <FaTools /> Hardware Examination
                 </Link>
               </li>
-              <li className={activePage === 'secure-access-code' ? 'active' : ''}>
-                <Link to="/secure-access-code">
-                  <FaLock /> Generate Access Code
-                </Link>
-              </li>
             </>
           )}
         </ul>

@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 // src/components/Settings.js
 import axios from 'axios';
+=======
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
 
 const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
   const [name, setName] = useState('Mohamed Mhagne');
@@ -14,8 +21,11 @@ const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
     shifts: false,
   });
   const [message, setMessage] = useState('');
+<<<<<<< HEAD
 
   // For password update
+=======
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -48,11 +58,17 @@ const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
     setMessage(`Notifications for ${type} updated! (mock)`);
   };
 
+<<<<<<< HEAD
   // Real password update
   const handlePasswordUpdate = (e) => {
     e.preventDefault();
     setMessage('');
 
+=======
+  const handlePasswordUpdate = (e) => {
+    e.preventDefault();
+    setMessage('');
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       setMessage('Error: All password fields are required.');
       return;
@@ -65,6 +81,7 @@ const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
       setMessage('Error: New password must be different from current password.');
       return;
     }
+<<<<<<< HEAD
 
     // Real request to Flask
     axios
@@ -83,6 +100,14 @@ const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
       .catch((err) => {
         setMessage(err.response?.data?.error || 'Failed to update password');
       });
+=======
+    setTimeout(() => {
+      setMessage('Password updated successfully!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+    }, 1000);
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
   };
 
   return (
@@ -96,56 +121,58 @@ const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
       <div className="content">
         <div className="table-container">
           <h2>Settings</h2>
+<<<<<<< HEAD
 
           {/* Update Name (mocked) */}
+=======
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
           <form onSubmit={handleNameChange} className="form-container">
-            <label style={{ fontSize: '1rem' }}>
+            <label>
               Update Name:
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="form-input"
-                style={{ marginLeft: '10px' }}
               />
             </label>
             <button type="submit" className="download-report-btn">
               Save Changes
             </button>
           </form>
+<<<<<<< HEAD
 
           {/* Update Password (real) */}
+=======
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
           <form onSubmit={handlePasswordUpdate} className="form-container">
             <h3>Update Password</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <label style={{ fontSize: '1rem' }}>
+            <div className="password-form">
+              <label>
                 Current Password:
                 <input
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   className="form-input"
-                  style={{ marginLeft: '10px', width: '100%' }}
                 />
               </label>
-              <label style={{ fontSize: '1rem' }}>
+              <label>
                 New Password:
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="form-input"
-                  style={{ marginLeft: '10px', width: '100%' }}
                 />
               </label>
-              <label style={{ fontSize: '1rem' }}>
+              <label>
                 Confirm New Password:
                 <input
                   type="password"
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
                   className="form-input"
-                  style={{ marginLeft: '10px', width: '100%' }}
                 />
               </label>
               <button type="submit" className="download-report-btn">
@@ -153,79 +180,70 @@ const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
               </button>
             </div>
           </form>
+<<<<<<< HEAD
 
           {/* Language (mock) */}
+=======
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
           <div className="form-container">
-            <label style={{ fontSize: '1rem' }}>
+            <label>
               Language:
-              <select
-                value={language}
-                onChange={handleLanguageChange}
-                className="form-input"
-                style={{ marginLeft: '10px' }}
-              >
+              <select value={language} onChange={handleLanguageChange} className="form-input">
                 <option value="English">English</option>
                 <option value="Hebrew">Hebrew</option>
                 <option value="Arabic">Arabic</option>
               </select>
             </label>
           </div>
+<<<<<<< HEAD
 
           {/* Theme (mock) */}
+=======
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
           <div className="form-container">
-            <label style={{ fontSize: '1rem' }}>
+            <label>
               Theme:
-              <select
-                value={theme}
-                onChange={handleThemeChange}
-                className="form-input"
-                style={{ marginLeft: '10px' }}
-              >
+              <select value={theme} onChange={handleThemeChange} className="form-input">
                 <option value="Light">Light</option>
                 <option value="Dark">Dark</option>
               </select>
             </label>
           </div>
+<<<<<<< HEAD
 
           {/* Notifications (mock) */}
           <div style={{ marginTop: '20px' }}>
+=======
+          <div className="notification-settings">
+>>>>>>> 290a976d397015edc2ebd3551cd7461758cf136f
             <h3>Notification Preferences</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={notifications.alerts}
-                  onChange={() => handleNotificationToggle('alerts')}
-                />
-                Receive Alerts Notifications
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={notifications.reports}
-                  onChange={() => handleNotificationToggle('reports')}
-                />
-                Receive Reports Notifications
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={notifications.shifts}
-                  onChange={() => handleNotificationToggle('shifts')}
-                />
-                Receive Shifts Notifications
-              </label>
-            </div>
+            <label>
+              <input
+                type="checkbox"
+                checked={notifications.alerts}
+                onChange={() => handleNotificationToggle('alerts')}
+              />
+              Receive Alerts Notifications
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={notifications.reports}
+                onChange={() => handleNotificationToggle('reports')}
+              />
+              Receive Reports Notifications
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={notifications.shifts}
+                onChange={() => handleNotificationToggle('shifts')}
+              />
+              Receive Shifts Notifications
+            </label>
           </div>
-
-          {/* Feedback Message */}
           {message && (
-            <p
-              style={{
-                marginTop: '10px',
-                color: message.startsWith('Error') ? '#e74c3c' : '#4caf50',
-              }}
-            >
+            <p className={message.startsWith('Error') ? 'error-message' : 'success-message'}>
               {message}
             </p>
           )}

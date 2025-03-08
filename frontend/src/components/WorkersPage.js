@@ -1,9 +1,8 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
-// Simple hash function for demonstration (NOT secure for production)
+// Simple hash function for demonstration (not secure for production)
 const simpleHash = (str) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -11,93 +10,76 @@ const simpleHash = (str) => {
     hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
-  return Math.abs(hash).toString(16).toUpperCase();
+  return Math.abs(hash).toString(16).toUpperCase(); // Convert to hexadecimal
 };
 
 const WorkersPage = ({ onLogout, userRole }) => {
-  const [workers, setWorkers] = useState([]);
-  const [searchRegion, setSearchRegion] = useState('');
-  const [searchId, setSearchId] = useState('');
+  // Mock workers data with workerType and accessCode
+  const initialWorkers = [
+    { id: 1, identity: '207705096', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver', accessCode: '' },
+    { id: 2, identity: '205548491', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner', accessCode: '' },
+    { id: 3, identity: '204987654', name: 'Worker 3', phone: '054-555-1212', location: 'Haifa', joiningDate: '10-06-2023', workerType: 'Maintenance Worker', accessCode: '' },
+  ];
+
+  const [workers, setWorkers] = useState(initialWorkers);
+  const [searchRegion, setSearchRegion] = useState(''); // Search by region
+  const [searchId, setSearchId] = useState(''); // Search by ID
   const [newWorker, setNewWorker] = useState({
-    identity: '',
+    id: '',
     name: '',
     phone: '',
     location: '',
     joiningDate: '',
-    role: 'worker',
     workerType: 'Driver',
     accessCode: '',
   });
 
-  const user = { name: 'ManagerUser', avatar: '/images/sami.png' };
+  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
+  // Filter workers by location and/or ID
   const filteredWorkers = workers.filter((worker) => {
-    const regionMatch = worker.location?.toLowerCase().includes(searchRegion.toLowerCase());
-    const idMatch = String(worker.identity).toLowerCase().includes(searchId.toLowerCase());
-    return regionMatch && idMatch;
+    const matchesRegion = worker.location.toLowerCase().includes(searchRegion.toLowerCase());
+    const matchesId = worker.identity.toLowerCase().includes(searchId.toLowerCase());
+    return matchesRegion && matchesId;
   });
 
-  const handleGenerateAccessCode = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    let pass = '';
+  // Handle generating a random password for the new worker in the Add Worker bar
+  const handleGenerateAccessCodeForNewWorker = () => {
+    // Generate a random 8-character password (letters, numbers, and special characters)
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let randomPassword = '';
     for (let i = 0; i < 8; i++) {
-      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      randomPassword += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    setNewWorker({ ...newWorker, accessCode: pass });
+    setNewWorker({ ...newWorker, accessCode: randomPassword });
   };
 
-  const handleAddWorker = async () => {
-    const { identity, name, phone, location, joiningDate, role, workerType, accessCode } = newWorker;
-    if (!identity || !name || !phone || !location || !joiningDate || !accessCode) {
-      alert('Please fill in all fields and generate a password!');
-      return;
-    }
-    try {
-      const response = await axios.post('http://localhost:5000/register', {
-        identity: parseInt(identity, 10),
-        password: accessCode,
-        role: role,
-        worker_type: role === 'worker' ? workerType : null,
-        phone,
-        location,
-      });
-      alert(response.data.message || 'User registered!');
-      const newId = Date.now();
-      setWorkers([...workers, {
-        id: newId,
-        identity,
-        name,
-        phone,
-        location,
-        joiningDate,
-        role,
-        workerType,
-        accessCode: simpleHash(accessCode),
-      }]);
-      setNewWorker({
-        identity: '',
-        name: '',
-        phone: '',
-        location: '',
-        joiningDate: '',
-        role: 'worker',
-        workerType: 'Driver',
-        accessCode: '',
-      });
-    } catch (error) {
-      alert(error.response?.data?.error || 'Error creating user');
+  // Handle adding a new worker with hashed password
+  const handleAddWorker = () => {
+    if (
+      newWorker.id &&
+      newWorker.name &&
+      newWorker.phone &&
+      newWorker.location &&
+      newWorker.joiningDate &&
+      newWorker.workerType &&
+      newWorker.accessCode
+    ) {
+      const hashedAccessCode = simpleHash(newWorker.accessCode);
+      const newId = workers.length + 1;
+      setWorkers([...workers, { id: newId, identity: newWorker.id, name: newWorker.name, phone: newWorker.phone, location: newWorker.location, joiningDate: newWorker.joiningDate, workerType: newWorker.workerType, accessCode: hashedAccessCode }]);
+      setNewWorker({ id: '', name: '', phone: '', location: '', joiningDate: '', workerType: 'Driver', accessCode: '' });
+    } else {
+      alert('Please fill in all fields and generate an access code to add a worker.');
     }
   };
 
-  const handleDeleteWorker = async (workerId) => {
-    try {
-      await axios.delete(`http://localhost:5000/users/${workerId}`);
-      setWorkers(workers.filter((w) => w.id !== workerId));
-    } catch (error) {
-      alert('Failed to delete user');
-    }
+  // Handle deleting a worker
+  const handleDeleteWorker = (id) => {
+    setWorkers(workers.filter((worker) => worker.id !== id));
   };
 
+  // Restrict access to managers only
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -108,74 +90,64 @@ const WorkersPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Workers</h1>
 
-        {/* Search Bar */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        {/* Search Bar (Unchanged) */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           <input
             type="text"
             placeholder="Search by region..."
             value={searchRegion}
             onChange={(e) => setSearchRegion(e.target.value)}
-            style={{ padding: '10px', width: '250px' }}
+            style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
           />
           <input
             type="text"
             placeholder="Search by ID..."
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            style={{ padding: '10px', width: '250px' }}
+            style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
           />
         </div>
 
-        {/* Add Worker Form */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        {/* Add Worker Bar (Separate and Continuous) */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           <input
-            type="number"
-            placeholder="Numeric ID"
-            value={newWorker.identity}
-            onChange={(e) => setNewWorker({ ...newWorker, identity: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            type="text"
+            placeholder="ID"
+            value={newWorker.id}
+            onChange={(e) => setNewWorker({ ...newWorker, id: e.target.value })}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Name"
             value={newWorker.name}
             onChange={(e) => setNewWorker({ ...newWorker, name: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Phone Number"
             value={newWorker.phone}
             onChange={(e) => setNewWorker({ ...newWorker, phone: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Location"
             value={newWorker.location}
             onChange={(e) => setNewWorker({ ...newWorker, location: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="date"
             value={newWorker.joiningDate}
             onChange={(e) => setNewWorker({ ...newWorker, joiningDate: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
-            placeholder="mm/dd/yyyy"
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
-          <select
-            value={newWorker.role}
-            onChange={(e) => setNewWorker({ ...newWorker, role: e.target.value })}
-            style={{ padding: '10px', width: '120px' }}
-          >
-            <option value="worker">Worker</option>
-            <option value="manager">Manager</option>
-          </select>
           <select
             value={newWorker.workerType}
             onChange={(e) => setNewWorker({ ...newWorker, workerType: e.target.value })}
-            disabled={newWorker.role !== 'worker'}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
@@ -186,47 +158,61 @@ const WorkersPage = ({ onLogout, userRole }) => {
             placeholder="Access Code (Generate to fill)"
             value={newWorker.accessCode}
             readOnly
-            style={{ padding: '10px', width: '200px' }}
+            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
-          <button className="action-button" onClick={handleGenerateAccessCode}>
+          <button
+            onClick={handleGenerateAccessCodeForNewWorker}
+            className="download-report-btn"
+            style={{ padding: '8px 15px', height: '40px', fontSize: '0.9rem', marginRight: '10px' }}
+          >
             Generate Password
           </button>
-          <button className="action-button" onClick={handleAddWorker}>
+          <button
+            onClick={handleAddWorker}
+            className="download-report-btn"
+            style={{ padding: '10px 20px', height: '40px', width: '200px' }}
+          >
             Add Worker
           </button>
         </div>
 
-        {/* Table of existing workers */}
-        <div className="table-container">
+        {/* Workers Table */}
+        <div className="table-container" style={{ marginBottom: '30px' }}>
           <table>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Numeric ID</th>
                 <th>Name</th>
-                <th>Phone</th>
+                <th>Phone Number</th>
                 <th>Location</th>
                 <th>Joining Date</th>
-                <th>Role</th>
                 <th>Worker Type</th>
-                <th>Access Code (hashed)</th>
+                <th>Access Code</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredWorkers.map((worker) => (
                 <tr key={worker.id}>
-                  <td>{worker.id}</td>
                   <td>{worker.identity}</td>
                   <td>{worker.name}</td>
                   <td>{worker.phone}</td>
                   <td>{worker.location}</td>
                   <td>{worker.joiningDate}</td>
-                  <td>{worker.role}</td>
-                  <td>{worker.workerType || '-'}</td>
-                  <td>{worker.accessCode || 'N/A'}</td>
+                  <td>{worker.workerType}</td>
+                  <td>{worker.accessCode || 'Not Generated'}</td>
                   <td>
-                    <button className="delete-button" onClick={() => handleDeleteWorker(worker.id)}>
+                    <button
+                      onClick={() => handleDeleteWorker(worker.id)}
+                      style={{
+                        padding: '5px 10px',
+                        backgroundColor: '#ff4d4f',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                      }}
+                    >
                       Delete
                     </button>
                   </td>

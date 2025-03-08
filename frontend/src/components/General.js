@@ -17,7 +17,7 @@ const GeneralPage = ({ onLogout, userRole }) => { // Add userRole prop
     { id: 'bin_5', status: 'Full', capacity: 50, time: '18:30', date: '15-1-2025', route: 'Route E', battery: 78, lat: 32.7120, lon: 35.3245 },
   ];
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
+  const user = { name: 'Mohamed Mhagn', avatar: '/images/sami.png' };
 
   const handleSelectBin = (bin) => {
     setSelectedBin(bin);

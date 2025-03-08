@@ -1,9 +1,10 @@
 // src/components/Settings.js
+import axios from 'axios';
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
-const SettingsPage = ({ onLogout, userRole }) => {
+const SettingsPage = ({ onLogout, userRole, userIdentity }) => {
   const [name, setName] = useState('Mohamed Mhagne');
   const [language, setLanguage] = useState('English');
   const [theme, setTheme] = useState('Light');
@@ -14,83 +15,89 @@ const SettingsPage = ({ onLogout, userRole }) => {
   });
   const [message, setMessage] = useState('');
 
-  // Password update states
+  // For password update
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
+  // Suppose we pass the user object down (including identity)
   const user = { name, avatar: '/images/sami.png' };
 
-  // Handle name update
   const handleNameChange = (e) => {
     e.preventDefault();
-    try {
-      setMessage('Name updated successfully!');
-    } catch (err) {
-      setMessage('Error: Failed to update name');
-    }
+    // Optional: update name in backend if you have a route
+    setMessage('Name updated successfully (local mock)!');
   };
 
-  // Handle language change
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
-    setMessage(`Language updated to ${e.target.value}!`);
+    setMessage(`Language updated to ${e.target.value}! (mock)`);
   };
 
-  // Handle theme change
   const handleThemeChange = (e) => {
     setTheme(e.target.value);
-    setMessage(`Theme updated to ${e.target.value}!`);
+    setMessage(`Theme updated to ${e.target.value}! (mock)`);
     document.body.className = e.target.value.toLowerCase() + '-theme';
   };
 
-  // Handle notification toggle
   const handleNotificationToggle = (type) => {
     setNotifications((prev) => ({
       ...prev,
       [type]: !prev[type],
     }));
-    setMessage(`Notifications for ${type} ${notifications[type] ? 'disabled' : 'enabled'}!`);
+    setMessage(`Notifications for ${type} updated! (mock)`);
   };
 
-  // Handle password update (mocked locally)
+  // Real password update
   const handlePasswordUpdate = (e) => {
     e.preventDefault();
     setMessage('');
 
-    // Basic validation
     if (!currentPassword || !newPassword || !confirmNewPassword) {
       setMessage('Error: All password fields are required.');
       return;
     }
-
     if (newPassword !== confirmNewPassword) {
       setMessage('Error: New password and confirmation do not match.');
       return;
     }
-
     if (newPassword === currentPassword) {
-      setMessage('Error: New password must be different from the current password.');
+      setMessage('Error: New password must be different from current password.');
       return;
     }
 
-    // Mock successful update
-    setTimeout(() => {
-      setMessage('Password updated successfully!');
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
-    }, 1000);
+    // Real request to Flask
+    axios
+      .put('http://localhost:5000/update-password', {
+        identity: parseInt(userIdentity, 10), // The current user's numeric ID
+        current_password: currentPassword,
+        new_password: newPassword,
+      })
+      .then((res) => {
+        setMessage(res.data.message || 'Password updated successfully!');
+        // Clear fields
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
+      })
+      .catch((err) => {
+        setMessage(err.response?.data?.error || 'Failed to update password');
+      });
   };
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="settings" onLogout={onLogout} userRole={userRole} />
+      <Sidebar
+        user={user}
+        activePage="settings"
+        onLogout={onLogout}
+        userRole={userRole}
+      />
       <div className="content">
         <div className="table-container">
           <h2>Settings</h2>
 
-          {/* Update Name */}
+          {/* Update Name (mocked) */}
           <form onSubmit={handleNameChange} className="form-container">
             <label style={{ fontSize: '1rem' }}>
               Update Name:
@@ -107,7 +114,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
             </button>
           </form>
 
-          {/* Update Password */}
+          {/* Update Password (real) */}
           <form onSubmit={handlePasswordUpdate} className="form-container">
             <h3>Update Password</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -147,7 +154,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
             </div>
           </form>
 
-          {/* Language Selection */}
+          {/* Language (mock) */}
           <div className="form-container">
             <label style={{ fontSize: '1rem' }}>
               Language:
@@ -164,7 +171,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
             </label>
           </div>
 
-          {/* Theme Selection */}
+          {/* Theme (mock) */}
           <div className="form-container">
             <label style={{ fontSize: '1rem' }}>
               Theme:
@@ -180,7 +187,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
             </label>
           </div>
 
-          {/* Notification Preferences */}
+          {/* Notifications (mock) */}
           <div style={{ marginTop: '20px' }}>
             <h3>Notification Preferences</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

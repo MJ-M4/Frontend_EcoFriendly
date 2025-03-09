@@ -76,7 +76,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
   const handleAddWorker = async () => {
     const { identity, name, phone, location, joiningDate, role, workerType, accessCode } = newWorker;
     if (!identity || !name || !phone || !location || !joiningDate || !accessCode) {
-      alert('Please fill in all fields and generate a password!');
+      alert('Please generate a password and fill in all fields!');
       return;
     }
     try {
@@ -86,19 +86,19 @@ const WorkersPage = ({ onLogout, userRole }) => {
         name,
         phone,
         location,
-        joining_date: joiningDate, // Match backend field name
+        joining_date: joiningDate,
         password: accessCode,
         role,
         worker_type: role === 'worker' ? workerType : null
       });
 
-      const response = await axios.post('http://localhost:5000/workers/', { // Changed endpoint
+      const response = await axios.post('http://localhost:5000/workers/', {
         identity: parseInt(identity, 10),
         name: name.trim(),
         phone: phone.trim(),
         location: location.trim(),
-        joining_date: joiningDate, // Use backend field name
-        password: accessCode,
+        joining_date: joiningDate,
+        password: accessCode, // This will be hashed by the backend
         role: role,
         worker_type: role === 'worker' ? workerType : null
       });
@@ -116,7 +116,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
         accessCode: '',
       });
     } catch (error) {
-      // Enhanced error logging
       const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error creating user';
       alert(errorMessage);
       console.error("Error creating user:", {

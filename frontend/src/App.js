@@ -16,7 +16,6 @@ import HomePage from "./components/HomePage";
 import Login from "./components/Login";
 import PaymentPage from "./components/Payment";
 import ReportsPage from "./components/Reports";
-import SecureAccessCodeGenerator from "./components/SecureAccessCodeGenerator";
 import SettingsPage from "./components/Settings";
 import ShiftsPage from "./components/Shifts";
 import VehiclesPage from "./components/Vehicles";
@@ -143,16 +142,6 @@ function App() {
           element={
             isAuthenticated && userRole === "manager" ? (
               <HardwareExamination onLogout={handleLogout} userRole={userRole} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route
-          path="/secure-access-code"
-          element={
-            isAuthenticated && userRole === "manager" ? (
-              <SecureAccessCodeGenerator onLogout={handleLogout} userRole={userRole} />
             ) : (
               <Navigate to="/login" replace />
             )

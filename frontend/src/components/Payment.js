@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import './css/general.css';
 
 const PaymentPage = ({ onLogout, userRole }) => {
-  // Mock workers data (ideally passed as props or fetched from a shared state)
+  // Mock workers data
   const workers = [
     { id: 1, name: 'Worker 1', workerType: 'Driver' },
     { id: 2, name: 'Worker 2', workerType: 'Cleaner' },
@@ -21,43 +21,47 @@ const PaymentPage = ({ onLogout, userRole }) => {
   const [payments, setPayments] = useState(initialPayments);
   const [searchTerm, setSearchTerm] = useState('');
   const [newPayment, setNewPayment] = useState({
-    workerId: workers[0]?.id || '',
+    workerId: '',
     amount: '',
     notes: '',
   });
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter payments by worker name or status
+  // Filter payments by worker ID only
   const filteredPayments = payments.filter((payment) =>
-    payment.workerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    payment.status.toLowerCase().includes(searchTerm.toLowerCase())
+    String(payment.workerId).includes(searchTerm)
   );
 
   // Handle adding a new payment
   const handleAddPayment = () => {
-    if (newPayment.workerId && newPayment.amount) {
+    if (newPayment.workerId && newPayment.amount && newPayment.notes) {
       const selectedWorker = workers.find((w) => w.id === parseInt(newPayment.workerId));
+      if (!selectedWorker) {
+        alert('Invalid Worker ID. Please enter a valid Worker ID.');
+        return;
+      }
+
       const newId = payments.length + 1;
       setPayments([
         ...payments,
         {
           id: newId,
-          workerId: selectedWorker.id,
+          workerId: parseInt(newPayment.workerId),
           workerName: selectedWorker.name,
           amount: parseFloat(newPayment.amount),
-          paymentDate: '', // Initially empty until marked as paid
-          status: 'Pending', // Default status
-          notes: newPayment.notes || '',
+          paymentDate: '',
+          status: 'Pending',
+          notes: newPayment.notes,
         },
       ]);
       setNewPayment({
-        workerId: workers[0]?.id || '',
+        workerId: '',
         amount: '',
         notes: '',
-      }); // Reset form
+      });
     } else {
-      alert('Please fill in the required fields (Worker and Amount) to add a payment.');
+      alert('Please fill in all fields (Worker ID, Amount, and Notes) to add a payment.');
     }
   };
 
@@ -66,7 +70,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
     setPayments(
       payments.map((payment) =>
         payment.id === id
-          ? { ...payment, status: 'Paid', paymentDate: '2025-03-05' } // Use current date or fetch dynamically
+          ? { ...payment, status: 'Paid', paymentDate: new Date().toISOString().split('T')[0] } // Use current date
           : payment
       )
     );
@@ -77,6 +81,12 @@ const PaymentPage = ({ onLogout, userRole }) => {
     setPayments(payments.filter((payment) => payment.id !== id));
   };
 
+  // Handle input change for new payment form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPayment((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
     <div className="dashboard">
       <Sidebar user={user} activePage="payment" onLogout={onLogout} userRole={userRole} />
@@ -84,54 +94,46 @@ const PaymentPage = ({ onLogout, userRole }) => {
         <h1>Payments</h1>
 
         {/* Search Box */}
-        <div style={{ marginBottom: '20px' }}>
+        <div className="form-container">
           <input
             type="text"
-            placeholder="Search by worker name or status..."
+            placeholder="Search by Worker ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '300px',
-              borderRadius: '5px',
-              border: '1px solid #e0e0e0',
-              fontSize: '1rem',
-            }}
+            className="search-input"
           />
         </div>
 
         {/* Add Payment Form */}
-        <div style={{ marginBottom: '20px' }}>
-          <select
-            value={newPayment.workerId}
-            onChange={(e) => setNewPayment({ ...newPayment, workerId: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
-          >
-            {workers.map((worker) => (
-              <option key={worker.id} value={worker.id}>
-                {worker.name} ({worker.workerType})
-              </option>
-            ))}
-          </select>
+        <div className="form-container">
           <input
             type="number"
+            name="workerId"
+            placeholder="Worker ID"
+            value={newPayment.workerId}
+            onChange={handleInputChange}
+            className="form-input"
+            required
+          />
+          <input
+            type="number"
+            name="amount"
             placeholder="Amount"
             value={newPayment.amount}
-            onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            onChange={handleInputChange}
+            className="form-input"
+            required
           />
           <input
             type="text"
-            placeholder="Notes (optional)"
+            name="notes"
+            placeholder="Notes"
             value={newPayment.notes}
-            onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            onChange={handleInputChange}
+            className="form-input"
+            required
           />
-          <button
-            onClick={handleAddPayment}
-            className="download-report-btn"
-            style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
-          >
+          <button onClick={handleAddPayment} className="download-report-btn">
             Add Payment
           </button>
         </div>
@@ -142,6 +144,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
             <thead>
               <tr>
                 <th>Payment ID</th>
+                <th>Worker ID</th> {/* Added Worker ID column */}
                 <th>Worker Name</th>
                 <th>Amount</th>
                 <th>Payment Date</th>
@@ -154,38 +157,24 @@ const PaymentPage = ({ onLogout, userRole }) => {
               {filteredPayments.map((payment) => (
                 <tr key={payment.id}>
                   <td>{payment.id}</td>
+                  <td>{payment.workerId}</td> {/* Display Worker ID */}
                   <td>{payment.workerName}</td>
                   <td>${payment.amount.toFixed(2)}</td>
                   <td>{payment.paymentDate || 'N/A'}</td>
                   <td>{payment.status}</td>
-                  <td>{payment.notes || '-'}</td>
+                  <td>{payment.notes}</td>
                   <td>
                     {payment.status === 'Pending' && (
                       <button
                         onClick={() => handleMarkAsPaid(payment.id)}
-                        style={{
-                          padding: '5px 10px',
-                          backgroundColor: '#4caf50',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '5px',
-                          cursor: 'pointer',
-                          marginRight: '5px',
-                        }}
+                        className="mark-paid-btn"
                       >
                         Mark as Paid
                       </button>
                     )}
                     <button
                       onClick={() => handleDeletePayment(payment.id)}
-                      style={{
-                        padding: '5px 10px',
-                        backgroundColor: '#ff4d4f',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                      }}
+                      className="delete-btn"
                     >
                       Delete
                     </button>

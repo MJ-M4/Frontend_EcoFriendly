@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
@@ -29,11 +29,25 @@ const WorkersPage = ({ onLogout, userRole }) => {
     accessCode: '',
   });
 
+  const fetchWorkers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/workers/");
+      console.log("FETCHED WORKERS RESPONSE:", response.data); // Debug log
+      setWorkers(response.data);
+    } catch (err) {
+      console.error("Error fetching workers:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkers();
+  }, []);
+
   const user = { name: 'ManagerUser', avatar: '/images/sami.png' };
 
   const filteredWorkers = workers.filter((worker) => {
-    const regionMatch = worker.location?.toLowerCase().includes(searchRegion.toLowerCase());
-    const idMatch = String(worker.identity).toLowerCase().includes(searchId.toLowerCase());
+    const regionMatch = worker.location?.toLowerCase().includes(searchRegion.toLowerCase()) || true;
+    const idMatch = String(worker.identity).toLowerCase().includes(searchId.toLowerCase()) || true;
     return regionMatch && idMatch;
   });
 
@@ -62,18 +76,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
         location,
       });
       alert(response.data.message || 'User registered!');
-      const newId = Date.now();
-      setWorkers([...workers, {
-        id: newId,
-        identity,
-        name,
-        phone,
-        location,
-        joiningDate,
-        role,
-        workerType,
-        accessCode: simpleHash(accessCode),
-      }]);
+      fetchWorkers(); // Refresh the worker list
       setNewWorker({
         identity: '',
         name: '',
@@ -91,9 +94,12 @@ const WorkersPage = ({ onLogout, userRole }) => {
 
   const handleDeleteWorker = async (workerId) => {
     try {
-      await axios.delete(`http://localhost:5000/users/${workerId}`);
-      setWorkers(workers.filter((w) => w.id !== workerId));
+      console.log(`Attempting to delete worker with id: ${workerId}`);
+      await axios.delete(`http://localhost:5000/workers/${workerId}`); // Updated URL
+      console.log(`Deleted worker with id: ${workerId}`);
+      fetchWorkers(); // Refresh the worker list from the server
     } catch (error) {
+      console.error("Error deleting worker:", error.response ? error.response.data : error.message);
       alert('Failed to delete user');
     }
   };
@@ -214,24 +220,33 @@ const WorkersPage = ({ onLogout, userRole }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredWorkers.map((worker) => (
-                <tr key={worker.id}>
-                  <td>{worker.id}</td>
-                  <td>{worker.identity}</td>
-                  <td>{worker.name}</td>
-                  <td>{worker.phone}</td>
-                  <td>{worker.location}</td>
-                  <td>{worker.joiningDate}</td>
-                  <td>{worker.role}</td>
-                  <td>{worker.workerType || '-'}</td>
-                  <td>{worker.accessCode || 'N/A'}</td>
-                  <td>
-                    <button className="delete-button" onClick={() => handleDeleteWorker(worker.id)}>
-                      Delete
-                    </button>
-                  </td>
+              {filteredWorkers.length > 0 ? (
+                filteredWorkers.map((worker) => (
+                  <tr key={worker.id}>
+                    <td>{worker.id || 'N/A'}</td>
+                    <td>{worker.identity || 'N/A'}</td>
+                    <td>{worker.name || 'N/A'}</td>
+                    <td>{worker.phone || 'N/A'}</td>
+                    <td>{worker.location || 'N/A'}</td>
+                    <td>{worker.joiningDate || 'N/A'}</td>
+                    <td>{worker.role || 'N/A'}</td>
+                    <td>{worker.workerType || 'N/A'}</td>
+                    <td>{worker.accessCode || 'N/A'}</td>
+                    <td>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteWorker(worker.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10">No workers found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

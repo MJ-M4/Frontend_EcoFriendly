@@ -1,12 +1,10 @@
+// src/components/HardwareExamination.js
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/reset.css';
-import './css/layout.css';
-import './css/components.css';
-import './css/themes.css';
-import './css/responsive.css';
+import './css/general.css';
 
 const HardwareExamination = ({ onLogout, userRole }) => {
+  // Mock hardware data
   const initialHardware = [
     { id: 'hw_001', binId: 'bin_1', status: 'Operational', battery: 95, lastChecked: '2025-03-01', location: 'Tel Aviv' },
     { id: 'hw_002', binId: 'bin_2', status: 'Needs Maintenance', battery: 20, lastChecked: '2025-03-02', location: 'Jerusalem' },
@@ -18,15 +16,25 @@ const HardwareExamination = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  const filteredHardware = hardware.filter((hw) =>
-    hw.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    hw.location.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter hardware by bin ID or location
+  const filteredHardware = hardware.filter(
+    (hw) =>
+      hw.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hw.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Handle marking hardware as maintained (local state update)
   const handleMarkAsMaintained = (id) => {
-    setHardware(hardware.map((hw) => hw.id === id ? { ...hw, status: 'Operational', battery: 100, lastChecked: '2025-03-06' } : hw));
+    setHardware(
+      hardware.map((hw) =>
+        hw.id === id
+          ? { ...hw, status: 'Operational', battery: 100, lastChecked: '2025-03-06' }
+          : hw
+      )
+    );
   };
 
+  // Restrict access to managers only
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -36,15 +44,25 @@ const HardwareExamination = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="hardware-examination" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Hardware Examination</h1>
-        <div className="form-container">
+
+        {/* Search Box */}
+        <div style={{ marginBottom: '20px' }}>
           <input
             type="text"
             placeholder="Search by bin ID or location..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            style={{
+              padding: '10px',
+              width: '300px',
+              borderRadius: '5px',
+              border: '1px solid #e0e0e0',
+              fontSize: '1rem',
+            }}
           />
         </div>
+
+        {/* Hardware Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -69,7 +87,17 @@ const HardwareExamination = ({ onLogout, userRole }) => {
                   <td>{hw.lastChecked}</td>
                   <td>
                     {hw.status === 'Needs Maintenance' && (
-                      <button onClick={() => handleMarkAsMaintained(hw.id)} className="action-btn maintain">
+                      <button
+                        onClick={() => handleMarkAsMaintained(hw.id)}
+                        style={{
+                          padding: '5px 10px',
+                          backgroundColor: '#4caf50',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                      >
                         Mark as Maintained
                       </button>
                     )}
@@ -79,8 +107,12 @@ const HardwareExamination = ({ onLogout, userRole }) => {
             </tbody>
           </table>
         </div>
+
         <div className="download-report-container">
-          <button className="download-report-btn" onClick={() => alert('Hardware report downloaded!')}>
+          <button
+            className="download-report-btn"
+            onClick={() => alert('Hardware report downloaded!')}
+          >
             Download Report
           </button>
         </div>
@@ -89,4 +121,4 @@ const HardwareExamination = ({ onLogout, userRole }) => {
   );
 };
 
-export default HardwareExamination;
+export default HardwareExamination

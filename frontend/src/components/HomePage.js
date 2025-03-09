@@ -1,7 +1,7 @@
 // src/components/HomePage.js
 import React from 'react';
+import { FaCalendarAlt, FaChartLine, FaDatabase, FaFacebook, FaInstagram, FaTwitter, FaUser } from 'react-icons/fa'; // Add icons
 import { useNavigate } from 'react-router-dom';
-import { FaChartLine, FaCalendarAlt, FaDatabase, FaUser, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'; // Add icons
 import './css/HomePage.css';
 
 const HomePage = () => {

@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/reset.css';
-import './css/layout.css';
-import './css/components.css';
-import './css/themes.css';
-import './css/responsive.css';
+import './css/general.css';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
   // Mock workers data (using numeric identity values)
@@ -46,6 +42,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     shift.workerId.toString().includes(searchId)
   );
 
+  // Handle adding a new shift
   const handleAddShift = () => {
     if (
       newShift.workerId &&
@@ -102,6 +99,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     }
   };
 
+  // Handle deleting a shift
   const handleDeleteShift = (id) => {
     setShifts(shifts.filter((shift) => shift.id !== id));
   };

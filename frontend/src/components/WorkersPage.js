@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
@@ -31,20 +31,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'ManagerUser', avatar: '/images/sami.png' };
 
-  // Fetch workers from the server when the component mounts
-  useEffect(() => {
-    const fetchWorkers = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/users');
-        setWorkers(response.data);
-      } catch (error) {
-        console.error('Error fetching workers:', error.response?.data || error.message);
-        alert('Failed to load workers. Check the console for details.');
-      }
-    };
-    fetchWorkers();
-  }, []);
-
   const filteredWorkers = workers.filter((worker) => {
     const regionMatch = worker.location?.toLowerCase().includes(searchRegion.toLowerCase());
     const idMatch = String(worker.identity).toLowerCase().includes(searchId.toLowerCase());
@@ -75,8 +61,19 @@ const WorkersPage = ({ onLogout, userRole }) => {
         phone,
         location,
       });
-      const newWorkerFromServer = response.data;
-      setWorkers([...workers, newWorkerFromServer]);
+      alert(response.data.message || 'User registered!');
+      const newId = Date.now();
+      setWorkers([...workers, {
+        id: newId,
+        identity,
+        name,
+        phone,
+        location,
+        joiningDate,
+        role,
+        workerType,
+        accessCode: simpleHash(accessCode),
+      }]);
       setNewWorker({
         identity: '',
         name: '',
@@ -87,7 +84,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
         workerType: 'Driver',
         accessCode: '',
       });
-      alert('User registered successfully!');
     } catch (error) {
       alert(error.response?.data?.error || 'Error creating user');
     }
@@ -96,11 +92,9 @@ const WorkersPage = ({ onLogout, userRole }) => {
   const handleDeleteWorker = async (workerId) => {
     try {
       await axios.delete(`http://localhost:5000/users/${workerId}`);
-      setWorkers(workers.filter((worker) => worker.id !== workerId));
-      alert('Worker deleted successfully');
+      setWorkers(workers.filter((w) => w.id !== workerId));
     } catch (error) {
-      console.error('Error deleting worker:', error.response?.data || error.message);
-      alert('Failed to delete worker. Check the console for details.');
+      alert('Failed to delete user');
     }
   };
 
@@ -167,6 +161,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
             value={newWorker.joiningDate}
             onChange={(e) => setNewWorker({ ...newWorker, joiningDate: e.target.value })}
             style={{ padding: '10px', width: '150px' }}
+            placeholder="mm/dd/yyyy"
           />
           <select
             value={newWorker.role}

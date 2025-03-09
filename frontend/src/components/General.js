@@ -1,16 +1,14 @@
+// src/components/General.js
 import React, { useState } from 'react';
 import MapComponent from './MapComponent';
 import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
-import './css/reset.css';
-import './css/layout.css';
-import './css/components.css';
-import './css/themes.css';
-import './css/responsive.css';
+import './css/general.css';
 
-const GeneralPage = ({ onLogout, userRole }) => {
+const GeneralPage = ({ onLogout, userRole }) => { // Add userRole prop
   const [selectedBin, setSelectedBin] = useState(null);
 
+  // Mock bin data
   const mockBins = [
     { id: 'bin_1', status: 'Full', capacity: 90, time: '20:00', date: '15-1-2025', route: 'Route A', battery: 95, lat: 31.771959, lon: 35.217018 },
     { id: 'bin_2', status: 'Full', capacity: 87, time: '20:00', date: '15-1-2025', route: 'Route B', battery: 88, lat: 31.772000, lon: 35.218000 },
@@ -27,7 +25,7 @@ const GeneralPage = ({ onLogout, userRole }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} />
+      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} /> {/* Pass userRole */}
       <div className="content">
         <div className="map-container">
           <MapComponent bins={mockBins} selectedBin={selectedBin} />

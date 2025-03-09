@@ -1,20 +1,14 @@
-/* src/components/css/Login.css */
+/* src/css/Login.css */
 
 /* Login Container */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-<<<<<<< HEAD
-  height: 100vh;
-  background-image: url('C:\Users\RScho\Desktop\Final_Project\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Relative path for production */
-  background-size: cover;
-  background-position: center;
-=======
   min-height: 100vh;
   background-image: url('C:\Users\TOGOMORI\Desktop\Reactjs\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */  padding: 20px;
->>>>>>> ca94723692410c869d8c94b7f934350623d48d10
 }
+
 
 /* Login Box */
 .login-box {
@@ -34,7 +28,6 @@
   margin-bottom: 20px;
 }
 
-/* Heading */
 .login-box h2 {
   font-size: 1.8rem;
   color: #2c3e50;
@@ -43,7 +36,7 @@
 
 /* Form Group */
 .form-group {
-  margin-bottom: 20px; /* Consolidated duplicate margin-bottom */
+  margin-bottom: 20px;
   text-align: left;
 }
 
@@ -54,7 +47,6 @@
   margin-bottom: 5px;
 }
 
-/* Form Input */
 .form-input {
   width: 100%;
   padding: 10px;
@@ -73,11 +65,9 @@
 
 /* Password Container (for show/hide button) */
 .password-container {
-  width: 100%;
   position: relative;
 }
 
-/* Show/Hide Password Button */
 .show-password-btn {
   position: absolute;
   right: 10px;
@@ -125,10 +115,6 @@
   transform: scale(1.02);
 }
 
-.login-button:active {
-  transform: translateY(0); /* Reset lift on click */
-}
-
 .login-button:disabled {
   background-color: #7f8c8d;
   cursor: not-allowed;
@@ -147,7 +133,6 @@
 
 .forgot-password a:hover {
   text-decoration: underline;
-  color: #555; /* Consolidated hover color */
 }
 
 /* Responsive Design */

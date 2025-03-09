@@ -5,7 +5,7 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
-import "./App.css";
+
 import AlertsPage from "./components/Alerts";
 import BinManagementPage from "./components/BinManagement";
 import ForgotPassword from "./components/ForgotPassword";
@@ -152,3 +152,4 @@ function App() {
 }
 
 export default App;
+

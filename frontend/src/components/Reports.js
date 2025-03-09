@@ -1,13 +1,11 @@
+// src/components/Reports.js
 import React, { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
+import './css/general.css';
 import Sidebar from './Sidebar';
-import './css/reset.css';
-import './css/layout.css';
-import './css/components.css';
-import './css/themes.css';
-import './css/responsive.css';
 
-const ReportsPage = ({ onLogout, userRole }) => {
+const ReportsPage = ({ onLogout, userRole }) => { // Add userRole prop
+  // Mock data (since we're not using a backend)
   const mockReports = [
     { id: 'bin_10', status: 'Full', capacity: 90, location: 'nazareth, 4 088', lastCollected: '18-1-2025' },
     { id: 'bin_11', status: 'Near Full', capacity: 55, location: 'nazareth, anis kardosh 26', lastCollected: '14-1-2025' },
@@ -16,8 +14,8 @@ const ReportsPage = ({ onLogout, userRole }) => {
     { id: 'bin_14', status: 'Not Full', capacity: 15, location: 'nazareth, 8 6116', lastCollected: '15-1-2025' },
   ];
 
-  const [reports, setReports] = useState(mockReports);
-  const [loading, setLoading] = useState(false);
+  const [reports, setReports] = useState(mockReports); // Use mock data
+  const [loading, setLoading] = useState(false); // No need for loading since we're using mock data
   const [error, setError] = useState(null);
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
@@ -25,11 +23,11 @@ const ReportsPage = ({ onLogout, userRole }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'Full':
-        return <FaTrash className="status-icon full" />;
+        return <FaTrash style={{ color: '#ff4d4f', marginRight: '8px' }} />;
       case 'Near Full':
-        return <FaTrash className="status-icon near-full" />;
+        return <FaTrash style={{ color: '#ffeb3b', marginRight: '8px' }} />;
       case 'Not Full':
-        return <FaTrash className="status-icon not-full" />;
+        return <FaTrash style={{ color: '#4caf50', marginRight: '8px' }} />;
       default:
         return null;
     }
@@ -45,16 +43,16 @@ const ReportsPage = ({ onLogout, userRole }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="reports" onLogout={onLogout} userRole={userRole} />
+      <Sidebar user={user} activePage="reports" onLogout={onLogout} userRole={userRole} /> {/* Pass userRole */}
       <div className="content">
         <div className="table-container reports-table">
           <table>
             <thead>
               <tr>
                 <th>ID_bin</th>
-                <th>Status</th>
-                <th>Capacity</th>
-                <th>Location</th>
+                <th>status</th>
+                <th>capacity</th>
+                <th>location</th>
                 <th>Last Collected</th>
               </tr>
             </thead>

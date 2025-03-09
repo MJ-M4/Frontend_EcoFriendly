@@ -16,7 +16,7 @@ const simpleHash = (str) => {
 
 const WorkersPage = ({ onLogout, userRole }) => {
   const [workers, setWorkers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // Single search term for region, ID, or other fields
+  const [searchTerm, setSearchTerm] = useState('');
   const [newWorker, setNewWorker] = useState({
     identity: '',
     name: '',
@@ -27,16 +27,22 @@ const WorkersPage = ({ onLogout, userRole }) => {
     workerType: 'Driver',
     accessCode: '',
   });
-  const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
-  const [selectedPassword, setSelectedPassword] = useState(''); // State for the password to display in modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPassword, setSelectedPassword] = useState('');
 
   const fetchWorkers = async () => {
     try {
       const response = await axios.get("http://localhost:5000/workers/");
-      console.log("FETCHED WORKERS RESPONSE:", response.data); // Debug log
-      setWorkers(response.data);
+      console.log("FETCHED WORKERS RESPONSE:", response.data);
+      if (Array.isArray(response.data)) {
+        setWorkers(response.data);
+      } else {
+        console.error("Workers data is not an array:", response.data);
+        setWorkers([]);
+      }
     } catch (err) {
       console.error("Error fetching workers:", err);
+      setWorkers([]);
     }
   };
 
@@ -50,12 +56,12 @@ const WorkersPage = ({ onLogout, userRole }) => {
   const filteredWorkers = workers.filter((worker) => {
     const searchLower = searchTerm.toLowerCase();
     const regionMatch = worker.location?.toLowerCase().includes(searchLower) || false;
-    const idMatch = String(worker.identity).toLowerCase().includes(searchLower) || false;
-    const nameMatch = worker.name?.toLowerCase().includes(searchLower) || false; // Optional: search by name
-    const phoneMatch = worker.phone?.toLowerCase().includes(searchLower) || false; // Optional: search by phone
-    const dateMatch = worker.joiningDate?.toLowerCase().includes(searchLower) || false; // Optional: search by date
+    const idMatch = worker.identity ? worker.identity.toString().toLowerCase().includes(searchLower) : false;
+    const nameMatch = worker.name?.toLowerCase().includes(searchLower) || false;
+    const phoneMatch = worker.phone?.toLowerCase().includes(searchLower) || false;
+    const dateMatch = worker.joiningDate?.toLowerCase().includes(searchLower) || false;
     console.log(`Filtering: searchTerm=${searchTerm}, worker=${JSON.stringify(worker)}, matches=${regionMatch || idMatch || nameMatch || phoneMatch || dateMatch}`);
-    return regionMatch || idMatch || nameMatch || phoneMatch || dateMatch; // Show if any field matches
+    return regionMatch || idMatch || nameMatch || phoneMatch || dateMatch;
   });
 
   const handleGenerateAccessCode = () => {
@@ -74,7 +80,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      const response = await axios.post('http://localhost:5000/auth/register', {
         identity: parseInt(identity, 10),
         name: name,
         phone,
@@ -85,7 +91,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
         worker_type: role === 'worker' ? workerType : null
       });
       alert(response.data.message || 'User registered!');
-      fetchWorkers(); // Refresh the worker list
+      fetchWorkers();
       setNewWorker({
         identity: '',
         name: '',
@@ -134,7 +140,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Workers</h1>
 
-        {/* Single Search Bar */}
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <input
             type="text"
@@ -145,7 +150,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Worker Form */}
         <div style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
           <input
             type="number"
@@ -179,7 +183,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
             type="date"
             value={newWorker.joiningDate}
             onChange={(e) => setNewWorker({ ...newWorker, joiningDate: e.target.value })}
-            style={{ padding: '10px', width: '150px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            style={{ padding: '10px', width: '150px', borderRadius: "5px", border: '1px solid #e0e0e0', flex: '1' }}
           />
           <select
             value={newWorker.role}
@@ -241,7 +245,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
           </button>
         </div>
 
-        {/* Table of existing workers */}
         <div className="table-container">
           <table>
             <thead>
@@ -315,7 +318,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
           </table>
         </div>
 
-        {/* Modal for displaying hashed password */}
         {modalVisible && (
           <div
             style={{
@@ -324,7 +326,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',

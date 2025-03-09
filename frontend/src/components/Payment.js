@@ -12,6 +12,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
     amount: "",
     notes: "",
     workerName: "", // To display the name dynamically
+    workerType: "", // To display the worker type dynamically
   });
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +22,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
   const fetchWorkers = async () => {
     try {
       const response = await axios.get("http://localhost:5000/workers/");
+      console.log("FETCHED WORKERS RESPONSE:", response.data);
       const filteredWorkers = response.data.filter((w) => w.role === "worker");
       setWorkers(filteredWorkers);
     } catch (err) {
@@ -48,20 +50,41 @@ const PaymentPage = ({ onLogout, userRole }) => {
     fetchPayments();
   }, []);
 
-  // Update worker name when workerId changes
+  // Update worker name and worker type when workerId changes
   const handleWorkerIdChange = (e) => {
-    const workerId = e.target.value;
-    const worker = workers.find((w) => w.numeric_id === workerId);
-    setNewPayment({
-      ...newPayment,
+    const workerId = e.target.value.trim(); // Remove whitespace
+    setNewPayment((prev) => ({
+      ...prev,
       workerId,
-      workerName: worker ? worker.name : "",
-    });
+      workerName: "",
+      workerType: "",
+    }));
+
+    if (workerId && workers.length > 0) {
+      const worker = workers.find((w) => {
+        const workerIdentity = w.identity ? w.identity.toString().trim() : null;
+        return workerIdentity === workerId;
+      });
+      console.log("FOUND WORKER:", worker);
+      if (worker) {
+        setNewPayment((prev) => ({
+          ...prev,
+          workerName: worker.name || "",
+          workerType: worker.workerType || "N/A",
+        }));
+      } else {
+        setNewPayment((prev) => ({
+          ...prev,
+          workerName: "",
+          workerType: "Invalid Worker ID",
+        }));
+      }
+    }
   };
 
   // Handle adding a new payment
   const handleAddPayment = async () => {
-    const { workerId, amount, notes } = newPayment;
+    const { workerId, amount, notes, workerType } = newPayment;
     if (!workerId || !amount) {
       alert("Please fill in the required fields (Worker ID and Amount) to add a payment.");
       return;
@@ -70,9 +93,12 @@ const PaymentPage = ({ onLogout, userRole }) => {
       alert("Amount must be a valid number greater than 0.");
       return;
     }
-    const worker = workers.find((w) => w.numeric_id === workerId);
-    if (!worker) {
+    if (workerType === "Invalid Worker ID") {
       alert("Invalid Worker ID. Worker not found.");
+      return;
+    }
+    if (workerType === "N/A") {
+      alert("Managers cannot receive payments.");
       return;
     }
     try {
@@ -83,7 +109,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
       });
       alert(response.data.message || "Payment added successfully!");
       fetchPayments();
-      setNewPayment({ workerId: "", amount: "", notes: "", workerName: "" });
+      setNewPayment({ workerId: "", amount: "", notes: "", workerName: "", workerType: "" });
     } catch (error) {
       alert(error.response?.data?.error || "Error adding payment");
       console.error("Error adding payment:", error.response?.data || error.message);
@@ -150,7 +176,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
         </div>
 
         {/* Add Payment Form */}
-        <div style={{ marginBottom: "20px" }}>
+        <div style={{ marginBottom: "20px", display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
           <input
             type="text"
             placeholder="Worker ID"
@@ -158,9 +184,10 @@ const PaymentPage = ({ onLogout, userRole }) => {
             onChange={handleWorkerIdChange}
             style={{
               padding: "10px",
-              marginRight: "10px",
               borderRadius: "5px",
               border: "1px solid #e0e0e0",
+              flex: "1",
+              minWidth: "150px",
             }}
           />
           <input
@@ -170,10 +197,25 @@ const PaymentPage = ({ onLogout, userRole }) => {
             readOnly
             style={{
               padding: "10px",
-              marginRight: "10px",
               borderRadius: "5px",
               border: "1px solid #e0e0e0",
               backgroundColor: "#f0f0f0",
+              flex: "1",
+              minWidth: "150px",
+            }}
+          />
+          <input
+            type="text"
+            placeholder="Worker Type (auto-filled)"
+            value={newPayment.workerType}
+            readOnly
+            style={{
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #e0e0e0",
+              backgroundColor: "#f0f0f0",
+              flex: "1",
+              minWidth: "150px",
             }}
           />
           <input
@@ -185,9 +227,10 @@ const PaymentPage = ({ onLogout, userRole }) => {
             }
             style={{
               padding: "10px",
-              marginRight: "10px",
               borderRadius: "5px",
               border: "1px solid #e0e0e0",
+              flex: "1",
+              minWidth: "150px",
             }}
           />
           <input
@@ -199,9 +242,10 @@ const PaymentPage = ({ onLogout, userRole }) => {
             }
             style={{
               padding: "10px",
-              marginRight: "10px",
               borderRadius: "5px",
               border: "1px solid #e0e0e0",
+              flex: "1",
+              minWidth: "150px",
             }}
           />
           <button
@@ -223,7 +267,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
               <thead>
                 <tr>
                   <th>Payment ID</th>
-                  <th>Worker ID</th> {/* Added Worker ID column */}
+                  <th>Worker ID</th>
                   <th>Worker Name</th>
                   <th>Amount</th>
                   <th>Payment Date</th>
@@ -237,7 +281,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
                   filteredPayments.map((payment) => (
                     <tr key={payment.id}>
                       <td>{payment.id}</td>
-                      <td>{payment.workerId}</td> {/* Added Worker ID */}
+                      <td>{payment.workerId}</td>
                       <td>{payment.workerName}</td>
                       <td>${payment.amount.toFixed(2)}</td>
                       <td>{payment.paymentDate || "N/A"}</td>
@@ -278,7 +322,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8">No payments found</td> {/* Updated colSpan to 8 */}
+                    <td colSpan="8">No payments found</td>
                   </tr>
                 )}
               </tbody>

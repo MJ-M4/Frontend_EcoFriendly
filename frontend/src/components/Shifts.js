@@ -30,9 +30,11 @@ const ShiftsPage = ({ onLogout, userRole }) => {
         console.log("WORKERS SET:", response.data);
       } else {
         console.error("Workers data is not an array:", response.data);
+        setWorkers([]);
       }
     } catch (err) {
       console.error("Error fetching workers:", err);
+      setWorkers([]);
     } finally {
       setLoadingWorkers(false);
     }
@@ -54,36 +56,63 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     fetchShifts();
   }, []);
 
-  // Update workerType when workerId changes, but don't alert yet
+  // Normalize workerType to match dropdown options (e.g., "driver" -> "Driver")
+  const normalizeWorkerType = (workerType) => {
+    if (!workerType) return 'Driver'; // Default to "Driver" if undefined
+    const lowerCaseType = workerType.toLowerCase();
+    switch (lowerCaseType) {
+      case 'driver':
+        return 'Driver';
+      case 'cleaner':
+        return 'Cleaner';
+      case 'maintenance worker':
+        return 'Maintenance Worker';
+      default:
+        return 'Driver'; // Fallback to "Driver" if unknown
+    }
+  };
+
+  // Update workerType when workerId changes
   const handleWorkerIdChange = (e) => {
-    const id = e.target.value;
-    setNewShift({ ...newShift, workerId: id });
+    const id = e.target.value.trim(); // Remove any whitespace
+    setNewShift((prev) => ({ ...prev, workerId: id }));
     console.log("ENTERED WORKER ID:", id);
     console.log("AVAILABLE WORKERS:", workers);
-    if (id && !loadingWorkers) {
-      const worker = workers.find((w) => w.identity === id || w.identity.toString() === id);
+
+    if (id && !loadingWorkers && workers.length > 0) {
+      const worker = workers.find((w) => {
+        const workerId = w.identity ? w.identity.toString().trim() : null;
+        return workerId === id;
+      });
       console.log("FOUND WORKER:", worker);
-      if (worker) {
-        // Check if the worker is a manager
+      if (worker && worker.identity) {
         if (worker.role === 'manager') {
+          console.log("Worker is a manager, setting workerType to 'Invalid Worker ID'");
           setNewShift((prev) => ({ ...prev, workerType: 'Invalid Worker ID' }));
         } else {
-          setNewShift((prev) => ({ ...prev, workerType: worker.workerType || 'Driver' }));
+          const normalizedType = normalizeWorkerType(worker.workerType);
+          console.log("Setting workerType to:", normalizedType);
+          setNewShift((prev) => ({ ...prev, workerType: normalizedType }));
         }
       } else {
+        console.log("Worker not found, setting workerType to 'Invalid Worker ID'");
         setNewShift((prev) => ({ ...prev, workerType: 'Invalid Worker ID' }));
       }
     } else {
+      console.log("No ID entered or workers not loaded, resetting workerType to 'Driver'");
       setNewShift((prev) => ({ ...prev, workerType: 'Driver' }));
     }
   };
 
-  // Validate workerId on blur (when the user finishes typing)
+  // Validate workerId on blur
   const handleWorkerIdBlur = () => {
-    const id = newShift.workerId;
-    if (id && !loadingWorkers) {
-      const worker = workers.find((w) => w.identity === id || w.identity.toString() === id);
-      if (!worker) {
+    const id = newShift.workerId.trim();
+    if (id && !loadingWorkers && workers.length > 0) {
+      const worker = workers.find((w) => {
+        const workerId = w.identity ? w.identity.toString().trim() : null;
+        return workerId === id;
+      });
+      if (!worker || !worker.identity) {
         alert('Worker ID not found. Please enter a valid ID from the Workers page.');
       } else if (worker.role === 'manager') {
         alert('Managers cannot be assigned shifts.');
@@ -96,10 +125,10 @@ const ShiftsPage = ({ onLogout, userRole }) => {
   // Filter shifts by workerId, workerName, location, or date
   const filteredShifts = shifts.filter((shift) => {
     const searchLower = searchTerm.toLowerCase();
-    const idMatch = shift.workerId.toLowerCase().includes(searchLower);
-    const nameMatch = shift.workerName.toLowerCase().includes(searchLower);
-    const locationMatch = shift.location.toLowerCase().includes(searchLower);
-    const dateMatch = shift.date.toLowerCase().includes(searchLower);
+    const idMatch = shift.workerId && shift.workerId.toString().toLowerCase().includes(searchLower);
+    const nameMatch = shift.workerName && shift.workerName.toLowerCase().includes(searchLower);
+    const locationMatch = shift.location && shift.location.toLowerCase().includes(searchLower);
+    const dateMatch = shift.date && shift.date.toLowerCase().includes(searchLower);
     return idMatch || nameMatch || locationMatch || dateMatch;
   });
 
@@ -181,7 +210,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Shifts</h1>
 
-        {/* Search Bar for Table Filtering */}
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <input
             type="text"
@@ -192,7 +220,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Shift Form */}
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           <input
             type="number"
@@ -248,7 +275,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
           </button>
         </div>
 
-        {/* Shifts Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -268,14 +294,14 @@ const ShiftsPage = ({ onLogout, userRole }) => {
               {filteredShifts.length > 0 ? (
                 filteredShifts.map((shift) => (
                   <tr key={shift.id}>
-                    <td>{shift.workerId}</td>
-                    <td>{shift.workerName}</td>
-                    <td>{shift.workerType}</td>
+                    <td>{shift.workerId || 'N/A'}</td>
+                    <td>{shift.workerName || 'N/A'}</td>
+                    <td>{shift.workerType || 'N/A'}</td>
                     <td>{shift.phone || 'N/A'}</td>
-                    <td>{shift.date}</td>
-                    <td>{shift.startTime}</td>
-                    <td>{shift.endTime}</td>
-                    <td>{shift.location}</td>
+                    <td>{shift.date || 'N/A'}</td>
+                    <td>{shift.startTime || 'N/A'}</td>
+                    <td>{shift.endTime || 'N/A'}</td>
+                    <td>{shift.location || 'N/A'}</td>
                     <td>
                       <button
                         onClick={() => handleUpdateShift(shift)}
@@ -316,7 +342,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
           </table>
         </div>
 
-        {/* Modal for updating shift */}
         {modalVisible && updateShift && (
           <div
             style={{
@@ -343,29 +368,29 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                 textAlign: 'center',
               }}
             >
-              <h3>Update Shift for {updateShift.workerName}</h3>
+              <h3>Update Shift for {updateShift.workerName || 'Unknown Worker'}</h3>
               <input
                 type="date"
-                value={updateShift.date}
+                value={updateShift.date || ''}
                 onChange={(e) => setUpdateShift({ ...updateShift, date: e.target.value })}
                 style={{ padding: '10px', margin: '10px 0', borderRadius: '5px', border: '1px solid #e0e0e0', width: '100%' }}
               />
               <input
                 type="time"
-                value={updateShift.startTime}
+                value={updateShift.startTime || ''}
                 onChange={(e) => setUpdateShift({ ...updateShift, startTime: e.target.value })}
                 style={{ padding: '10px', margin: '10px 0', borderRadius: '5px', border: '1px solid #e0e0e0', width: '100%' }}
               />
               <input
                 type="time"
-                value={updateShift.endTime}
+                value={updateShift.endTime || ''}
                 onChange={(e) => setUpdateShift({ ...updateShift, endTime: e.target.value })}
                 style={{ padding: '10px', margin: '10px 0', borderRadius: '5px', border: '1px solid #e0e0e0', width: '100%' }}
               />
               <input
                 type="text"
                 placeholder="Location"
-                value={updateShift.location}
+                value={updateShift.location || ''}
                 onChange={(e) => setUpdateShift({ ...updateShift, location: e.target.value })}
                 style={{ padding: '10px', margin: '10px 0', borderRadius: '5px', border: '1px solid #e0e0e0', width: '100%' }}
               />

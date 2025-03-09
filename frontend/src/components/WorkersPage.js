@@ -80,17 +80,30 @@ const WorkersPage = ({ onLogout, userRole }) => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:5000/auth/register', {
+      // Log the data being sent to debug
+      console.log('Sending data to /workers:', {
         identity: parseInt(identity, 10),
-        name: name,
+        name,
         phone,
         location,
-        joiningDate,
+        joining_date: joiningDate, // Match backend field name
+        password: accessCode,
+        role,
+        worker_type: role === 'worker' ? workerType : null
+      });
+
+      const response = await axios.post('http://localhost:5000/workers/', { // Changed endpoint
+        identity: parseInt(identity, 10),
+        name: name.trim(),
+        phone: phone.trim(),
+        location: location.trim(),
+        joining_date: joiningDate, // Use backend field name
         password: accessCode,
         role: role,
         worker_type: role === 'worker' ? workerType : null
       });
-      alert(response.data.message || 'User registered!');
+
+      alert(response.data.message || 'User registered successfully!');
       fetchWorkers();
       setNewWorker({
         identity: '',
@@ -103,8 +116,14 @@ const WorkersPage = ({ onLogout, userRole }) => {
         accessCode: '',
       });
     } catch (error) {
-      alert(error.response?.data?.error || 'Error creating user');
-      console.error("Error creating user:", error.response?.data || error.message);
+      // Enhanced error logging
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error creating user';
+      alert(errorMessage);
+      console.error("Error creating user:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
     }
   };
 

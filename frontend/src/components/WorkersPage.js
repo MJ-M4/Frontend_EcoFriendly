@@ -14,12 +14,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
   ];
 
   const [workers, setWorkers] = useState(initialWorkers);
-<<<<<<< HEAD
-  const [searchRegion, setSearchRegion] = useState('');
-  const [searchId, setSearchId] = useState('');
-=======
   const [searchRegionOrID, setSearchRegion] = useState(''); // Search by region
->>>>>>> main
   const [newWorker, setNewWorker] = useState({
     identity: '',
     name: '',
@@ -33,15 +28,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-<<<<<<< HEAD
-  const filteredWorkers = workers.filter((worker) => {
-    const matchesRegion = worker.location.toLowerCase().includes(searchRegion.toLowerCase());
-    const matchesId = worker.identity.toLowerCase().includes(searchId.toLowerCase());
-    return matchesRegion && matchesId;
-  });
-
-  const handleAddWorker = () => {
-=======
   // Filter workers by location and/or ID
   const filteredWorkers = workers.filter((worker) =>
     worker.location.toLowerCase().includes(searchRegionOrID.toLowerCase()) ||
@@ -67,7 +53,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
 
   // Handle adding a new worker
   const handleAddWorker = async () => {
->>>>>>> main
     if (
       newWorker.identity &&
       newWorker.name &&
@@ -123,16 +108,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
             onChange={(e) => setSearchRegion(e.target.value)}
             className="search-input"
           />
-<<<<<<< HEAD
-          <input
-            type="text"
-            placeholder="Search by ID..."
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            className="search-input"
-          />
-=======
->>>>>>> main
         </div>
         <div className="form-container worker-form">
           <input
@@ -178,9 +153,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
             <option value="Cleaner">Cleaner</option>
             <option value="Maintenance Worker">Maintenance Worker</option>
           </select>
-<<<<<<< HEAD
-          <button onClick={handleAddWorker} className="download-report-btn">
-=======
           {/* Password Generation Section */}
           <button
             onClick={handleGeneratePassword}
@@ -210,7 +182,6 @@ const WorkersPage = ({ onLogout, userRole }) => {
             className="download-report-btn"
             style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
           >
->>>>>>> main
             Add Worker
           </button>
         </div>

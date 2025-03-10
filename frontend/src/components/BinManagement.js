@@ -4,16 +4,16 @@ import Sidebar from './Sidebar';
 import './css/general.css';
 
 const BinManagementPage = ({ onLogout, userRole }) => {
-  // Mock bin data (pulled from General.js)
+  // Mock bin data with house number
   const initialBins = [
-    { id: 'bin_1', location: 'Tel Aviv', status: 'Full', assignedWorker: 'Worker 1' },
-    { id: 'bin_2', location: 'Jerusalem', status: 'Full', assignedWorker: 'Unassigned' },
-    { id: 'bin_3', location: 'Haifa', status: 'Full', assignedWorker: 'Worker 3' },
-    { id: 'bin_4', location: 'Nazareth', status: 'Full', assignedWorker: 'Unassigned' },
-    { id: 'bin_5', location: 'Eilat', status: 'Full', assignedWorker: 'Worker 2' },
+    { id: 'bin_1', location: 'Tel Aviv', houseNumber: '12A', status: 'Full', assignedWorker: 'Worker 1' },
+    { id: 'bin_2', location: 'Jerusalem', houseNumber: '45B', status: 'Full', assignedWorker: 'Unassigned' },
+    { id: 'bin_3', location: 'Haifa', houseNumber: '78C', status: 'Full', assignedWorker: 'Worker 3' },
+    { id: 'bin_4', location: 'Nazareth', houseNumber: '3D', status: 'Full', assignedWorker: 'Unassigned' },
+    { id: 'bin_5', location: 'Eilat', houseNumber: '19E', status: 'Full', assignedWorker: 'Worker 2' },
   ];
 
-  // Mock workers data (pulled from WorkersPage.js)
+  // Mock workers data
   const workers = [
     { id: 1, name: 'Worker 1', workerType: 'Driver' },
     { id: 2, name: 'Worker 2', workerType: 'Cleaner' },
@@ -25,14 +25,16 @@ const BinManagementPage = ({ onLogout, userRole }) => {
   const [newBin, setNewBin] = useState({
     id: '',
     location: '',
+    houseNumber: '',
   });
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter bins by ID, location, or assigned worker
+  // Filter bins by ID, location, house number, or assigned worker
   const filteredBins = bins.filter((bin) =>
     bin.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bin.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bin.houseNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bin.assignedWorker.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -47,25 +49,32 @@ const BinManagementPage = ({ onLogout, userRole }) => {
 
   // Handle adding a new bin
   const handleAddBin = () => {
-    if (newBin.id && newBin.location) {
+    if (newBin.id && newBin.location && newBin.houseNumber) {
       setBins([
         ...bins,
         {
           id: newBin.id,
           location: newBin.location,
+          houseNumber: newBin.houseNumber,
           status: 'Empty', // Default status for new bins
           assignedWorker: 'Unassigned',
         },
       ]);
-      setNewBin({ id: '', location: '' });
+      setNewBin({ id: '', location: '', houseNumber: '' });
     } else {
-      alert('Please fill in all fields to add a bin.');
+      alert('Please fill in all fields (Bin ID, Location, and House Number) to add a bin.');
     }
   };
 
   // Handle deleting a bin
   const handleDeleteBin = (binId) => {
     setBins(bins.filter((bin) => bin.id !== binId));
+  };
+
+  // Handle input change for new bin form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewBin((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -75,19 +84,13 @@ const BinManagementPage = ({ onLogout, userRole }) => {
         <h1>Bin Management</h1>
 
         {/* Search Box */}
-        <div style={{ marginBottom: '20px' }}>
+        <div className="form-container">
           <input
             type="text"
-            placeholder="Search by bin ID, location, or assigned worker..."
+            placeholder="Search by bin ID, location, house number, or assigned worker..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-                padding: '10px',
-                width: '300px',
-                borderRadius: '5px',
-                border: '1px solid #e0e0e0',
-                fontSize: '1rem',
-              }}
+            className="search-input"
           />
         </div>
 
@@ -95,22 +98,32 @@ const BinManagementPage = ({ onLogout, userRole }) => {
         <div className="form-container">
           <input
             type="text"
+            name="id"
             placeholder="Bin ID"
             value={newBin.id}
-            onChange={(e) => setNewBin({ ...newBin, id: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
-
+            onChange={handleInputChange}
+            className="form-input"
+            required
           />
           <input
             type="text"
+            name="location"
             placeholder="Location"
             value={newBin.location}
-            onChange={(e) => setNewBin({ ...newBin, location: e.target.value })}            
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            onChange={handleInputChange}
+            className="form-input"
+            required
           />
-          <button onClick={handleAddBin} className="download-report-btn"
-          style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
-          >
+          <input
+            type="text"
+            name="houseNumber"
+            placeholder="House Number"
+            value={newBin.houseNumber}
+            onChange={handleInputChange}
+            className="form-input"
+            required
+          />
+          <button onClick={handleAddBin} className="download-report-btn">
             Add Bin
           </button>
         </div>
@@ -122,6 +135,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
               <tr>
                 <th>Bin ID</th>
                 <th>Location</th>
+                <th>House Number</th> {/* Added House Number column */}
                 <th>Status</th>
                 <th>Assigned Worker</th>
                 <th>Actions</th>
@@ -132,6 +146,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
                 <tr key={bin.id}>
                   <td>{bin.id}</td>
                   <td>{bin.location}</td>
+                  <td>{bin.houseNumber}</td> {/* Display House Number */}
                   <td>{bin.status}</td>
                   <td>
                     <select
@@ -151,14 +166,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
                     <button
                       onClick={() => handleDeleteBin(bin.id)}
                       className="delete-btn"
-                      style={{
-                        padding: '5px 10px',
-                        backgroundColor: '#ff4d4f',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                      }}
                     >
                       Delete
                     </button>
@@ -174,3 +181,5 @@ const BinManagementPage = ({ onLogout, userRole }) => {
 };
 
 export default BinManagementPage;
+
+

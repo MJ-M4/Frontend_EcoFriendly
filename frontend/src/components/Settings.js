@@ -1,4 +1,4 @@
-// src/components/Settings.js
+import axios from 'axios'; // Import axios for API calls
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
@@ -26,6 +26,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
     e.preventDefault();
     try {
       setMessage('Name updated successfully!');
+      // Note: This is still mocked. You'd need a backend endpoint to update the name.
     } catch (err) {
       setMessage('Error: Failed to update name');
     }
@@ -53,8 +54,8 @@ const SettingsPage = ({ onLogout, userRole }) => {
     setMessage(`Notifications for ${type} ${notifications[type] ? 'disabled' : 'enabled'}!`);
   };
 
-  // Handle password update (mocked locally)
-  const handlePasswordUpdate = (e) => {
+  // Handle password update with API call
+  const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     setMessage('');
 
@@ -74,13 +75,24 @@ const SettingsPage = ({ onLogout, userRole }) => {
       return;
     }
 
-    // Mock successful update
-    setTimeout(() => {
-      setMessage('Password updated successfully!');
+    try {
+      // Assume the user is logged in and we can get their ID (e.g., from a context or localStorage)
+      const userId = 24; // Replace with actual user ID from your auth system
+      const response = await axios.put(`http://localhost:5000/user/update-password/${userId}`, { // Updated endpoint
+        currentPassword,
+        newPassword,
+      });
+
+      setMessage(response.data.message || 'Password updated successfully!');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
-    }, 1000);
+    } catch (error) {
+      setMessage(
+        error.response?.data?.error || 'Error: Failed to update password. Please check your current password.'
+      );
+      console.error("Error updating password:", error.response?.data || error.message);
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
@@ -15,14 +15,7 @@ const simpleHash = (str) => {
 };
 
 const WorkersPage = ({ onLogout, userRole }) => {
-  // Mock workers data with workerType and accessCode
-  const initialWorkers = [
-    { id: 1, identity: '207705096', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver', accessCode: '' },
-    { id: 2, identity: '205548491', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner', accessCode: '' },
-    { id: 3, identity: '204987654', name: 'Worker 3', phone: '054-555-1212', location: 'Haifa', joiningDate: '10-06-2023', workerType: 'Maintenance Worker', accessCode: '' },
-  ];
-
-  const [workers, setWorkers] = useState(initialWorkers);
+  const [workers, setWorkers] = useState([]);
   const [searchRegion, setSearchRegion] = useState('');
   const [searchId, setSearchId] = useState('');
   const [newWorker, setNewWorker] = useState({
@@ -35,13 +28,42 @@ const WorkersPage = ({ onLogout, userRole }) => {
     workerType: 'Driver',
     accessCode: '',
   });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedPassword, setSelectedPassword] = useState('');
+
+  const fetchWorkers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/workers/");
+      console.log("FETCHED WORKERS RESPONSE:", response.data);
+      if (Array.isArray(response.data)) {
+        setWorkers(response.data);
+      } else {
+        console.error("Workers data is not an array:", response.data);
+        setWorkers([]);
+      }
+    } catch (err) {
+      console.error("Error fetching workers:", err);
+      setWorkers([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkers();
+  }, []);
 
   const user = { name: 'ManagerUser', avatar: '/images/sami.png' };
 
+  // Filter workers by region, ID, or other fields
   const filteredWorkers = workers.filter((worker) => {
-    const regionMatch = worker.location?.toLowerCase().includes(searchRegion.toLowerCase());
-    const idMatch = String(worker.identity).toLowerCase().includes(searchId.toLowerCase());
-    return regionMatch && idMatch;
+    const searchRegionLower = searchRegion.toLowerCase();
+    const searchIdLower = searchId.toLowerCase();
+    const regionMatch = worker.location?.toLowerCase().includes(searchRegionLower) || false;
+    const idMatch = worker.identity ? worker.identity.toString().toLowerCase().includes(searchIdLower) : false;
+    const nameMatch = worker.name?.toLowerCase().includes(searchRegionLower) || false;
+    const phoneMatch = worker.phone?.toLowerCase().includes(searchRegionLower) || false;
+    const dateMatch = worker.joiningDate?.toLowerCase().includes(searchRegionLower) || false;
+    console.log(`Filtering: searchRegion=${searchRegion}, searchId=${searchId}, worker=${JSON.stringify(worker)}, matches=${regionMatch || idMatch || nameMatch || phoneMatch || dateMatch}`);
+    return regionMatch || idMatch || nameMatch || phoneMatch || dateMatch;
   });
 
   // Handle generating a random password for the new worker in the Add Worker bar
@@ -56,33 +78,69 @@ const WorkersPage = ({ onLogout, userRole }) => {
     setNewWorker({ ...newWorker, accessCode: pass });
   };
 
-  // Handle adding a new worker with hashed password
-  const handleAddWorker = () => {
-    if (
-      newWorker.id &&
-      newWorker.name &&
-      newWorker.phone &&
-      newWorker.location &&
-      newWorker.joiningDate &&
-      newWorker.workerType &&
-      newWorker.accessCode
-    ) {
-      const hashedAccessCode = simpleHash(newWorker.accessCode);
-      const newId = workers.length + 1;
-      setWorkers([...workers, { id: newId, identity: newWorker.id, name: newWorker.name, phone: newWorker.phone, location: newWorker.location, joiningDate: newWorker.joiningDate, workerType: newWorker.workerType, accessCode: hashedAccessCode }]);
-      setNewWorker({ id: '', name: '', phone: '', location: '', joiningDate: '', workerType: 'Driver', accessCode: '' });
-    } else {
-      alert('Please fill in all fields and generate an access code to add a worker.');
+  const handleAddWorker = async () => {
+    const { identity, name, phone, location, joiningDate, role, workerType, accessCode } = newWorker;
+    if (!identity || !name || !phone || !location || !joiningDate || !accessCode) {
+      alert('Please fill in all fields and generate a password!');
+      return;
+    }
+    try {
+      const response = await axios.post('http://localhost:5000/register', {
+        identity: parseInt(identity, 10),
+        password: accessCode,
+        role: role,
+        worker_type: role === 'worker' ? workerType : null,
+        phone,
+        location,
+      });
+      alert(response.data.message || 'User registered!');
+      const newId = Date.now();
+      setWorkers([...workers, {
+        id: newId,
+        identity,
+        name,
+        phone,
+        location,
+        joiningDate,
+        role,
+        workerType,
+        accessCode: simpleHash(accessCode),
+      }]);
+      setNewWorker({
+        identity: '',
+        name: '',
+        phone: '',
+        location: '',
+        joiningDate: '',
+        role: 'worker',
+        workerType: 'Driver',
+        accessCode: '',
+      });
+    } catch (error) {
+      alert(error.response?.data?.error || 'Error creating user');
     }
   };
 
   const handleDeleteWorker = async (workerId) => {
     try {
-      await axios.delete(`http://localhost:5000/users/${workerId}`);
-      setWorkers(workers.filter((w) => w.id !== workerId));
+      console.log(`Attempting to delete worker with id: ${workerId}`);
+      await axios.delete(`http://localhost:5000/workers/${workerId}`);
+      console.log(`Deleted worker with id: ${workerId}`);
+      fetchWorkers();
     } catch (error) {
+      console.error("Error deleting worker:", error.response ? error.response.data : error.message);
       alert('Failed to delete user');
     }
+  };
+
+  const showPassword = (password) => {
+    setSelectedPassword(password);
+    setModalVisible(true);
+  };
+
+  const hidePassword = () => {
+    setModalVisible(false);
+    setSelectedPassword('');
   };
 
   if (userRole !== 'manager') {
@@ -95,65 +153,64 @@ const WorkersPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Workers</h1>
 
-        {/* Search Bar (Unchanged) */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Search Bar */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <input
             type="text"
             placeholder="Search by region..."
             value={searchRegion}
             onChange={(e) => setSearchRegion(e.target.value)}
-            style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
+            style={{ padding: '10px', width: '250px' }}
           />
           <input
             type="text"
             placeholder="Search by ID..."
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
+            style={{ padding: '10px', width: '250px' }}
           />
         </div>
 
-        {/* Add Worker Bar (Separate and Continuous) */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Add Worker Form */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <input
-            type="text"
-            placeholder="ID"
-            value={newWorker.id}
-            onChange={(e) => setNewWorker({ ...newWorker, id: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            type="number"
+            placeholder="Numeric ID"
+            value={newWorker.identity}
+            onChange={(e) => setNewWorker({ ...newWorker, identity: e.target.value })}
+            style={{ padding: '10px', width: '150px' }}
           />
           <input
             type="text"
             placeholder="Name"
             value={newWorker.name}
             onChange={(e) => setNewWorker({ ...newWorker, name: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', width: '150px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Phone Number"
             value={newWorker.phone}
             onChange={(e) => setNewWorker({ ...newWorker, phone: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', width: '150px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="text"
             placeholder="Location"
             value={newWorker.location}
             onChange={(e) => setNewWorker({ ...newWorker, location: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', width: '150px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <input
             type="date"
             value={newWorker.joiningDate}
             onChange={(e) => setNewWorker({ ...newWorker, joiningDate: e.target.value })}
-            style={{ padding: '10px', width: '150px' }}
-            placeholder="mm/dd/yyyy"
+            style={{ padding: '10px', width: '150px', borderRadius: "5px", border: '1px solid #e0e0e0', flex: '1' }}
           />
           <select
             value={newWorker.role}
             onChange={(e) => setNewWorker({ ...newWorker, role: e.target.value })}
-            style={{ padding: '10px', width: '120px' }}
+            style={{ padding: '10px', width: '120px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           >
             <option value="worker">Worker</option>
             <option value="manager">Manager</option>
@@ -162,7 +219,7 @@ const WorkersPage = ({ onLogout, userRole }) => {
             value={newWorker.workerType}
             onChange={(e) => setNewWorker({ ...newWorker, workerType: e.target.value })}
             disabled={newWorker.role !== 'worker'}
-            style={{ padding: '10px', width: '150px' }}
+            style={{ padding: '10px', width: '150px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
@@ -173,18 +230,32 @@ const WorkersPage = ({ onLogout, userRole }) => {
             placeholder="Access Code (Generate to fill)"
             value={newWorker.accessCode}
             readOnly
-            style={{ padding: '10px', width: '200px' }}
+            style={{ padding: '10px', width: '200px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1', maxWidth: '300px', backgroundColor: '#f0f0e0' }}
           />
           <button className="action-button" onClick={handleGenerateAccessCodeForNewWorker}>
             Generate Password
           </button>
-          <button className="action-button" onClick={handleAddWorker}>
+          <button
+            className="action-button"
+            onClick={handleAddWorker}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#3498db',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              height: '40px',
+              width: '200px',
+              margin: '5px',
+            }}
+          >
             Add Worker
           </button>
         </div>
 
-        {/* Workers Table */}
-        <div className="table-container" style={{ marginBottom: '30px' }}>
+        {/* Table of existing workers */}
+        <div className="table-container">
           <table>
             <thead>
               <tr>
@@ -201,27 +272,106 @@ const WorkersPage = ({ onLogout, userRole }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredWorkers.map((worker) => (
-                <tr key={worker.id}>
-                  <td>{worker.id}</td>
-                  <td>{worker.identity}</td>
-                  <td>{worker.name}</td>
-                  <td>{worker.phone}</td>
-                  <td>{worker.location}</td>
-                  <td>{worker.joiningDate}</td>
-                  <td>{worker.role}</td>
-                  <td>{worker.workerType || '-'}</td>
-                  <td>{worker.accessCode || 'N/A'}</td>
-                  <td>
-                    <button className="delete-button" onClick={() => handleDeleteWorker(worker.id)}>
-                      Delete
-                    </button>
-                  </td>
+              {filteredWorkers.length > 0 ? (
+                filteredWorkers.map((worker) => (
+                  <tr key={worker.id}>
+                    <td>{worker.id || 'N/A'}</td>
+                    <td>{worker.identity || 'N/A'}</td>
+                    <td>{worker.name || 'N/A'}</td>
+                    <td>{worker.phone || 'N/A'}</td>
+                    <td>{worker.location || 'N/A'}</td>
+                    <td>{worker.joiningDate || 'N/A'}</td>
+                    <td>{worker.role || 'N/A'}</td>
+                    <td>{worker.role === 'manager' ? 'N/A' : worker.workerType || 'N/A'}</td>
+                    <td>
+                      ######
+                      <button
+                        onClick={() => showPassword(worker.hashedPassword || 'N/A')}
+                        style={{
+                          padding: '2px 8px',
+                          marginLeft: '10px',
+                          backgroundColor: '#2ecc71',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                          fontSize: '0.8rem',
+                        }}
+                      >
+                        Show
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteWorker(worker.id)}
+                        style={{
+                          padding: '5px 10px',
+                          backgroundColor: '#ff4d4f',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '5px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="10">No workers found</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
+
+        {modalVisible && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: 'white',
+                padding: '20px',
+                borderRadius: '10px',
+                width: '400px',
+                maxWidth: '90%',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+                textAlign: 'center',
+              }}
+            >
+              <h3>Hashed Password</h3>
+              <p style={{ wordBreak: 'break-all', margin: '10px 0' }}>{selectedPassword}</p>
+              <button
+                onClick={hidePassword}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#ff4d4f',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

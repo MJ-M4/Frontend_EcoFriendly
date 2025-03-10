@@ -5,10 +5,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+<<<<<<< HEAD
   height: 100vh;
   background-image: url('C:\Users\RScho\Desktop\Final_Project\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Relative path for production */
   background-size: cover;
   background-position: center;
+=======
+  min-height: 100vh;
+  background-image: url('C:\Users\RScho\Desktop\Final_Project\Frontend_EcoFriendly\frontend\src\Photos\EcofriendlyBackground.jpg'); /* Updated path */  padding: 20px;
+>>>>>>> main
 }
 
 /* Login Box */
@@ -75,7 +80,7 @@
 /* Show/Hide Password Button */
 .show-password-btn {
   position: absolute;
-  right: 10px;
+  right: 20px;
   top: 50%;
   transform: translateY(-50%);
   background: none;

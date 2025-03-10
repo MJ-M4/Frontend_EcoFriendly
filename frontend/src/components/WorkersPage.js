@@ -14,8 +14,12 @@ const WorkersPage = ({ onLogout, userRole }) => {
   ];
 
   const [workers, setWorkers] = useState(initialWorkers);
+<<<<<<< HEAD
   const [searchRegion, setSearchRegion] = useState('');
   const [searchId, setSearchId] = useState('');
+=======
+  const [searchRegionOrID, setSearchRegion] = useState(''); // Search by region
+>>>>>>> main
   const [newWorker, setNewWorker] = useState({
     identity: '',
     name: '',
@@ -24,9 +28,12 @@ const WorkersPage = ({ onLogout, userRole }) => {
     joiningDate: '',
     workerType: 'Driver',
   });
+  // New state for generated password
+  const [generatedPassword, setGeneratedPassword] = useState('');
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
+<<<<<<< HEAD
   const filteredWorkers = workers.filter((worker) => {
     const matchesRegion = worker.location.toLowerCase().includes(searchRegion.toLowerCase());
     const matchesId = worker.identity.toLowerCase().includes(searchId.toLowerCase());
@@ -34,6 +41,33 @@ const WorkersPage = ({ onLogout, userRole }) => {
   });
 
   const handleAddWorker = () => {
+=======
+  // Filter workers by location and/or ID
+  const filteredWorkers = workers.filter((worker) =>
+    worker.location.toLowerCase().includes(searchRegionOrID.toLowerCase()) ||
+    worker.identity.toLowerCase().includes(searchRegionOrID.toLowerCase())
+  );
+
+  // Generate a random password
+  const generateRandomPassword = () => {
+    const length = 12;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let newPassword = '';
+    for (let i = 0; i < length; i++) {
+      newPassword += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return newPassword;
+  };
+
+  // Handle generating a password
+  const handleGeneratePassword = () => {
+    const newPassword = generateRandomPassword();
+    setGeneratedPassword(newPassword);
+  };
+
+  // Handle adding a new worker
+  const handleAddWorker = async () => {
+>>>>>>> main
     if (
       newWorker.identity &&
       newWorker.name &&
@@ -42,9 +76,27 @@ const WorkersPage = ({ onLogout, userRole }) => {
       newWorker.joiningDate &&
       newWorker.workerType
     ) {
+      let hashedPassword = null;
+      if (generatedPassword) {
+        try {
+          // Convert password to ArrayBuffer
+          const encoder = new TextEncoder();
+          const data = encoder.encode(generatedPassword);
+          // Generate SHA-256 hash
+          const hash = await crypto.subtle.digest('SHA-256', data);
+          // Convert hash to hexadecimal string
+          const hashArray = Array.from(new Uint8Array(hash));
+          hashedPassword = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (error) {
+          alert('Error hashing password: ' + error.message);
+          return;
+        }
+      }
+
       const newId = workers.length + 1;
-      setWorkers([...workers, { id: newId, ...newWorker }]);
+      setWorkers([...workers, { id: newId, ...newWorker, hashedPassword }]);
       setNewWorker({ identity: '', name: '', phone: '', location: '', joiningDate: '', workerType: 'Driver' });
+      setGeneratedPassword(''); // Reset the generated password
     } else {
       alert('Please fill in all fields to add a worker.');
     }
@@ -66,11 +118,12 @@ const WorkersPage = ({ onLogout, userRole }) => {
         <div className="form-container">
           <input
             type="text"
-            placeholder="Search by region..."
-            value={searchRegion}
+            placeholder="Search by region or id..."
+            value={searchRegionOrID}
             onChange={(e) => setSearchRegion(e.target.value)}
             className="search-input"
           />
+<<<<<<< HEAD
           <input
             type="text"
             placeholder="Search by ID..."
@@ -78,6 +131,8 @@ const WorkersPage = ({ onLogout, userRole }) => {
             onChange={(e) => setSearchId(e.target.value)}
             className="search-input"
           />
+=======
+>>>>>>> main
         </div>
         <div className="form-container worker-form">
           <input
@@ -123,7 +178,39 @@ const WorkersPage = ({ onLogout, userRole }) => {
             <option value="Cleaner">Cleaner</option>
             <option value="Maintenance Worker">Maintenance Worker</option>
           </select>
+<<<<<<< HEAD
           <button onClick={handleAddWorker} className="download-report-btn">
+=======
+          {/* Password Generation Section */}
+          <button
+            onClick={handleGeneratePassword}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2ecc71',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              height: '40px',
+              margin: '5px',
+            }}
+          >
+            Generate Password
+          </button>
+          {generatedPassword && (
+            <input
+              type="text"
+              value={generatedPassword}
+              readOnly
+              style={{ padding: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1', maxWidth: '300px', backgroundColor: '#f0f0f0' }}
+            />
+          )}
+          <button
+            onClick={handleAddWorker}
+            className="download-report-btn"
+            style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
+          >
+>>>>>>> main
             Add Worker
           </button>
         </div>

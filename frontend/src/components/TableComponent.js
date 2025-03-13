@@ -1,7 +1,6 @@
-// src/components/TableComponent.js
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
-import wazeIcon from '../Photos/Waze.jpeg'; // Confirm this path is correct
+import wazeIcon from '../Photos/Waze.jpeg'; // confirm path if needed
 
 const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
   const getStatusIcon = (status) => {
@@ -56,7 +55,6 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
                   src={wazeIcon}
                   alt="Navigate with Waze"
                   style={{ width: '24px', height: '24px', marginRight: '8px' }}
-                  onError={(e) => { console.error('Failed to load Waze icon'); e.target.src = '/images/fallback-icon.png'; }}
                 />
               </a>
             </td>

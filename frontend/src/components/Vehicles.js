@@ -1,13 +1,13 @@
-// src/components/Vehicles.js
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
+import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for unique IDs
 import "./css/general.css";
 
 const VehiclesPage = ({ onLogout, userRole }) => {
-  // Mock vehicles data
+  // Mock vehicles data with unique IDs
   const initialVehicles = [
     {
-      id: 1,
+      id: uuidv4(), // Generate unique ID
       type: "Garbage Truck",
       licensePlate: "ABC-123",
       status: "Available",
@@ -15,7 +15,7 @@ const VehiclesPage = ({ onLogout, userRole }) => {
       lastMaintenance: "2025-02-01",
     },
     {
-      id: 2,
+      id: uuidv4(),
       type: "Van",
       licensePlate: "XYZ-789",
       status: "In Use",
@@ -23,11 +23,11 @@ const VehiclesPage = ({ onLogout, userRole }) => {
       lastMaintenance: "2025-01-15",
     },
     {
-      id: 3,
+      id: uuidv4(),
       type: "Maintenance Vehicle",
       licensePlate: "MNT-456",
       status: "Under Maintenance",
-      location: "Nazereth",
+      location: "Nazareth",
       lastMaintenance: "2025-03-01",
     },
   ];
@@ -35,7 +35,8 @@ const VehiclesPage = ({ onLogout, userRole }) => {
   const [vehicles, setVehicles] = useState(initialVehicles);
   const [searchTerm, setSearchTerm] = useState("");
   const [newVehicle, setNewVehicle] = useState({
-    type: "Garbage Truck", // Updated default value
+    id: uuidv4(), // Generate unique ID for new vehicle
+    type: "Garbage Truck",
     licensePlate: "",
     status: "Available",
     location: "",
@@ -44,39 +45,57 @@ const VehiclesPage = ({ onLogout, userRole }) => {
 
   const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
-  // Filter vehicles by type or status
+  if (userRole !== "manager") {
+    return <div className="error">Access Denied: Managers Only</div>;
+  }
+
+  // Filter vehicles by type OR licensePlate
   const filteredVehicles = vehicles.filter(
-    (vehicle) =>
-      vehicle.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+    (v) =>
+      v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      v.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle adding a new vehicle
   const handleAddVehicle = () => {
+    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    const maintenanceDate = new Date(newVehicle.lastMaintenance);
+
+    // Validation
     if (
-      newVehicle.type &&
-      newVehicle.licensePlate &&
-      newVehicle.status &&
-      newVehicle.lastMaintenance &&
-      newVehicle.location
+      !newVehicle.type ||
+      !newVehicle.licensePlate ||
+      !newVehicle.status ||
+      !newVehicle.location ||
+      !newVehicle.lastMaintenance
     ) {
-      const newId = vehicles.length + 1; // Simple ID generation
-      setVehicles([...vehicles, { id: newId, ...newVehicle }]);
-      setNewVehicle({
-        type: "Garbage Truck", // Updated default value
-        licensePlate: "",
-        status: "Available",
-        lastMaintenance: "",
-        location: "",
-      }); // Reset form
-    } else {
-      alert("Please fill in all fields to add a vehicle.");
+      alert("Please fill in all fields.");
+      return;
     }
+    if (maintenanceDate > new Date()) {
+      alert("Last Maintenance date cannot be in the future.");
+      return;
+    }
+    if (vehicles.some((v) => v.licensePlate === newVehicle.licensePlate)) {
+      alert("License Plate already exists. Please use a unique license plate.");
+      return;
+    }
+
+    // Add new vehicle to state
+    setVehicles([...vehicles, newVehicle]);
+
+    // Reset newVehicle state with a new ID
+    setNewVehicle({
+      id: uuidv4(),
+      type: "Garbage Truck",
+      licensePlate: "",
+      status: "Available",
+      location: "",
+      lastMaintenance: "",
+    });
   };
 
-  // Handle deleting a vehicle
   const handleDeleteVehicle = (id) => {
-    setVehicles(vehicles.filter((vehicle) => vehicle.id !== id));
+    setVehicles(vehicles.filter((v) => v.id !== id));
   };
 
   return (
@@ -91,35 +110,24 @@ const VehiclesPage = ({ onLogout, userRole }) => {
         <h1>Vehicles</h1>
 
         {/* Search Box */}
-        <div style={{ marginBottom: "20px" }}>
+        <div className="form-container">
           <input
             type="text"
-            placeholder="Search by type or License Plate..."
+            placeholder="Search by type or license plate..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: "10px",
-              width: "300px",
-              borderRadius: "5px",
-              border: "1px solid #e0e0e0",
-              fontSize: "1rem",
-            }}
+            className="search-input"
           />
         </div>
 
         {/* Add Vehicle Form */}
-        <div style={{ marginBottom: "20px" }}>
+        <div className="form-container">
           <select
             value={newVehicle.type}
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, type: e.target.value })
             }
-            style={{
-              padding: "10px",
-              marginRight: "10px",
-              borderRadius: "5px",
-              border: "1px solid #e0e0e0",
-            }}
+            className="form-input"
           >
             <option value="Garbage Truck">Garbage Truck</option>
             <option value="Van">Van</option>
@@ -140,24 +148,14 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, licensePlate: e.target.value })
             }
-            style={{
-              padding: "10px",
-              marginRight: "10px",
-              borderRadius: "5px",
-              border: "1px solid #e0e0e0",
-            }}
+            className="form-input"
           />
           <select
             value={newVehicle.status}
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, status: e.target.value })
             }
-            style={{
-              padding: "10px",
-              marginRight: "10px",
-              borderRadius: "5px",
-              border: "1px solid #e0e0e0",
-            }}
+            className="form-input"
           >
             <option value="Available">Available</option>
             <option value="In Use">In Use</option>
@@ -170,38 +168,17 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, location: e.target.value })
             }
-            style={{
-              padding: "10px",
-              marginRight: "10px",
-              borderRadius: "5px",
-              border: "1px solid #e0e0e0",
-            }}
+            className="form-input"
           />
           <input
             type="date"
-            placeholder="Last Maintenance"
             value={newVehicle.lastMaintenance}
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, lastMaintenance: e.target.value })
             }
-            style={{
-              padding: "10px",
-              marginRight: "10px",
-              borderRadius: "5px",
-              border: "1px solid #e0e0e0",
-            }}
+            className="form-input"
           />
-
-          <button
-            onClick={handleAddVehicle}
-            className="download-report-btn"
-            style={{
-              padding: "10px 20px",
-              height: "40px",
-              width: "200px",
-              margin: "5px",
-            }}
-          >
+          <button onClick={handleAddVehicle} className="download-report-btn">
             Add Vehicle
           </button>
         </div>
@@ -211,9 +188,8 @@ const VehiclesPage = ({ onLogout, userRole }) => {
           <table>
             <thead>
               <tr>
-                <th>Vehicle ID</th>
-                <th>Type</th>
                 <th>License Plate</th>
+                <th>Type</th>
                 <th>Status</th>
                 <th>Location</th>
                 <th>Last Maintenance</th>
@@ -223,23 +199,15 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredVehicles.map((vehicle) => (
                 <tr key={vehicle.id}>
-                  <td>{vehicle.id}</td>
-                  <td>{vehicle.type}</td>
                   <td>{vehicle.licensePlate}</td>
+                  <td>{vehicle.type}</td>
                   <td>{vehicle.status}</td>
                   <td>{vehicle.location}</td>
                   <td>{vehicle.lastMaintenance}</td>
                   <td>
                     <button
                       onClick={() => handleDeleteVehicle(vehicle.id)}
-                      style={{
-                        padding: "5px 10px",
-                        backgroundColor: "#ff4d4f",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
+                      className="delete-btn"
                     >
                       Delete
                     </button>

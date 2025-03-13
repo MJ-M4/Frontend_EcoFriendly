@@ -1,33 +1,66 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
-  // Mock workers data (using numeric identity values)
-  const workers = [
-    { id: 1, identity: '207705096', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver' },
-    { id: 2, identity: '205548491', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner' },
-    { id: 3, identity: '204987654', name: 'Worker 3', phone: '054-555-1212', location: 'Haifa', joiningDate: '10-06-2023', workerType: 'Maintenance Worker' },
+  // Mock employees
+  const employees = [
+    {
+      id: uuidv4().slice(0, 10),
+      identity: '207705096',
+      name: 'Worker 1',
+      phone: '050-123-4567',
+      location: 'Tel Aviv',
+      joiningDate: '01-01-2023',
+      workerType: 'Driver',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      identity: '205548491',
+      name: 'Worker 2',
+      phone: '052-987-6543',
+      location: 'Jerusalem',
+      joiningDate: '15-03-2023',
+      workerType: 'Cleaner',
+    },
   ];
 
-  // Mock shifts data (using numeric identity as workerId)
+  // Mock shifts
   const initialShifts = [
-    { id: 1, workerId: '207705096', workerName: 'Worker 1', workerType: 'Driver', date: '2025-03-06', startTime: '08:00', endTime: '16:00', location: 'Tel Aviv' },
-    { id: 2, workerId: '205548491', workerName: 'Worker 2', workerType: 'Cleaner', date: '2025-03-06', startTime: '09:00', endTime: '17:00', location: 'Jerusalem' },
-    { id: 3, workerId: '204987654', workerName: 'Worker 3', workerType: 'Maintenance Worker', date: '2025-03-07', startTime: '07:00', endTime: '15:00', location: 'Haifa' },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '207705096', // identity
+      workerName: 'Worker 1',
+      workerType: 'Driver',
+      date: '2025-03-06',
+      startTime: '08:00',
+      endTime: '16:00',
+      location: 'Tel Aviv',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '205548491',
+      workerName: 'Worker 2',
+      workerType: 'Cleaner',
+      date: '2025-03-06',
+      startTime: '09:00',
+      endTime: '17:00',
+      location: 'Jerusalem',
+    },
   ];
 
   const [shifts, setShifts] = useState(initialShifts);
-  const [searchId, setSearchId] = useState(''); // Search by Worker ID (numeric identity)
+  const [searchId, setSearchId] = useState('');
   const [newShift, setNewShift] = useState({
     workerId: '',
-    workerType: 'Driver', // Default worker type
+    workerType: 'Driver',
     date: '',
     startTime: '',
     endTime: '',
     location: '',
   });
-  const [updateWorkerId, setUpdateWorkerId] = useState(''); // Worker ID (numeric identity) for update
+  const [updateWorkerId, setUpdateWorkerId] = useState('');
   const [updatedShift, setUpdatedShift] = useState({
     date: '',
     startTime: '',
@@ -37,12 +70,10 @@ const ShiftsPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter shifts by worker ID (numeric identity)
   const filteredShifts = shifts.filter((shift) =>
-    shift.workerId.toString().includes(searchId)
+    shift.workerId.includes(searchId)
   );
 
-  // Handle adding a new shift
   const handleAddShift = () => {
     if (
       newShift.workerId &&
@@ -52,34 +83,24 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       newShift.endTime &&
       newShift.location
     ) {
-      // Validate that the workerId is numeric
-      if (!/^\d+$/.test(newShift.workerId)) {
-        alert('Worker ID must be a numeric value.');
+      // Validate worker
+      const foundEmployee = employees.find((e) => e.identity === newShift.workerId);
+      if (!foundEmployee) {
+        alert('Invalid Worker ID. Check Employees for correct numeric identity.');
         return;
       }
-
-      // Find the worker by identity (Worker ID)
-      const selectedWorker = workers.find((w) => w.identity === newShift.workerId);
-      if (!selectedWorker) {
-        alert('Invalid Worker ID. Please enter a valid numeric ID from the Workers page.');
+      if (foundEmployee.workerType !== newShift.workerType) {
+        alert(`Worker with ID ${foundEmployee.identity} is a ${foundEmployee.workerType}, not a ${newShift.workerType}.`);
         return;
       }
-
-      // Validate that the selected Worker Type matches the worker's type
-      if (selectedWorker.workerType !== newShift.workerType) {
-        alert(`Worker with ID ${newShift.workerId} is a ${selectedWorker.workerType}, not a ${newShift.workerType}. Please select the correct Worker Type.`);
-        return;
-      }
-
-      // If validation passes, add the shift
-      const newId = shifts.length + 1;
+      // Add shift
       setShifts([
         ...shifts,
         {
-          id: newId,
-          workerId: selectedWorker.identity, // Use numeric identity as workerId
-          workerName: selectedWorker.name,
-          workerType: selectedWorker.workerType,
+          id: uuidv4().slice(0, 10),
+          workerId: foundEmployee.identity,
+          workerName: foundEmployee.name,
+          workerType: foundEmployee.workerType,
           date: newShift.date,
           startTime: newShift.startTime,
           endTime: newShift.endTime,
@@ -95,24 +116,16 @@ const ShiftsPage = ({ onLogout, userRole }) => {
         location: '',
       });
     } else {
-      alert('Please fill in all fields to add a shift.');
+      alert('Please fill in all shift fields.');
     }
   };
 
-  // Handle deleting a shift
   const handleDeleteShift = (id) => {
     setShifts(shifts.filter((shift) => shift.id !== id));
   };
 
-  // Handle updating a shift
   const handleUpdateShift = () => {
-    // Validate that the updateWorkerId is numeric
-    if (!/^\d+$/.test(updateWorkerId)) {
-      alert('Worker ID must be a numeric value.');
-      return;
-    }
-
-    const shiftToUpdate = shifts.find((shift) => shift.workerId === updateWorkerId);
+    const shiftToUpdate = shifts.find((s) => s.workerId === updateWorkerId);
     if (shiftToUpdate) {
       setUpdatedShift({
         date: shiftToUpdate.date,
@@ -121,36 +134,23 @@ const ShiftsPage = ({ onLogout, userRole }) => {
         location: shiftToUpdate.location,
       });
     } else {
+      alert('No shift found for that Worker ID.');
       setUpdatedShift({ date: '', startTime: '', endTime: '', location: '' });
-      alert('Worker ID not found in shifts.');
     }
   };
 
-  // Handle saving updated shift
   const handleSaveUpdate = () => {
-    // Validate that the updateWorkerId is numeric
-    if (!/^\d+$/.test(updateWorkerId)) {
-      alert('Worker ID must be a numeric value.');
-      return;
-    }
-
-    const shiftToUpdate = shifts.find((shift) => shift.workerId === updateWorkerId);
-    if (shiftToUpdate && updatedShift.date && updatedShift.startTime && updatedShift.endTime && updatedShift.location) {
-      setShifts(
-        shifts.map((shift) =>
-          shift.workerId === updateWorkerId
-            ? { ...shift, ...updatedShift }
-            : shift
-        )
-      );
-      setUpdateWorkerId('');
-      setUpdatedShift({ date: '', startTime: '', endTime: '', location: '' });
-    } else {
-      alert('Please fill in all update fields with a valid Worker ID.');
-    }
+    setShifts(
+      shifts.map((shift) =>
+        shift.workerId === updateWorkerId
+          ? { ...shift, ...updatedShift }
+          : shift
+      )
+    );
+    setUpdateWorkerId('');
+    setUpdatedShift({ date: '', startTime: '', endTime: '', location: '' });
   };
 
-  // Restrict access to managers only
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -161,30 +161,30 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Shifts</h1>
 
-        {/* Search Bar (Search by ID) */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Search by Worker ID */}
+        <div className="form-container">
           <input
-            type="number"
-            placeholder="Search by ID..."
+            type="text"
+            placeholder="Search by Worker ID..."
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            style={{ padding: '10px', width: '300px', borderRadius: '5px', border: '1px solid #e0e0e0', fontSize: '1rem' }}
+            className="search-input"
           />
         </div>
 
-        {/* Add Shift Bar (Separate and Continuous) */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Add Shift */}
+        <div className="form-container">
           <input
-            type="number"
+            type="text"
             placeholder="Worker ID"
             value={newShift.workerId}
             onChange={(e) => setNewShift({ ...newShift, workerId: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <select
             value={newShift.workerType}
             onChange={(e) => setNewShift({ ...newShift, workerType: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
@@ -194,50 +194,42 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             type="date"
             value={newShift.date}
             onChange={(e) => setNewShift({ ...newShift, date: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="time"
             value={newShift.startTime}
             onChange={(e) => setNewShift({ ...newShift, startTime: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="time"
             value={newShift.endTime}
             onChange={(e) => setNewShift({ ...newShift, endTime: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
           <input
             type="text"
             placeholder="Location"
             value={newShift.location}
             onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
-          <button
-            onClick={handleAddShift}
-            className="download-report-btn"
-            style={{ padding: '10px 20px', height: '40px', width: '200px' }}
-          >
+          <button onClick={handleAddShift} className="download-report-btn">
             Add Shift
           </button>
         </div>
 
-        {/* Update Shift Section (By Worker ID) */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        {/* Update Shift */}
+        <div className="form-container">
           <input
-            type="number"
-            placeholder="Worker ID to Update"
+            type="text"
+            placeholder="Worker ID to update"
             value={updateWorkerId}
             onChange={(e) => setUpdateWorkerId(e.target.value)}
-            style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+            className="form-input"
           />
-          <button
-            onClick={handleUpdateShift}
-            className="download-report-btn"
-            style={{ padding: '10px 20px', height: '40px', marginRight: '10px' }}
-          >
+          <button onClick={handleUpdateShift} className="download-report-btn">
             Load Update
           </button>
           {updateWorkerId && (
@@ -246,47 +238,42 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                 type="date"
                 value={updatedShift.date}
                 onChange={(e) => setUpdatedShift({ ...updatedShift, date: e.target.value })}
-                style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+                className="form-input"
               />
               <input
                 type="time"
                 value={updatedShift.startTime}
                 onChange={(e) => setUpdatedShift({ ...updatedShift, startTime: e.target.value })}
-                style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+                className="form-input"
               />
               <input
                 type="time"
                 value={updatedShift.endTime}
                 onChange={(e) => setUpdatedShift({ ...updatedShift, endTime: e.target.value })}
-                style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+                className="form-input"
               />
               <input
                 type="text"
                 placeholder="Location"
                 value={updatedShift.location}
                 onChange={(e) => setUpdatedShift({ ...updatedShift, location: e.target.value })}
-                style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
+                className="form-input"
               />
-              <button
-                onClick={handleSaveUpdate}
-                className="download-report-btn"
-                style={{ padding: '10px 20px', height: '40px', width: '200px' }}
-              >
+              <button onClick={handleSaveUpdate} className="download-report-btn">
                 Save Update
               </button>
             </>
           )}
         </div>
 
-        {/* Shifts Table */}
         <div className="table-container">
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Worker ID</th>
                 <th>Worker Name</th>
                 <th>Worker Type</th>
-                <th>Phone</th> {/* New column for phone number */}
+                <th>Phone</th>
                 <th>Date</th>
                 <th>Start Time</th>
                 <th>End Time</th>
@@ -296,13 +283,13 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             </thead>
             <tbody>
               {filteredShifts.map((shift) => {
-                const worker = workers.find((w) => w.identity === shift.workerId);
+                const emp = employees.find((e) => e.identity === shift.workerId);
                 return (
                   <tr key={shift.id}>
-                    <td>{shift.workerId}</td> {/* Display workerId (numeric identity) */}
+                    <td>{shift.workerId}</td>
                     <td>{shift.workerName}</td>
                     <td>{shift.workerType}</td>
-                    <td>{worker ? worker.phone : ''}</td> {/* Display phone number */}
+                    <td>{emp ? emp.phone : ''}</td>
                     <td>{shift.date}</td>
                     <td>{shift.startTime}</td>
                     <td>{shift.endTime}</td>
@@ -310,14 +297,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                     <td>
                       <button
                         onClick={() => handleDeleteShift(shift.id)}
-                        style={{
-                          padding: '5px 10px',
-                          backgroundColor: '#ff4d4f',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '5px',
-                          cursor: 'pointer',
-                        }}
+                        className="delete-btn"
                       >
                         Delete
                       </button>

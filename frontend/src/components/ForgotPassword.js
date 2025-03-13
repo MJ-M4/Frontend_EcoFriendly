@@ -1,8 +1,7 @@
-// src/components/ForgotPassword.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
-import './css/Login.css'; // Reuse Login.css for consistency
+import './css/Login.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -21,7 +20,7 @@ const ForgotPassword = () => {
     }
 
     setIsLoading(true);
-    // Simulate API call delay
+    // Simulate API delay
     setTimeout(() => {
       setMessage('A password reset link has been sent to your email.');
       setIsLoading(false);
@@ -31,7 +30,7 @@ const ForgotPassword = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <img src={ecoFriendlyLogo} alt="EcoFriendly System Logo" className="login-logo" />
+        <img src={ecoFriendlyLogo} alt="EcoFriendly Logo" className="login-logo" />
         <h2>Forgot Password</h2>
         {error && <p className="error-message">{error}</p>}
         {message && <p className="success-message">{message}</p>}

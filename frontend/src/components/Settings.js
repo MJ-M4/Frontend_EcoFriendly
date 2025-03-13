@@ -1,4 +1,3 @@
-// src/components/Settings.js
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
@@ -13,38 +12,30 @@ const SettingsPage = ({ onLogout, userRole }) => {
     shifts: false,
   });
   const [message, setMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
-  // Password update states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   const user = { name, avatar: '/images/sami.png' };
 
-  // Handle name update
   const handleNameChange = (e) => {
     e.preventDefault();
-    try {
-      setMessage('Name updated successfully!');
-    } catch (err) {
-      setMessage('Error: Failed to update name');
-    }
+    setMessage('Name updated successfully!');
   };
 
-  // Handle language change
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
     setMessage(`Language updated to ${e.target.value}!`);
   };
 
-  // Handle theme change
   const handleThemeChange = (e) => {
     setTheme(e.target.value);
     setMessage(`Theme updated to ${e.target.value}!`);
-    document.body.className = e.target.value.toLowerCase() + '-theme';
+    document.body.className = `${e.target.value.toLowerCase()}-theme`;
   };
 
-  // Handle notification toggle
   const handleNotificationToggle = (type) => {
     setNotifications((prev) => ({
       ...prev,
@@ -53,28 +44,26 @@ const SettingsPage = ({ onLogout, userRole }) => {
     setMessage(`Notifications for ${type} ${notifications[type] ? 'disabled' : 'enabled'}!`);
   };
 
-  // Handle password update (mocked locally)
   const handlePasswordUpdate = (e) => {
     e.preventDefault();
     setMessage('');
+    setPasswordError('');
 
-    // Basic validation
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      setMessage('Error: All password fields are required.');
+      setPasswordError('All password fields are required.');
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      setMessage('Error: New password and confirmation do not match.');
+      setPasswordError('New password and confirmation do not match.');
       return;
     }
 
     if (newPassword === currentPassword) {
-      setMessage('Error: New password must be different from the current password.');
+      setPasswordError('New password must be different from the current password.');
       return;
     }
 
-    // Mock successful update
     setTimeout(() => {
       setMessage('Password updated successfully!');
       setCurrentPassword('');
@@ -87,140 +76,161 @@ const SettingsPage = ({ onLogout, userRole }) => {
     <div className="dashboard">
       <Sidebar user={user} activePage="settings" onLogout={onLogout} userRole={userRole} />
       <div className="content">
-        <div className="table-container">
-          <h2>Settings</h2>
+        <div className="settings-container">
+          <h2 className="settings-title">Settings</h2>
+          <p className="settings-subtitle">Customize your experience</p>
 
-          {/* Update Name */}
-          <form onSubmit={handleNameChange} className="form-container">
-            <label style={{ fontSize: '1rem' }}>
-              Update Name:
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="form-input"
-                style={{ marginLeft: '10px' }}
-              />
-            </label>
-            <button type="submit" className="download-report-btn">
-              Save Changes
-            </button>
-          </form>
+          <div className="settings-grid">
+            {/* Personal Information Card */}
+            <div className="settings-card">
+              <h3>Personal Information</h3>
 
-          {/* Update Password */}
-          <form onSubmit={handlePasswordUpdate} className="form-container">
-            <h3>Update Password</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <label style={{ fontSize: '1rem' }}>
-                Current Password:
-                <input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="form-input"
-                  style={{ marginLeft: '10px', width: '100%' }}
-                />
-              </label>
-              <label style={{ fontSize: '1rem' }}>
-                New Password:
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="form-input"
-                  style={{ marginLeft: '10px', width: '100%' }}
-                />
-              </label>
-              <label style={{ fontSize: '1rem' }}>
-                Confirm New Password:
-                <input
-                  type="password"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  className="form-input"
-                  style={{ marginLeft: '10px', width: '100%' }}
-                />
-              </label>
-              <button type="submit" className="download-report-btn">
-                Update Password
-              </button>
+              <form onSubmit={handleNameChange} className="settings-form">
+                <div className="form-group">
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-input"
+                    placeholder=" "
+                  />
+                  <label htmlFor="name" className="form-label">
+                    <i className="fas fa-user"></i> Update Name
+                  </label>
+                </div>
+                <button type="submit" className="btn primary-btn">
+                  Save Changes
+                </button>
+              </form>
+
+              <form onSubmit={handlePasswordUpdate} className="settings-form">
+                <h3>Update Password</h3>
+                <div className="form-group">
+                  <input
+                    id="currentPassword"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className={`form-input ${passwordError ? 'error' : ''}`}
+                    placeholder=" "
+                  />
+                  <label htmlFor="currentPassword" className="form-label">
+                    <i className="fas fa-lock"></i> Current Password
+                  </label>
+                </div>
+                <div className="form-group">
+                  <input
+                    id="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className={`form-input ${passwordError ? 'error' : ''}`}
+                    placeholder=" "
+                  />
+                  <label htmlFor="newPassword" className="form-label">
+                    <i className="fas fa-lock"></i> New Password
+                  </label>
+                </div>
+                <div className="form-group">
+                  <input
+                    id="confirmNewPassword"
+                    type="password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    className={`form-input ${passwordError ? 'error' : ''}`}
+                    placeholder=" "
+                  />
+                  <label htmlFor="confirmNewPassword" className="form-label">
+                    <i className="fas fa-lock"></i> Confirm New Password
+                  </label>
+                </div>
+                {passwordError && <p className="error-message">{passwordError}</p>}
+                <button type="submit" className="btn primary-btn">
+                  Update Password
+                </button>
+              </form>
             </div>
-          </form>
 
-          {/* Language Selection */}
-          <div className="form-container">
-            <label style={{ fontSize: '1rem' }}>
-              Language:
-              <select
-                value={language}
-                onChange={handleLanguageChange}
-                className="form-input"
-                style={{ marginLeft: '10px' }}
-              >
-                <option value="English">English</option>
-                <option value="Hebrew">Hebrew</option>
-                <option value="Arabic">Arabic</option>
-              </select>
-            </label>
-          </div>
+            {/* Preferences Card */}
+            <div className="settings-card">
+              <h3>Preferences</h3>
 
-          {/* Theme Selection */}
-          <div className="form-container">
-            <label style={{ fontSize: '1rem' }}>
-              Theme:
-              <select
-                value={theme}
-                onChange={handleThemeChange}
-                className="form-input"
-                style={{ marginLeft: '10px' }}
-              >
-                <option value="Light">Light</option>
-                <option value="Dark">Dark</option>
-              </select>
-            </label>
-          </div>
+              <div className="settings-form">
+                <div className="form-group">
+                  <select
+                    id="language"
+                    value={language}
+                    onChange={handleLanguageChange}
+                    className="form-input"
+                  >
+                    <option value="English">English</option>
+                    <option value="Hebrew">Hebrew</option>
+                    <option value="Arabic">Arabic</option>
+                  </select>
+                  <label htmlFor="language" className="form-label">
+                    <i className="fas fa-globe"></i> Language
+                  </label>
+                </div>
+                <div className="form-group">
+                  <select
+                    id="theme"
+                    value={theme}
+                    onChange={handleThemeChange}
+                    className="form-input"
+                  >
+                    <option value="Light">Light</option>
+                    <option value="Dark">Dark</option>
+                  </select>
+                  <label htmlFor="theme" className="form-label">
+                    <i className="fas fa-paint-brush"></i> Theme
+                  </label>
+                </div>
+              </div>
 
-          {/* Notification Preferences */}
-          <div style={{ marginTop: '20px' }}>
-            <h3>Notification Preferences</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={notifications.alerts}
-                  onChange={() => handleNotificationToggle('alerts')}
-                />
-                Receive Alerts Notifications
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={notifications.reports}
-                  onChange={() => handleNotificationToggle('reports')}
-                />
-                Receive Reports Notifications
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={notifications.shifts}
-                  onChange={() => handleNotificationToggle('shifts')}
-                />
-                Receive Shifts Notifications
-              </label>
+              <div className="settings-form">
+                <h3>Notification Preferences</h3>
+                <div className="notification-options">
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={notifications.alerts}
+                      onChange={() => handleNotificationToggle('alerts')}
+                    />
+                    <span className="slider"></span>
+                    Receive Alerts Notifications
+                  </label>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={notifications.reports}
+                      onChange={() => handleNotificationToggle('reports')}
+                    />
+                    <span className="slider"></span>
+                    Receive Reports Notifications
+                  </label>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={notifications.shifts}
+                      onChange={() => handleNotificationToggle('shifts')}
+                    />
+                    <span className="slider"></span>
+                    Receive Shifts Notifications
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Feedback Message */}
           {message && (
-            <p
-              style={{
-                marginTop: '10px',
-                color: message.startsWith('Error') ? '#e74c3c' : '#4caf50',
-              }}
+            <div
+              className={`settings-message ${
+                message.includes('success') ? 'success' : 'error'
+              }`}
             >
               {message}
-            </p>
+            </div>
           )}
         </div>
       </div>

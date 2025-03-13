@@ -1,6 +1,5 @@
-// src/components/Login.js
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
 
@@ -13,7 +12,6 @@ const Login = ({ onLogin, isAuthenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect to General Page if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/general');
@@ -30,14 +28,10 @@ const Login = ({ onLogin, isAuthenticated }) => {
     }
 
     setIsLoading(true);
-    // Simulate API call delay
+    // Simulate an API call
     setTimeout(() => {
-      console.log('Username:', username);
-      console.log('Password:', password);
-      console.log('Role:', role);
-
-      // Mock login validation
-      onLogin(role, role === 'worker' ? (username.toLowerCase().includes('worker3') ? 'Maintenance Worker' : 'Other') : null);
+      // Mock login success
+      onLogin(role);
       setIsLoading(false);
     }, 1000);
   };

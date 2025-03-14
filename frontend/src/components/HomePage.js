@@ -1,144 +1,103 @@
-import React from 'react';
-import { FaChartLine, FaCalendarAlt, FaDatabase, FaUser, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import './css/HomePage.css';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
+import './css/Login.css';
 
-const HomePage = () => {
+const Login = ({ onLogin, isAuthenticated }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('worker');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Mock testimonials data
-  const testimonials = [
-    { name: 'John Doe', role: 'City Manager', quote: 'Ecofriendly has revolutionized our waste management!' },
-    { name: 'Sarah Smith', role: 'Waste Collector', quote: 'Real-time data makes my job so much easier with Ecofriendly.' },
-  ];
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/general');
+    }
+  }, [isAuthenticated, navigate]);
 
-  const handleContactSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Thank you for your message! We will get back to you soon.');
+    setError('');
+
+    if (!username || !password) {
+      setError('Please enter both username and password');
+      return;
+    }
+
+    setIsLoading(true);
+    // Simulate an API call
+    setTimeout(() => {
+      // Mock login success
+      onLogin(role);
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
-    <div className="home-page">
-      {/* Hero Section */}
-      <header className="hero-section" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/Ecofriendly_Homepage.jpg)` }}>
-        <div className="hero-content">
-          <h1>Ecofriendly</h1>
-          <p className="tagline">Monitor garbage containers in real-time and optimize waste collection processes.</p>
-          <div className="hero-buttons">
-            <button className="cta-button primary" onClick={() => navigate('/login')}>
-              Get Started
-            </button>
-            <button
-              className="cta-button secondary"
-              onClick={() =>
-                window.scrollTo({
-                  top: document.querySelector('.features-section').offsetTop,
-                  behavior: 'smooth',
-                })
-              }
-            >
-              Learn More
-            </button>
+    <div className="login-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/EcofriendlyBackground.jpg)`, backgroundSize: 'cover' }}>
+      <div className="login-box">
+        <img src={ecoFriendlyLogo} alt="EcoFriendly System Logo" className="login-logo" />
+        <h2>Login to EcoFriendly System</h2>
+        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Enter your username"
+              className="form-input"
+            />
           </div>
-        </div>
-      </header>
-
-      {/* Features Section */}
-      <section className="features-section">
-        <h2>Key Features</h2>
-        <div className="features-grid">
-          <div className="feature-card">
-            <FaChartLine className="feature-icon" />
-            <h3>Real-Time Monitoring</h3>
-            <p>Track container fullness levels using IoT sensors.</p>
-            <a href="#monitoring" className="feature-link">Learn More</a>
-          </div>
-          <div className="feature-card">
-            <FaCalendarAlt className="feature-icon" />
-            <h3>Automated Scheduling</h3>
-            <p>Schedule waste collection based on container data.</p>
-            <a href="#scheduling" className="feature-link">Learn More</a>
-          </div>
-          <div className="feature-card">
-            <FaDatabase className="feature-icon" />
-            <h3>Data Analytics</h3>
-            <p>Analyze waste trends and optimize operations.</p>
-            <a href="#analytics" className="feature-link">Learn More</a>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="testimonials-section">
-        <h2>What Our Users Say</h2>
-        <div className="testimonials-grid">
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className="testimonial-card">
-              <FaUser className="testimonial-icon" />
-              <p className="quote">"{testimonial.quote}"</p>
-              <p className="author">
-                {testimonial.name}, {testimonial.role}
-              </p>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <div className="password-container">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter your password"
+                className="form-input"
+              />
+              <button
+                type="button"
+                className="show-password-btn"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Contact Form Section */}
-      <section className="contact-section">
-        <h2>Contact Us</h2>
-        <form className="contact-form" onSubmit={handleContactSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" placeholder="Your Name" required />
           </div>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" placeholder="Your Email" required />
+            <label htmlFor="role">Role</label>
+            <select
+              id="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="form-input"
+            >
+              <option value="worker">Worker</option>
+              <option value="manager">Manager</option>
+            </select>
           </div>
-          <div className="form-group">
-            <label htmlFor="message">Message</label>
-            <textarea id="message" placeholder="Your Message" rows="4" required></textarea>
-          </div>
-          <button type="submit" className="submit-button">
-            Send Message
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-      </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h4>Ecofriendly</h4>
-            <p>© 2025 Ecofriendly. All rights reserved.</p>
-          </div>
-          <div className="footer-section">
-            <h4>Links</h4>
-            <nav>
-              <a href="/privacy-policy">Privacy Policy</a>
-              <a href="/terms-of-service">Terms of Service</a>
-              <a href="/contact">Contact Us</a>
-            </nav>
-          </div>
-          <div className="footer-section">
-            <h4>Follow Us</h4>
-            <div className="social-links">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                <FaFacebook />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                <FaTwitter />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                <FaInstagram />
-              </a>
-            </div>
-          </div>
+        <div className="forgot-password">
+          <Link to="/forgot-password">Forgot Password?</Link>
         </div>
-      </footer>
+      </div>
     </div>
   );
 };
 
-export default HomePage;
+export default Login;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCalendarAlt, FaChartLine, FaDatabase, FaFacebook, FaInstagram, FaTwitter, FaUser } from 'react-icons/fa';
+import { FaChartLine, FaCalendarAlt, FaDatabase, FaUser, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './css/HomePage.css';
 
@@ -8,8 +8,8 @@ const HomePage = () => {
 
   // Mock testimonials data
   const testimonials = [
-    { name: 'John Doe', role: 'City Manager', quote: 'This system has revolutionized our waste management process!' },
-    { name: 'Sarah Smith', role: 'Waste Collector', quote: 'Real-time data makes my job so much easier.' },
+    { name: 'John Doe', role: 'City Manager', quote: 'Ecofriendly has revolutionized our waste management!' },
+    { name: 'Sarah Smith', role: 'Waste Collector', quote: 'Real-time data makes my job so much easier with Ecofriendly.' },
   ];
 
   const handleContactSubmit = (e) => {
@@ -22,7 +22,7 @@ const HomePage = () => {
       {/* Hero Section */}
       <header className="hero-section">
         <div className="hero-content">
-          <h1>Urban Waste Management System</h1>
+          <h1>Ecofriendly</h1>
           <p className="tagline">Monitor garbage containers in real-time and optimize waste collection processes.</p>
           <div className="hero-buttons">
             <button className="cta-button primary" onClick={() => navigate('/login')}>
@@ -110,8 +110,8 @@ const HomePage = () => {
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-section">
-            <h4>Urban Waste Management</h4>
-            <p>© 2025 Urban Waste Management. All rights reserved.</p>
+            <h4>Ecofriendly</h4>
+            <p>© 2025 Ecofriendly. All rights reserved.</p>
           </div>
           <div className="footer-section">
             <h4>Links</h4>

@@ -7,20 +7,14 @@ import './css/themes.css';
 import './css/responsive.css';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
-<<<<<<< HEAD
-=======
   // Mock workers data (using numeric identity values)
->>>>>>> main
   const workers = [
     { id: 1, identity: '207705096', name: 'Worker 1', phone: '050-123-4567', location: 'Tel Aviv', joiningDate: '01-01-2023', workerType: 'Driver' },
     { id: 2, identity: '205548491', name: 'Worker 2', phone: '052-987-6543', location: 'Jerusalem', joiningDate: '15-03-2023', workerType: 'Cleaner' },
     { id: 3, identity: '204987654', name: 'Worker 3', phone: '054-555-1212', location: 'Haifa', joiningDate: '10-06-2023', workerType: 'Maintenance Worker' },
   ];
 
-<<<<<<< HEAD
-=======
   // Mock shifts data (using numeric identity as workerId)
->>>>>>> main
   const initialShifts = [
     { id: 1, workerId: '207705096', workerName: 'Worker 1', workerType: 'Driver', date: '2025-03-06', startTime: '08:00', endTime: '16:00', location: 'Tel Aviv' },
     { id: 2, workerId: '205548491', workerName: 'Worker 2', workerType: 'Cleaner', date: '2025-03-06', startTime: '09:00', endTime: '17:00', location: 'Jerusalem' },
@@ -47,22 +41,12 @@ const ShiftsPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-<<<<<<< HEAD
-=======
   // Filter shifts by worker ID (numeric identity)
->>>>>>> main
   const filteredShifts = shifts.filter((shift) =>
     shift.workerId.toString().includes(searchId)
   );
 
   const handleAddShift = () => {
-<<<<<<< HEAD
-    if (newShift.workerId && newShift.date && newShift.startTime && newShift.endTime && newShift.location) {
-      const selectedWorker = workers.find((w) => w.id === parseInt(newShift.workerId));
-      const newId = shifts.length + 1;
-      setShifts([...shifts, { id: newId, workerId: selectedWorker.id, workerName: selectedWorker.name, workerType: selectedWorker.workerType, ...newShift }]);
-      setNewShift({ workerId: workers[0]?.id || '', date: '', startTime: '', endTime: '', location: '' });
-=======
     if (
       newShift.workerId &&
       newShift.workerType &&
@@ -113,7 +97,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
         endTime: '',
         location: '',
       });
->>>>>>> main
     } else {
       alert('Please fill in all fields to add a shift.');
     }
@@ -179,22 +162,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="shifts" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Shifts</h1>
-<<<<<<< HEAD
-        <div className="form-container">
-          <input
-            type="text"
-            placeholder="Search by worker name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
-        <div className="form-container shift-form">
-          <select
-            value={newShift.workerId}
-            onChange={(e) => setNewShift({ ...newShift, workerId: e.target.value })}
-            className="form-input"
-=======
 
         {/* Search Bar (Search by ID) */}
         <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -220,7 +187,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             value={newShift.workerType}
             onChange={(e) => setNewShift({ ...newShift, workerType: e.target.value })}
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
->>>>>>> main
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
@@ -230,45 +196,25 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             type="date"
             value={newShift.date}
             onChange={(e) => setNewShift({ ...newShift, date: e.target.value })}
-<<<<<<< HEAD
-            className="form-input"
-=======
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
->>>>>>> main
           />
           <input
             type="time"
             value={newShift.startTime}
             onChange={(e) => setNewShift({ ...newShift, startTime: e.target.value })}
-<<<<<<< HEAD
-            className="form-input"
-=======
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
->>>>>>> main
           />
           <input
             type="time"
             value={newShift.endTime}
             onChange={(e) => setNewShift({ ...newShift, endTime: e.target.value })}
-<<<<<<< HEAD
-            className="form-input"
-=======
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
->>>>>>> main
           />
           <input
             type="text"
             placeholder="Location"
             value={newShift.location}
             onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
-<<<<<<< HEAD
-            className="form-input"
-          />
-          <button onClick={handleAddShift} className="download-report-btn">
-            Add Shift
-          </button>
-        </div>
-=======
             style={{ padding: '10px', marginRight: '10px', borderRadius: '5px', border: '1px solid #e0e0e0', flex: '1' }}
           />
           <button
@@ -335,7 +281,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
         </div>
 
         {/* Shifts Table */}
->>>>>>> main
         <div className="table-container">
           <table>
             <thead>
@@ -352,24 +297,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
               </tr>
             </thead>
             <tbody>
-<<<<<<< HEAD
-              {filteredShifts.map((shift) => (
-                <tr key={shift.id}>
-                  <td>{shift.id}</td>
-                  <td>{shift.workerName}</td>
-                  <td>{shift.workerType}</td>
-                  <td>{shift.date}</td>
-                  <td>{shift.startTime}</td>
-                  <td>{shift.endTime}</td>
-                  <td>{shift.location}</td>
-                  <td>
-                    <button onClick={() => handleDeleteShift(shift.id)} className="action-btn delete">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-=======
               {filteredShifts.map((shift) => {
                 const worker = workers.find((w) => w.identity === shift.workerId);
                 return (
@@ -400,7 +327,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                   </tr>
                 );
               })}
->>>>>>> main
             </tbody>
           </table>
         </div>

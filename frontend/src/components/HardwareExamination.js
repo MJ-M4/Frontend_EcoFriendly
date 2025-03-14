@@ -7,10 +7,7 @@ import './css/themes.css';
 import './css/responsive.css';
 
 const HardwareExamination = ({ onLogout, userRole }) => {
-<<<<<<< HEAD
-=======
   // Mock hardware data with house number
->>>>>>> main
   const initialHardware = [
     { id: 'hw_001', binId: 'bin_1', status: 'Operational', battery: 95, lastChecked: '2025-03-01', location: 'Tel Aviv', houseNumber: '12A' },
     { id: 'hw_002', binId: 'bin_2', status: 'Needs Maintenance', battery: 20, lastChecked: '2025-03-02', location: 'Jerusalem', houseNumber: '45B' },
@@ -27,17 +24,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-<<<<<<< HEAD
-  const filteredHardware = hardware.filter((hw) =>
-    hw.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    hw.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleMarkAsMaintained = (id) => {
-    setHardware(hardware.map((hw) => hw.id === id ? { ...hw, status: 'Operational', battery: 100, lastChecked: '2025-03-06' } : hw));
-  };
-
-=======
   // Filter hardware by bin ID, location, or house number
   const filteredHardware = hardware.filter(
     (hw) =>
@@ -86,7 +72,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
   };
 
   // Restrict access to managers only
->>>>>>> main
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -96,11 +81,8 @@ const HardwareExamination = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="hardware-examination" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Hardware Examination</h1>
-<<<<<<< HEAD
-=======
 
         {/* Search Box */}
->>>>>>> main
         <div className="form-container">
           <input
             type="text"
@@ -110,8 +92,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
             className="search-input"
           />
         </div>
-<<<<<<< HEAD
-=======
 
         {/* Add Hardware Form */}
         <div className="form-container">
@@ -148,7 +128,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
         </div>
 
         {/* Hardware Table */}
->>>>>>> main
         <div className="table-container">
           <table>
             <thead>
@@ -175,14 +154,10 @@ const HardwareExamination = ({ onLogout, userRole }) => {
                   <td>{hw.lastChecked}</td>
                   <td>
                     {hw.status === 'Needs Maintenance' && (
-<<<<<<< HEAD
-                      <button onClick={() => handleMarkAsMaintained(hw.id)} className="action-btn maintain">
-=======
                       <button
                         onClick={() => handleMarkAsMaintained(hw.id)}
                         className="mark-maintained-btn"
                       >
->>>>>>> main
                         Mark as Maintained
                       </button>
                     )}

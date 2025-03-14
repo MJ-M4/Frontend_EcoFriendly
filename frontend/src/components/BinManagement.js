@@ -7,10 +7,7 @@ import './css/themes.css';
 import './css/responsive.css';
 
 const BinManagementPage = ({ onLogout, userRole }) => {
-<<<<<<< HEAD
-=======
   // Mock bin data with house number
->>>>>>> main
   const initialBins = [
     { id: 'bin_1', location: 'Tel Aviv', houseNumber: '12A', status: 'Full', assignedWorker: 'Worker 1' },
     { id: 'bin_2', location: 'Jerusalem', houseNumber: '45B', status: 'Full', assignedWorker: 'Unassigned' },
@@ -19,10 +16,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     { id: 'bin_5', location: 'Eilat', houseNumber: '19E', status: 'Full', assignedWorker: 'Worker 2' },
   ];
 
-<<<<<<< HEAD
-=======
   // Mock workers data
->>>>>>> main
   const workers = [
     { id: 1, name: 'Worker 1', workerType: 'Driver' },
     { id: 2, name: 'Worker 2', workerType: 'Cleaner' },
@@ -31,12 +25,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
 
   const [bins, setBins] = useState(initialBins);
   const [searchTerm, setSearchTerm] = useState('');
-<<<<<<< HEAD
-  const [newBin, setNewBin] = useState({ id: '', location: '' });
-
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
-
-=======
   const [newBin, setNewBin] = useState({
     id: '',
     location: '',
@@ -46,7 +34,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   // Filter bins by ID, location, house number, or assigned worker
->>>>>>> main
   const filteredBins = bins.filter((bin) =>
     bin.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bin.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,11 +46,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
   };
 
   const handleAddBin = () => {
-<<<<<<< HEAD
-    if (newBin.id && newBin.location) {
-      setBins([...bins, { id: newBin.id, location: newBin.location, status: 'Empty', assignedWorker: 'Unassigned' }]);
-      setNewBin({ id: '', location: '' });
-=======
     if (newBin.id && newBin.location && newBin.houseNumber) {
       setBins([
         ...bins,
@@ -76,7 +58,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
         },
       ]);
       setNewBin({ id: '', location: '', houseNumber: '' });
->>>>>>> main
     } else {
       alert('Please fill in all fields (Bin ID, Location, and House Number) to add a bin.');
     }
@@ -97,11 +78,8 @@ const BinManagementPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="bin-management" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Bin Management</h1>
-<<<<<<< HEAD
-=======
 
         {/* Search Box */}
->>>>>>> main
         <div className="form-container">
           <input
             type="text"
@@ -117,25 +95,15 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             name="id"
             placeholder="Bin ID"
             value={newBin.id}
-<<<<<<< HEAD
-            onChange={(e) => setNewBin({ ...newBin, id: e.target.value })}
-            className="form-input"
-=======
             onChange={handleInputChange}
             className="form-input"
             required
->>>>>>> main
           />
           <input
             type="text"
             name="location"
             placeholder="Location"
             value={newBin.location}
-<<<<<<< HEAD
-            onChange={(e) => setNewBin({ ...newBin, location: e.target.value })}
-            className="form-input"
-          />
-=======
             onChange={handleInputChange}
             className="form-input"
             required
@@ -149,7 +117,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             className="form-input"
             required
           />
->>>>>>> main
           <button onClick={handleAddBin} className="download-report-btn">
             Add Bin
           </button>
@@ -188,14 +155,10 @@ const BinManagementPage = ({ onLogout, userRole }) => {
                     </select>
                   </td>
                   <td>
-<<<<<<< HEAD
-                    <button onClick={() => handleDeleteBin(bin.id)} className="action-btn delete">
-=======
                     <button
                       onClick={() => handleDeleteBin(bin.id)}
                       className="delete-btn"
                     >
->>>>>>> main
                       Delete
                     </button>
                   </td>

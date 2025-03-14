@@ -7,10 +7,7 @@ import './css/themes.css';
 import './css/responsive.css';
 
 const PaymentPage = ({ onLogout, userRole }) => {
-<<<<<<< HEAD
-=======
   // Mock workers data
->>>>>>> main
   const workers = [
     { id: 1, name: 'Worker 1', workerType: 'Driver' },
     { id: 2, name: 'Worker 2', workerType: 'Cleaner' },
@@ -33,10 +30,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-<<<<<<< HEAD
-=======
   // Filter payments by worker ID only
->>>>>>> main
   const filteredPayments = payments.filter((payment) =>
     String(payment.workerId).includes(searchTerm)
   );
@@ -50,10 +44,6 @@ const PaymentPage = ({ onLogout, userRole }) => {
       }
 
       const newId = payments.length + 1;
-<<<<<<< HEAD
-      setPayments([...payments, { id: newId, workerId: selectedWorker.id, workerName: selectedWorker.name, amount: parseFloat(newPayment.amount), paymentDate: '', status: 'Pending', notes: newPayment.notes || '' }]);
-      setNewPayment({ workerId: workers[0]?.id || '', amount: '', notes: '' });
-=======
       setPayments([
         ...payments,
         {
@@ -71,16 +61,12 @@ const PaymentPage = ({ onLogout, userRole }) => {
         amount: '',
         notes: '',
       });
->>>>>>> main
     } else {
       alert('Please fill in all fields (Worker ID, Amount, and Notes) to add a payment.');
     }
   };
 
   const handleMarkAsPaid = (id) => {
-<<<<<<< HEAD
-    setPayments(payments.map((payment) => payment.id === id ? { ...payment, status: 'Paid', paymentDate: '2025-03-05' } : payment));
-=======
     setPayments(
       payments.map((payment) =>
         payment.id === id
@@ -88,7 +74,6 @@ const PaymentPage = ({ onLogout, userRole }) => {
           : payment
       )
     );
->>>>>>> main
   };
 
   const handleDeletePayment = (id) => {
@@ -106,11 +91,8 @@ const PaymentPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="payment" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Payments</h1>
-<<<<<<< HEAD
-=======
 
         {/* Search Box */}
->>>>>>> main
         <div className="form-container">
           <input
             type="text"
@@ -120,24 +102,9 @@ const PaymentPage = ({ onLogout, userRole }) => {
             className="search-input"
           />
         </div>
-<<<<<<< HEAD
-        <div className="form-container payment-form">
-          <select
-            value={newPayment.workerId}
-            onChange={(e) => setNewPayment({ ...newPayment, workerId: e.target.value })}
-            className="form-input"
-          >
-            {workers.map((worker) => (
-              <option key={worker.id} value={worker.id}>
-                {worker.name} ({worker.workerType})
-              </option>
-            ))}
-          </select>
-=======
 
         {/* Add Payment Form */}
         <div className="form-container">
->>>>>>> main
           <input
             type="number"
             name="workerId"
@@ -152,28 +119,18 @@ const PaymentPage = ({ onLogout, userRole }) => {
             name="amount"
             placeholder="Amount"
             value={newPayment.amount}
-<<<<<<< HEAD
-            onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
-            className="form-input"
-=======
             onChange={handleInputChange}
             className="form-input"
             required
->>>>>>> main
           />
           <input
             type="text"
             name="notes"
             placeholder="Notes"
             value={newPayment.notes}
-<<<<<<< HEAD
-            onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
-            className="form-input"
-=======
             onChange={handleInputChange}
             className="form-input"
             required
->>>>>>> main
           />
           <button onClick={handleAddPayment} className="download-report-btn">
             Add Payment
@@ -205,13 +162,6 @@ const PaymentPage = ({ onLogout, userRole }) => {
                   <td>{payment.notes}</td>
                   <td>
                     {payment.status === 'Pending' && (
-<<<<<<< HEAD
-                      <button onClick={() => handleMarkAsPaid(payment.id)} className="action-btn maintain">
-                        Mark as Paid
-                      </button>
-                    )}
-                    <button onClick={() => handleDeletePayment(payment.id)} className="action-btn delete">
-=======
                       <button
                         onClick={() => handleMarkAsPaid(payment.id)}
                         className="mark-paid-btn"
@@ -223,7 +173,6 @@ const PaymentPage = ({ onLogout, userRole }) => {
                       onClick={() => handleDeletePayment(payment.id)}
                       className="delete-btn"
                     >
->>>>>>> main
                       Delete
                     </button>
                   </td>

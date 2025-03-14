@@ -15,7 +15,7 @@ const GeneralPage = ({ onLogout, userRole }) => {
       status: 'Full',
       capacity: 90,
       time: '20:00',
-      date: '15-1-2025',
+      date: '15-2-2025',
       route: 'Route A',
       battery: 95,
       lat: 31.771959,

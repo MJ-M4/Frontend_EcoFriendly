@@ -519,8 +519,9 @@ body.dark-theme .settings-card {
 }
 
 .settings-message.error {
-  background-color: #dc3545;
+  background-color: #44d817;
   color: white;
+  height: inherit;
 }
 
 /* Icons */
@@ -633,4 +634,21 @@ body.dark-theme .form-input {
 /* Show fallback text if icon is missing */
 .download-btn:not(:has(i))::before {
   display: inline;
+}
+.dropdown-container {
+  margin: 20px 0;
+}
+
+.report-select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
 }

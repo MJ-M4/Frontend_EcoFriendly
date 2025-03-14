@@ -1,7 +1,17 @@
+<<<<<<< HEAD
+import React, { useState } from 'react';
+import Sidebar from './Sidebar';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
+=======
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/general.css";
+>>>>>>> main
 
 const BinManagementPage = ({ onLogout, userRole }) => {
   // Each bin uses a random UUID for binId
@@ -50,6 +60,22 @@ const BinManagementPage = ({ onLogout, userRole }) => {
       bin.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  const handleAssignWorker = (binId, workerName) => {
+    setBins(bins.map((bin) => (bin.id === binId ? { ...bin, assignedWorker: workerName } : bin)));
+=======
+  const handleAssignWorker = (rowId, workerName) => {
+    setBins(
+      bins.map((b) =>
+        b.id === rowId ? { ...b, assignedWorker: workerName } : b
+      )
+    );
+>>>>>>> main
+  };
+
+>>>>>>> b2f3d5bc5597dbb573dfb63294948d845e2b560c
   const handleAddBin = () => {
     if (newBin.location && newBin.address) {
       setBins([
@@ -71,8 +97,13 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     }
   };
 
+<<<<<<< HEAD
+  const handleDeleteBin = (binId) => {
+    setBins(bins.filter((bin) => bin.id !== binId));
+=======
   const handleDeleteBin = (rowId) => {
     setBins(bins.filter((b) => b.id !== rowId));
+>>>>>>> main
   };
 
   const handleInputChange = (e) => {
@@ -101,9 +132,13 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             className="search-input"
           />
         </div>
+<<<<<<< HEAD
+        <div className="form-container bin-form">
+=======
 
         {/* Add Bin */}
         <div className="form-container">
+>>>>>>> main
           <input
             type="text"
             name="location"
@@ -124,7 +159,10 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             Add Bin
           </button>
         </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> main
         <div className="table-container">
           <table>
             <thead>

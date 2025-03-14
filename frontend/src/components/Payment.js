@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
 
 const PaymentPage = ({ onLogout, userRole }) => {
   const workers = [
@@ -180,7 +184,10 @@ const PaymentPage = ({ onLogout, userRole }) => {
             Add Payment
           </button>
         </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> main
         <div className="table-container">
           <table>
             <thead>

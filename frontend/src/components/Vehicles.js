@@ -4,7 +4,10 @@ import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for unique IDs
 import "./css/general.css";
 
 const VehiclesPage = ({ onLogout, userRole }) => {
+<<<<<<< HEAD
+=======
   // Mock vehicles data with unique IDs
+>>>>>>> main
   const initialVehicles = [
     {
       id: uuidv4(), // Generate unique ID
@@ -182,8 +185,6 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             Add Vehicle
           </button>
         </div>
-
-        {/* Vehicles Table */}
         <div className="table-container">
           <table>
             <thead>

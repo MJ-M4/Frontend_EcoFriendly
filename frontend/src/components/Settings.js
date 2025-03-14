@@ -1,3 +1,4 @@
+// src/components/Settings.js
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
@@ -22,7 +23,11 @@ const SettingsPage = ({ onLogout, userRole }) => {
 
   const handleNameChange = (e) => {
     e.preventDefault();
-    setMessage('Name updated successfully!');
+    try {
+      setMessage('Name updated successfully!');
+    } catch (err) {
+      setMessage('Error: Failed to update name');
+    }
   };
 
   const handleLanguageChange = (e) => {
@@ -44,6 +49,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
     setMessage(`Notifications for ${type} ${notifications[type] ? 'disabled' : 'enabled'}!`);
   };
 
+  // Handle password update (mocked locally)
   const handlePasswordUpdate = (e) => {
     e.preventDefault();
     setMessage('');
@@ -64,12 +70,23 @@ const SettingsPage = ({ onLogout, userRole }) => {
       return;
     }
 
+    // Mock successful update
     setTimeout(() => {
       setMessage('Password updated successfully!');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
-    }, 1000);
+    }, 1000); // Add a delay of 1 second for the mock update
+
+    // Catch block should be outside of setTimeout
+    try {
+      // Mock successful update
+    } catch (error) {
+      setMessage(
+        error.response?.data?.error || 'Error: Failed to update password. Please check your current password.'
+      );
+      console.error("Error updating password:", error.response?.data || error.message);
+    }
   };
 
   return (

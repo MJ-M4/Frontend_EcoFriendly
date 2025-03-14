@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaChartLine, FaCalendarAlt, FaDatabase, FaUser, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './css/HomePage.css';
 

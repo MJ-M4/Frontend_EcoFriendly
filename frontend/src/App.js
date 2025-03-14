@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
-
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import "./App.css";
 import AlertsPage from "./components/Alerts";
 import BinManagementPage from "./components/BinManagement";
 import EmployeesPage from "./components/EmployeesPage";
@@ -127,21 +132,13 @@ function App() {
           }
         />
         <Route
-          path="/settings"
+          path="/secure-access-code"
           element={
-            isAuthenticated
-              ? <SettingsPage onLogout={handleLogout} userRole={userRole} />
-              : <Navigate to="/login" replace />
-          }
-        />
-
-        {/* Worker-only page for selecting shifts */}
-        <Route
-          path="/my-shifts"
-          element={
-            isAuthenticated && userRole === "worker"
-              ? <MyShiftsPage onLogout={handleLogout} userRole={userRole} />
-              : <Navigate to="/login" replace />
+            isAuthenticated && userRole === "manager" ? (
+              <SecureAccessCodeGenerator onLogout={handleLogout} userRole={userRole} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
       </Routes>

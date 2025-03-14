@@ -1,17 +1,6 @@
+// src/components/Sidebar.js
 import React from 'react';
-import {
-  FaChartBar,
-  FaClock,
-  FaCog,
-  FaDollarSign,
-  FaExclamationTriangle,
-  FaHouseUser,
-  FaSignOutAlt,
-  FaTools,
-  FaTrash,
-  FaTruck,
-  FaUsers,
-} from 'react-icons/fa';
+import { FaChartBar, FaClock, FaCog, FaDollarSign, FaExclamationTriangle, FaHouseUser, FaLock, FaSignOutAlt, FaTools, FaTrash, FaTruck, FaUsers } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ user, activePage, onLogout, userRole }) => {
@@ -30,29 +19,31 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
       </div>
       <nav>
         <ul>
-          {/* Always Visible */}
-          <li className={activePage === "general" ? "active" : ""}>
+          <li className={activePage === 'general' ? 'active' : ''}>
             <Link to="/general">
               <FaHouseUser /> General
             </Link>
           </li>
-          <li className={activePage === "alerts" ? "active" : ""}>
+          <li className={activePage === 'reports' ? 'active' : ''}>
+            <Link to="/reports">
+              <FaChartBar /> Reports
+            </Link>
+          </li>
+          <li className={activePage === 'alerts' ? 'active' : ''}>
             <Link to="/alerts">
               <FaExclamationTriangle /> Alerts
             </Link>
           </li>
-
-          {/* Manager Only */}
-          {userRole === "manager" && (
+          <li className={activePage === 'settings' ? 'active' : ''}>
+            <Link to="/settings">
+              <FaCog /> Settings
+            </Link>
+          </li>
+          {userRole === 'manager' && (
             <>
-              <li className={activePage === "reports" ? "active" : ""}>
-                <Link to="/reports">
-                  <FaChartBar /> Reports
-                </Link>
-              </li>
-              <li className={activePage === "employees" ? "active" : ""}>
-                <Link to="/employees">
-                  <FaUsers /> Employees
+              <li className={activePage === 'workers' ? 'active' : ''}>
+                <Link to="/workers">
+                  <FaUsers /> Workers
                 </Link>
               </li>
               <li className={activePage === "shifts" ? "active" : ""}>
@@ -75,29 +66,13 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
                   <FaTrash /> Bin Management
                 </Link>
               </li>
-              <li className={activePage === "hardware-examination" ? "active" : ""}>
+              <li className={activePage === 'hardware-examination' ? 'active' : ''}>
                 <Link to="/hardware-examination">
                   <FaTools /> Hardware Examination
                 </Link>
               </li>
             </>
           )}
-
-          {/* Worker Only */}
-          {userRole === "worker" && (
-            <li className={activePage === "my-shifts" ? "active" : ""}>
-              <Link to="/my-shifts">
-                <FaClock /> My Shifts
-              </Link>
-            </li>
-          )}
-
-          {/* Common: Settings */}
-          <li className={activePage === "settings" ? "active" : ""}>
-            <Link to="/settings">
-              <FaCog /> Settings
-            </Link>
-          </li>
         </ul>
       </nav>
       <button className="sign-out" onClick={handleSignOut}>

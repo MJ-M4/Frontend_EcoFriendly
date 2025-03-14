@@ -11,37 +11,22 @@ const BinManagementPage = ({ onLogout, userRole }) => {
       binId: uuidv4().slice(0, 10), // the "binId" is now a true UUID
       location: "Tel Aviv",
       address: "A12 Tawfiq Ziad",
-      customerId: "20078787", // Added customerId
-      houseNumber: "12", // Added houseNumber
       status: "Full",
-      assignedWorker: "Worker 1",
     },
     {
       id: uuidv4().slice(0, 10),
       binId: uuidv4().slice(0, 10),
       location: "Jerusalem",
       address: "45B Some Street",
-      customerId: "207702096",
-      houseNumber: "45",
       status: "Full",
-      assignedWorker: "Unassigned",
     },
     {
       id: uuidv4().slice(0, 10),
       binId: uuidv4().slice(0, 10),
       location: "Haifa",
       address: "78C Another Ave",
-      customerId: "20770593",
-      houseNumber: "78",
       status: "Full",
-      assignedWorker: "Worker 3",
     },
-  ];
-
-  const workers = [
-    { id: 1, name: "Worker 1", workerType: "Driver" },
-    { id: 2, name: "Worker 2", workerType: "Cleaner" },
-    { id: 3, name: "Worker 3", workerType: "Maintenance Worker" },
   ];
 
   const [bins, setBins] = useState(initialBins);
@@ -49,8 +34,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
   const [newBin, setNewBin] = useState({
     location: "",
     address: "",
-    customerId: "", // Added customerId
-    houseNumber: "", // Added houseNumber
   });
 
   const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
@@ -64,22 +47,11 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     (bin) =>
       bin.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bin.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bin.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bin.assignedWorker.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      bin.customerId.toLowerCase().includes(searchTerm.toLowerCase()) || // Added customerId to search
-      bin.houseNumber.toLowerCase().includes(searchTerm.toLowerCase()) // Added houseNumber to search
+      bin.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAssignWorker = (rowId, workerName) => {
-    setBins(
-      bins.map((b) =>
-        b.id === rowId ? { ...b, assignedWorker: workerName } : b
-      )
-    );
-  };
-
   const handleAddBin = () => {
-    if (newBin.location && newBin.address && newBin.customerId && newBin.houseNumber) {
+    if (newBin.location && newBin.address) {
       setBins([
         ...bins,
         {
@@ -87,20 +59,15 @@ const BinManagementPage = ({ onLogout, userRole }) => {
           binId: uuidv4().slice(0, 10), // new random binId
           location: newBin.location,
           address: newBin.address,
-          customerId: newBin.customerId,
-          houseNumber: newBin.houseNumber,
           status: "Empty",
-          assignedWorker: "Unassigned",
         },
       ]);
       setNewBin({
         location: "",
         address: "",
-        customerId: "",
-        houseNumber: "",
       });
     } else {
-      alert("Please fill in all fields (Location, Address, Customer ID, and House Number) to add a bin.");
+      alert("Please fill in all fields (Location and Address) to add a bin.");
     }
   };
 
@@ -128,7 +95,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
         <div className="form-container">
           <input
             type="text"
-            placeholder="Search by bin ID, location, address, assigned worker, customer ID, or house number..."
+            placeholder="Search by bin ID, location, or address..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -153,22 +120,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             onChange={handleInputChange}
             className="form-input"
           />
-          <input
-            type="text"
-            name="customerId"
-            placeholder="Customer ID (e.g. 20787876)" // Added field
-            value={newBin.customerId}
-            onChange={handleInputChange}
-            className="form-input"
-          />
-          <input
-            type="text"
-            name="houseNumber"
-            placeholder="House Number (e.g. 12)"
-            value={newBin.houseNumber}
-            onChange={handleInputChange}
-            className="form-input"
-          />
           <button onClick={handleAddBin} className="download-report-btn">
             Add Bin
           </button>
@@ -181,10 +132,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
                 <th>Bin ID</th>
                 <th>Location</th>
                 <th>Address</th>
-                <th>Customer ID</th> {/* Added column */}
-                <th>House Number</th> {/* Added column */}
                 <th>Status</th>
-                <th>Assigned Worker</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -194,23 +142,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
                   <td>{bin.binId}</td>
                   <td>{bin.location}</td>
                   <td>{bin.address}</td>
-                  <td>{bin.customerId}</td> {/* Added column data */}
-                  <td>{bin.houseNumber}</td> {/* Added column data */}
                   <td>{bin.status}</td>
-                  <td>
-                    <select
-                      value={bin.assignedWorker}
-                      onChange={(e) => handleAssignWorker(bin.id, e.target.value)}
-                      className="form-input"
-                    >
-                      <option value="Unassigned">Unassigned</option>
-                      {workers.map((worker) => (
-                        <option key={worker.id} value={worker.name}>
-                          {worker.name} ({worker.workerType})
-                        </option>
-                      ))}
-                    </select>
-                  </td>
                   <td>
                     <button
                       onClick={() => handleDeleteBin(bin.id)}

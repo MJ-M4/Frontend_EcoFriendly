@@ -1,6 +1,6 @@
-/* src/css/general.css */
+/* general.css */
 
-/* General Reset */
+/* Reset */
 * {
   margin: 0;
   padding: 0;
@@ -8,10 +8,14 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body {
+  transition: background 0.3s ease;
+}
+
 /* Dashboard Layout */
 .dashboard {
   display: flex;
-  height: 120vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
@@ -87,12 +91,12 @@ nav ul li a:hover {
   transition: background-color 0.3s;
 }
 
-.sign-out:hover {
-  background-color: #c0392b;
-}
-
 .sign-out svg {
   margin-right: 5px;
+}
+
+.sign-out:hover {
+  background-color: #c0392b;
 }
 
 /* Content Area */
@@ -104,7 +108,7 @@ nav ul li a:hover {
   gap: 20px;
 }
 
-/* Map Container - Make it more "filled" */
+/* Map Container */
 .map-container {
   flex: 2;
   background-color: #fff;
@@ -115,7 +119,7 @@ nav ul li a:hover {
   height: 60vh;
 }
 
-/* Ensure the map fills its container */
+/* Leaflet Container */
 .leaflet-container {
   height: 100% !important;
   width: 100% !important;
@@ -128,10 +132,10 @@ nav ul li a:hover {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
-  height: 30vh;
+  overflow-y: auto;
+  max-height: 50vh;
 }
 
-/* Table Styling */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -160,14 +164,6 @@ tr.selected {
   background-color: #dfe6e9;
 }
 
-/* Route Icon */
-.route-icon {
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-  color: #3498db;
-}
-
 /* Battery Bar */
 .battery-bar {
   display: inline-block;
@@ -185,14 +181,13 @@ tr.selected {
   transition: width 0.3s ease;
 }
 
-/* Download Report Container */
+/* Buttons */
 .download-report-container {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
 }
 
-/* Download Report Button */
 .download-report-btn {
   background-color: #3498db;
   color: #fff;
@@ -209,13 +204,95 @@ tr.selected {
   background-color: #2980b9;
 }
 
-/* Adjust Table Container Height for Reports Page */
-.table-container.reports-table {
-  height: 60vh;
+.delete-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
 }
 
-/* Loading and Error Styles */
-.loading, .error {
+.delete-btn:hover {
+  background-color: #e63946;
+}
+
+.mark-paid-btn {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.mark-paid-btn:hover {
+  background-color: #45a049;
+}
+
+.mark-maintained-btn {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mark-maintained-btn:hover {
+  background-color: #45a049;
+}
+
+/* Form / Search Input */
+.form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-input,
+.search-input {
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #fff;
+  width: 100%;
+  max-width: 300px;
+}
+
+.form-input:focus,
+.search-input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* For Settings & forms */
+.form-label {
+  font-size: 1rem;
+  margin-right: 10px;
+}
+
+.form-group-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification-section {
+  margin-top: 20px;
+}
+
+.notification-item {
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Loading & Error */
+.loading,
+.error {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -231,43 +308,9 @@ tr.selected {
   color: #e74c3c;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-  }
-
-  .content {
-    padding: 10px;
-  }
-
-  .map-container {
-    flex: none;
-    height: 50vh;
-  }
-
-  .table-container {
-    flex: none;
-    height: 40vh;
-  }
-
-  .table-container.reports-table {
-    height: 50vh;
-  }
-
-  table {
-    font-size: 0.9rem;
-  }
-
-  .download-report-btn {
-    width: 100%;
-    padding: 15px;
-  }
+/* The "reports-table" for extra height */
+.table-container.reports-table {
+  height: 40vh;
 }
 
 /* Light Theme (default) */
@@ -307,132 +350,287 @@ tr.selected {
 .dark-theme .form-input:focus,
 .dark-theme .search-input:focus {
   border-color: #1a73e8;
+  outline: none;
 }
-/* Mark as Paid Button */
-.mark-paid-btn {
-  padding: 5px 10px;
-  background-color: #4caf50;
+
+/* General Layout */
+.settings-container {
+  padding: 20px;
+}
+
+.settings-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Card Styling */
+.settings-card {
+  flex: 1;
+  min-width: 300px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  background: linear-gradient(145deg, #f9f9f9, #ffffff);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.settings-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-theme .settings-card {
+  background: linear-gradient(145deg, #333, #444);
+  color: #fff;
+}
+
+/* Form Styling */
+.settings-form {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.form-input.error {
+  border-color: #dc3545;
+}
+
+.form-label {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  font-size: 1rem;
+  color: #666;
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+.form-input:focus + .form-label,
+.form-input:not(:placeholder-shown) + .form-label {
+  top: -10px;
+  left: 12px;
+  font-size: 0.8rem;
+  color: #007bff;
+}
+
+/* Button Styling */
+.primary-btn {
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(135deg, #0056b3, #003d80);
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.toggle-switch input {
+  display: none;
+}
+
+.slider {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  transition: background-color 0.3s;
+}
+
+.slider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle-switch input:checked + .slider {
+  background-color: #007bff;
+}
+
+.toggle-switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* Message Popup */
+.settings-message {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.settings-message.success {
+  background-color: #28a745;
+  color: white;
+}
+
+.settings-message.error {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Icons */
+.form-label i {
+  margin-right: 8px;
+  color: #007bff;
+}
+
+/* Theme Support */
+body.light-theme {
+  background-color: #f0f2f5;
+}
+
+body.dark-theme {
+  background-color: #222;
+}
+
+body.dark-theme .form-label {
+  color: #aaa;
+}
+
+body.dark-theme .form-input {
+  background-color: #444;
+  color: #fff;
+  border-color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .settings-grid {
+    flex-direction: column;
+  }
+}
+/* Add to general.css */
+
+/* Report Section Styling */
+.report-section {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.report-section[data-visible="false"] {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.report-section[data-visible="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  height: auto;
+}
+
+/* Button Container */
+.button-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Chart Container */
+.chart-container {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+/* Ensure this is in general.css */
+
+/* Download Button Styling */
+.download-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #3498db;
+  font-size: 1.2em;
+  transition: color 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.download-btn:hover {
+  color: #2980b9;
+  transform: scale(1.1);
+}
+
+/* Fallback for missing icon */
+.download-btn::before {
+  content: "Download";
+  display: none; /* Hidden by default */
+  font-size: 0.9em;
+  color: #3498db;
+}
+
+.download-btn i {
   margin-right: 5px;
 }
 
-.mark-paid-btn:hover {
-  background-color: #45a049;
+/* Show fallback text if icon is missing */
+.download-btn:not(:has(i))::before {
+  display: inline;
 }
-
-/* Ensure these are already in your general.css (from previous refactoring) */
-.form-container {
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.form-input,
-.search-input {
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #fff;
-  width: 100%;
-  max-width: 300px;
-}
-
-.form-input:focus,
-.search-input:focus {
-  border-color: #3498db;
-  outline: none;
-}
-
-.download-report-btn {
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.3s;
-}
-
-.download-report-btn:hover {
-  background-color: #2980b9;
-}
-
-.delete-btn {
-  background-color: #ff4d4f;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  padding: 5px 10px;
-}
-
-.delete-btn:hover {
-  background-color: #e63946;
-}
-
-/* Add this to your existing general.css */
-.mark-maintained-btn {
-  padding: 5px 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.mark-maintained-btn:hover {
-  background-color: #45a049;
-}
-
-/* Ensure these are already in your general.css (from previous refactoring) */
-.form-container {
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.form-input,
-.search-input {
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #fff;
-  width: 100%;
-  max-width: 300px;
-}
-
-.form-input:focus,
-.search-input:focus {
-  border-color: #3498db;
-  outline: none;
-}
-
-.download-report-btn {
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.3s;
-}
-
-.download-report-btn:hover {
-  background-color: #2980b9;
-}
-
-
-

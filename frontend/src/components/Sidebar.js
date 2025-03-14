@@ -1,5 +1,4 @@
-// src/components/Sidebar.js
-import React from "react";
+import React from 'react';
 import {
   FaChartBar,
   FaClock,
@@ -12,8 +11,8 @@ import {
   FaTrash,
   FaTruck,
   FaUsers,
-} from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+} from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ user, activePage, onLogout, userRole }) => {
   const navigate = useNavigate();
@@ -31,14 +30,10 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
       </div>
       <nav>
         <ul>
+          {/* Always Visible */}
           <li className={activePage === "general" ? "active" : ""}>
             <Link to="/general">
               <FaHouseUser /> General
-            </Link>
-          </li>
-          <li className={activePage === "reports" ? "active" : ""}>
-            <Link to="/reports">
-              <FaChartBar /> Reports
             </Link>
           </li>
           <li className={activePage === "alerts" ? "active" : ""}>
@@ -46,11 +41,18 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
               <FaExclamationTriangle /> Alerts
             </Link>
           </li>
+
+          {/* Manager Only */}
           {userRole === "manager" && (
             <>
-              <li className={activePage === "workers" ? "active" : ""}>
-                <Link to="/workers">
-                  <FaUsers /> Workers
+              <li className={activePage === "reports" ? "active" : ""}>
+                <Link to="/reports">
+                  <FaChartBar /> Reports
+                </Link>
+              </li>
+              <li className={activePage === "employees" ? "active" : ""}>
+                <Link to="/employees">
+                  <FaUsers /> Employees
                 </Link>
               </li>
               <li className={activePage === "shifts" ? "active" : ""}>
@@ -73,17 +75,24 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
                   <FaTrash /> Bin Management
                 </Link>
               </li>
-              <li
-                className={
-                  activePage === "hardware-examination" ? "active" : ""
-                }
-              >
+              <li className={activePage === "hardware-examination" ? "active" : ""}>
                 <Link to="/hardware-examination">
                   <FaTools /> Hardware Examination
                 </Link>
               </li>
             </>
           )}
+
+          {/* Worker Only */}
+          {userRole === "worker" && (
+            <li className={activePage === "my-shifts" ? "active" : ""}>
+              <Link to="/my-shifts">
+                <FaClock /> My Shifts
+              </Link>
+            </li>
+          )}
+
+          {/* Common: Settings */}
           <li className={activePage === "settings" ? "active" : ""}>
             <Link to="/settings">
               <FaCog /> Settings

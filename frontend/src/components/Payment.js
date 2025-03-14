@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/reset.css';
 import './css/layout.css';
@@ -7,17 +8,40 @@ import './css/themes.css';
 import './css/responsive.css';
 
 const PaymentPage = ({ onLogout, userRole }) => {
-  // Mock workers data
   const workers = [
-    { id: 1, name: 'Worker 1', workerType: 'Driver' },
-    { id: 2, name: 'Worker 2', workerType: 'Cleaner' },
-    { id: 3, name: 'Worker 3', workerType: 'Maintenance Worker' },
+    { id: '207705096', name: 'mhagne', workerType: 'Driver' },
+    { id: '207878686', name: 'jayusi', workerType: 'Cleaner' },
+    { id: '12121212', name: 'Worker 12121212', workerType: 'Maintenance Worker' },
   ];
 
   const initialPayments = [
-    { id: 1, workerId: 1, workerName: 'Worker 1', amount: 1500, paymentDate: '2025-03-01', status: 'Paid', notes: 'Monthly salary' },
-    { id: 2, workerId: 2, workerName: 'Worker 2', amount: 1200, paymentDate: '2025-03-02', status: 'Pending', notes: 'Bonus' },
-    { id: 3, workerId: 3, workerName: 'Worker 3', amount: 1800, paymentDate: '', status: 'Pending', notes: 'Overtime' },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '207705096',
+      workerName: 'mhagne',
+      amount: 1500,
+      paymentDate: '2025-03-01',
+      status: 'Paid',
+      notes: 'Monthly salary',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '207878686',
+      workerName: 'jayusi',
+      amount: 1200,
+      paymentDate: '2025-03-02',
+      status: 'Pending',
+      notes: 'Bonus',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '12121212',
+      workerName: 'Worker 12121212',
+      amount: 12121200,
+      paymentDate: 'N/A',
+      status: 'Pending',
+      notes: '121212',
+    },
   ];
 
   const [payments, setPayments] = useState(initialPayments);
@@ -25,66 +49,87 @@ const PaymentPage = ({ onLogout, userRole }) => {
   const [newPayment, setNewPayment] = useState({
     workerId: '',
     amount: '',
+    paymentDate: '', // Added paymentDate
     notes: '',
   });
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter payments by worker ID only
   const filteredPayments = payments.filter((payment) =>
-    String(payment.workerId).includes(searchTerm)
+    payment.workerId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleAddPayment = () => {
-    if (newPayment.workerId && newPayment.amount && newPayment.notes) {
-      const selectedWorker = workers.find((w) => w.id === parseInt(newPayment.workerId));
-      if (!selectedWorker) {
-        alert('Invalid Worker ID. Please enter a valid Worker ID.');
-        return;
-      }
-
-      const newId = payments.length + 1;
-      setPayments([
-        ...payments,
-        {
-          id: newId,
-          workerId: parseInt(newPayment.workerId),
-          workerName: selectedWorker.name,
-          amount: parseFloat(newPayment.amount),
-          paymentDate: '',
-          status: 'Pending',
-          notes: newPayment.notes,
-        },
-      ]);
-      setNewPayment({
-        workerId: '',
-        amount: '',
-        notes: '',
-      });
-    } else {
-      alert('Please fill in all fields (Worker ID, Amount, and Notes) to add a payment.');
+    // Validation
+    if (
+      !newPayment.workerId ||
+      !newPayment.amount ||
+      !newPayment.paymentDate ||
+      !newPayment.notes
+    ) {
+      alert('Please fill in all fields (Worker ID, Amount, Payment Date, and Notes).');
+      return;
     }
+
+    const amount = parseFloat(newPayment.amount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Amount must be a positive number.');
+      return;
+    }
+
+    const paymentDate = new Date(newPayment.paymentDate);
+    const currentDate = new Date();
+    if (paymentDate > currentDate) {
+      alert('Payment Date cannot be in the future.');
+      return;
+    }
+
+    const worker = workers.find((w) => w.id === newPayment.workerId);
+    if (!worker) {
+      alert('Worker ID not found. Please enter a valid Worker ID.');
+      return;
+    }
+
+    const newId = uuidv4().slice(0, 10);
+
+    setPayments([
+      ...payments,
+      {
+        id: newId,
+        workerId: newPayment.workerId,
+        workerName: worker.name,
+        amount: amount,
+        paymentDate: newPayment.paymentDate, // Use the manually entered date
+        status: 'Pending',
+        notes: newPayment.notes,
+      },
+    ]);
+
+    setNewPayment({ workerId: '', amount: '', paymentDate: '', notes: '' });
   };
 
   const handleMarkAsPaid = (id) => {
+    const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
     setPayments(
-      payments.map((payment) =>
-        payment.id === id
-          ? { ...payment, status: 'Paid', paymentDate: new Date().toISOString().split('T')[0] } // Use current date
-          : payment
+      payments.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              status: 'Paid',
+              paymentDate: currentDate, // Update paymentDate when marking as paid
+            }
+          : p
       )
     );
   };
 
   const handleDeletePayment = (id) => {
-    setPayments(payments.filter((payment) => payment.id !== id));
+    setPayments(payments.filter((p) => p.id !== id));
   };
 
-  // Handle input change for new payment form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPayment((prev) => ({ ...prev, [name]: value }));
-  };
+  if (userRole !== 'manager') {
+    return <div className="error">Access Denied: Managers Only</div>;
+  }
 
   return (
     <div className="dashboard">
@@ -92,7 +137,6 @@ const PaymentPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Payments</h1>
 
-        {/* Search Box */}
         <div className="form-container">
           <input
             type="text"
@@ -103,45 +147,53 @@ const PaymentPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Payment Form */}
         <div className="form-container">
           <input
-            type="number"
+            type="text"
             name="workerId"
-            placeholder="Worker ID"
+            placeholder="Worker ID (e.g., 207705096)"
             value={newPayment.workerId}
-            onChange={handleInputChange}
+            onChange={(e) => setNewPayment({ ...newPayment, workerId: e.target.value })}
             className="form-input"
-            required
           />
           <input
             type="number"
             name="amount"
             placeholder="Amount"
             value={newPayment.amount}
-            onChange={handleInputChange}
+            onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
             className="form-input"
-            required
+          />
+          <input
+            type="date"
+            name="paymentDate"
+            placeholder="Payment Date"
+            value={newPayment.paymentDate}
+            onChange={(e) => setNewPayment({ ...newPayment, paymentDate: e.target.value })}
+            className="form-input"
           />
           <input
             type="text"
             name="notes"
             placeholder="Notes"
             value={newPayment.notes}
-            onChange={handleInputChange}
+            onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
             className="form-input"
-            required
           />
           <button onClick={handleAddPayment} className="download-report-btn">
             Add Payment
           </button>
         </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
         <div className="table-container">
           <table>
             <thead>
               <tr>
                 <th>Payment ID</th>
-                <th>Worker ID</th> {/* Added Worker ID column */}
+                <th>Worker ID</th>
                 <th>Worker Name</th>
                 <th>Amount</th>
                 <th>Payment Date</th>
@@ -154,10 +206,12 @@ const PaymentPage = ({ onLogout, userRole }) => {
               {filteredPayments.map((payment) => (
                 <tr key={payment.id}>
                   <td>{payment.id}</td>
-                  <td>{payment.workerId}</td> {/* Display Worker ID */}
+                  <td>{payment.workerId}</td>
                   <td>{payment.workerName}</td>
-                  <td>${payment.amount.toFixed(2)}</td>
-                  <td>{payment.paymentDate || 'N/A'}</td>
+                  <td>${payment.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  <td style={{ color: payment.paymentDate === 'N/A' ? '#888' : 'inherit' }}>
+                    {payment.paymentDate}
+                  </td>
                   <td>{payment.status}</td>
                   <td>{payment.notes}</td>
                   <td>

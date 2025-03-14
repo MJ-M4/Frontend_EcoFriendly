@@ -1,7 +1,6 @@
-// src/components/HomePage.js
 import React from 'react';
+import { FaCalendarAlt, FaChartLine, FaDatabase, FaFacebook, FaInstagram, FaTwitter, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { FaChartLine, FaCalendarAlt, FaDatabase, FaUser, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'; // Add icons
 import './css/HomePage.css';
 
 const HomePage = () => {
@@ -13,7 +12,6 @@ const HomePage = () => {
     { name: 'Sarah Smith', role: 'Waste Collector', quote: 'Real-time data makes my job so much easier.' },
   ];
 
-  // Handle contact form submission (mock for now)
   const handleContactSubmit = (e) => {
     e.preventDefault();
     alert('Thank you for your message! We will get back to you soon.');
@@ -30,7 +28,15 @@ const HomePage = () => {
             <button className="cta-button primary" onClick={() => navigate('/login')}>
               Get Started
             </button>
-            <button className="cta-button secondary" onClick={() => window.scrollTo({ top: document.querySelector('.features-section').offsetTop, behavior: 'smooth' })}>
+            <button
+              className="cta-button secondary"
+              onClick={() =>
+                window.scrollTo({
+                  top: document.querySelector('.features-section').offsetTop,
+                  behavior: 'smooth',
+                })
+              }
+            >
               Learn More
             </button>
           </div>
@@ -70,7 +76,9 @@ const HomePage = () => {
             <div key={index} className="testimonial-card">
               <FaUser className="testimonial-icon" />
               <p className="quote">"{testimonial.quote}"</p>
-              <p className="author">{testimonial.name}, {testimonial.role}</p>
+              <p className="author">
+                {testimonial.name}, {testimonial.role}
+              </p>
             </div>
           ))}
         </div>
@@ -92,7 +100,9 @@ const HomePage = () => {
             <label htmlFor="message">Message</label>
             <textarea id="message" placeholder="Your Message" rows="4" required></textarea>
           </div>
-          <button type="submit" className="submit-button">Send Message</button>
+          <button type="submit" className="submit-button">
+            Send Message
+          </button>
         </form>
       </section>
 
@@ -114,9 +124,15 @@ const HomePage = () => {
           <div className="footer-section">
             <h4>Follow Us</h4>
             <div className="social-links">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebook /></a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                <FaFacebook />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                <FaTwitter />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <FaInstagram />
+              </a>
             </div>
           </div>
         </div>

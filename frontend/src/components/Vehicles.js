@@ -9,23 +9,23 @@ const VehiclesPage = ({ onLogout, userRole }) => {
     {
       id: uuidv4(), // Generate unique ID
       type: "Garbage Truck",
-      licensePlate: "ABC-123",
+      licensePlate: "0000001",
       status: "Available",
-      location: "Tel Aviv",
+      location: "Nazareth",
       lastMaintenance: "2025-02-01",
     },
     {
       id: uuidv4(),
       type: "Van",
-      licensePlate: "XYZ-789",
+      licensePlate: "0000002",
       status: "In Use",
-      location: "Haifa",
+      location: "Nazareth",
       lastMaintenance: "2025-01-15",
     },
     {
       id: uuidv4(),
       type: "Maintenance Vehicle",
-      licensePlate: "MNT-456",
+      licensePlate: "0000003",
       status: "Under Maintenance",
       location: "Nazareth",
       lastMaintenance: "2025-03-01",

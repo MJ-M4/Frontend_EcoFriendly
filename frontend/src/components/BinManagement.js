@@ -9,21 +9,21 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     {
       id: uuidv4().slice(0, 10), // internal "id" used for row keys
       binId: uuidv4().slice(0, 10), // the "binId" is now a true UUID
-      location: "Tel Aviv",
+      location: "Nazareth",
       address: "A12 Tawfiq Ziad",
       status: "Full",
     },
     {
       id: uuidv4().slice(0, 10),
       binId: uuidv4().slice(0, 10),
-      location: "Jerusalem",
+      location: "Nazareth",
       address: "45B Some Street",
       status: "Full",
     },
     {
       id: uuidv4().slice(0, 10),
       binId: uuidv4().slice(0, 10),
-      location: "Haifa",
+      location: "Nazareth",
       address: "78C Another Ave",
       status: "Full",
     },

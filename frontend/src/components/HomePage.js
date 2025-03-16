@@ -20,7 +20,7 @@ const HomePage = () => {
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <header className="hero-section">
+      <header className="hero-section" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/Ecofriendly_Homepage.jpg)` }}>
         <div className="hero-content">
           <h1>Ecofriendly</h1>
           <p className="tagline">Monitor garbage containers in real-time and optimize waste collection processes.</p>

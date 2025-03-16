@@ -6,8 +6,8 @@ import './css/general.css';
 const PaymentPage = ({ onLogout, userRole }) => {
   const workers = [
     { id: '207705096', name: 'mhagne', workerType: 'Driver' },
-    { id: '207878686', name: 'jayusi', workerType: 'Cleaner' },
-    { id: '12121212', name: 'Worker 12121212', workerType: 'Maintenance Worker' },
+    { id: '205548491', name: 'jayusi', workerType: 'Cleaner' },
+    { id: '212443412', name: 'Worker 3', workerType: 'Maintenance Worker' },
   ];
 
   const initialPayments = [
@@ -22,7 +22,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
     },
     {
       id: uuidv4().slice(0, 10),
-      workerId: '207878686',
+      workerId: '205548491',
       workerName: 'jayusi',
       amount: 1200,
       paymentDate: '2025-03-02',
@@ -31,12 +31,12 @@ const PaymentPage = ({ onLogout, userRole }) => {
     },
     {
       id: uuidv4().slice(0, 10),
-      workerId: '12121212',
-      workerName: 'Worker 12121212',
-      amount: 12121200,
-      paymentDate: 'N/A',
+      workerId: '212443412',
+      workerName: 'Worker 3',
+      amount: 1000,
+      paymentDate: '2025-03-03',
       status: 'Pending',
-      notes: '121212',
+      notes: 'Bonus',
     },
   ];
 

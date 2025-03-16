@@ -1,10 +1,11 @@
+// src/components/ShiftsPage.js
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/general.css';
+import { approvedShiftsStore } from './mockData';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
-  // Mock employees
   const employees = [
     {
       id: uuidv4().slice(0, 10),
@@ -26,31 +27,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     },
   ];
 
-  // Mock shifts
-  const initialShifts = [
-    {
-      id: uuidv4().slice(0, 10),
-      workerId: '207705096', // identity
-      workerName: 'Worker 1',
-      workerType: 'Driver',
-      date: '2025-03-06',
-      startTime: '08:00',
-      endTime: '16:00',
-      location: 'Tel Aviv',
-    },
-    {
-      id: uuidv4().slice(0, 10),
-      workerId: '205548491',
-      workerName: 'Worker 2',
-      workerType: 'Cleaner',
-      date: '2025-03-06',
-      startTime: '09:00',
-      endTime: '17:00',
-      location: 'Jerusalem',
-    },
-  ];
-
-  const [shifts, setShifts] = useState(initialShifts);
+  const [shifts, setShifts] = useState([...approvedShiftsStore.shifts]);
   const [searchId, setSearchId] = useState('');
   const [newShift, setNewShift] = useState({
     workerId: '',
@@ -70,9 +47,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  const filteredShifts = shifts.filter((shift) =>
-    shift.workerId.includes(searchId)
-  );
+  const filteredShifts = shifts.filter((shift) => shift.workerId.includes(searchId));
 
   const handleAddShift = () => {
     if (
@@ -83,7 +58,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       newShift.endTime &&
       newShift.location
     ) {
-      // Validate worker
       const foundEmployee = employees.find((e) => e.identity === newShift.workerId);
       if (!foundEmployee) {
         alert('Invalid Worker ID. Check Employees for correct numeric identity.');
@@ -93,7 +67,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
         alert(`Worker with ID ${foundEmployee.identity} is a ${foundEmployee.workerType}, not a ${newShift.workerType}.`);
         return;
       }
-      // Add shift
       setShifts([
         ...shifts,
         {
@@ -142,9 +115,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
   const handleSaveUpdate = () => {
     setShifts(
       shifts.map((shift) =>
-        shift.workerId === updateWorkerId
-          ? { ...shift, ...updatedShift }
-          : shift
+        shift.workerId === updateWorkerId ? { ...shift, ...updatedShift } : shift
       )
     );
     setUpdateWorkerId('');
@@ -160,8 +131,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="shifts" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Shifts</h1>
-
-        {/* Search by Worker ID */}
         <div className="form-container">
           <input
             type="text"
@@ -171,8 +140,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             className="search-input"
           />
         </div>
-
-        {/* Add Shift */}
         <div className="form-container">
           <input
             type="text"
@@ -219,8 +186,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             Add Shift
           </button>
         </div>
-
-        {/* Update Shift */}
         <div className="form-container">
           <input
             type="text"
@@ -265,7 +230,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             </>
           )}
         </div>
-
         <div className="table-container">
           <table>
             <thead>

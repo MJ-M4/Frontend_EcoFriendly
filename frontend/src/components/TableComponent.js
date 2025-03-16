@@ -34,7 +34,6 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
           <tr
             key={bin.id}
             className={selectedBin && selectedBin.id === bin.id ? 'selected' : ''}
-            onClick={() => onSelectBin(bin)}
           >
             <td>{bin.id}</td>
             <td>

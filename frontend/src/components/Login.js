@@ -37,7 +37,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/EcofriendlyBackground.jpg)`, backgroundSize: 'cover' }}>
       <div className="login-box">
         <img src={ecoFriendlyLogo} alt="EcoFriendly System Logo" className="login-logo" />
         <h2>Login to EcoFriendly System</h2>

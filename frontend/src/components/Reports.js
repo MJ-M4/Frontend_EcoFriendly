@@ -15,9 +15,9 @@ const ReportsPage = ({ onLogout, userRole }) => {
 
   // Mock Data
   const initialBinData = [
-    { binId: uuidv4().slice(0, 10), capacity: 85, location: "Nazareth", lastCollected: "2025-01-15" },
-    { binId: uuidv4().slice(0, 10), capacity: 30, location: "Haifa", lastCollected: "2025-02-01" },
-    { binId: uuidv4().slice(0, 10), capacity: 100, location: "Tel Aviv", lastCollected: "2025-03-10" },
+    { binId: uuidv4().slice(0, 10), capacity: 85, location: "Nazareth", lastCollected: "2025-03-15" },
+    { binId: uuidv4().slice(0, 10), capacity: 30, location: "Nazareth", lastCollected: "2025-03-01" },
+    { binId: uuidv4().slice(0, 10), capacity: 100, location: "Nazareth", lastCollected: "2025-03-10" },
   ];
   const initialWorkersData = [
     { workerId: "207705096", name: "Worker A", phone: "050-123-4567", startDate: "2025-01-01", shift: "08:00 - 16:00" },

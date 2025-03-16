@@ -1,7 +1,17 @@
 /* src/css/Login.css */
 
-/* Login Container */
-.login-container {
+/* General Reset */
+.home-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('C:\Users\TOGOMORI\Desktop\Reactjs\Frontend_EcoFriendly\frontend\src\Photos\Ecofriendly_Homepage.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;

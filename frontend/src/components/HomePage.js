@@ -37,12 +37,76 @@ const Login = ({ onLogin, isAuthenticated }) => {
   };
 
   return (
-    <div className="login-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/EcofriendlyBackground.jpg)`, backgroundSize: 'cover' }}>
-      <div className="login-box">
-        <img src={ecoFriendlyLogo} alt="EcoFriendly System Logo" className="login-logo" />
-        <h2>Login to EcoFriendly System</h2>
-        {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleSubmit}>
+    <div className="home-page">
+      {/* Hero Section */}
+      <header className="hero-section">
+        <div className="hero-content">
+          <h1>Ecofriendly</h1>
+          <p className="tagline">Monitor garbage containers in real-time and optimize waste collection processes.</p>
+          <div className="hero-buttons">
+            <button className="cta-button primary" onClick={() => navigate('/login')}>
+              Get Started
+            </button>
+            <button
+              className="cta-button secondary"
+              onClick={() =>
+                window.scrollTo({
+                  top: document.querySelector('.features-section').offsetTop,
+                  behavior: 'smooth',
+                })
+              }
+            >
+              Learn More
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <h2>Key Features</h2>
+        <div className="features-grid">
+          <div className="feature-card">
+            <FaChartLine className="feature-icon" />
+            <h3>Real-Time Monitoring</h3>
+            <p>Track container fullness levels using IoT sensors.</p>
+            <a href="#monitoring" className="feature-link">Learn More</a>
+          </div>
+          <div className="feature-card">
+            <FaCalendarAlt className="feature-icon" />
+            <h3>Automated Scheduling</h3>
+            <p>Schedule waste collection based on container data.</p>
+            <a href="#scheduling" className="feature-link">Learn More</a>
+          </div>
+          <div className="feature-card">
+            <FaDatabase className="feature-icon" />
+            <h3>Data Analytics</h3>
+            <p>Analyze waste trends and optimize operations.</p>
+            <a href="#analytics" className="feature-link">Learn More</a>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section">
+        <h2>What Our Users Say</h2>
+        <div className="testimonials-grid">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="testimonial-card">
+              <FaUser className="testimonial-icon" />
+              <p className="quote">"{testimonial.quote}"</p>
+              <p className="author">
+                {testimonial.name}, {testimonial.role}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section className="contact-section">
+        <h2>Contact Us</h2>
+        <form className="contact-form" onSubmit={handleContactSubmit}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input

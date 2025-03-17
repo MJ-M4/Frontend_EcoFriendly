@@ -20,7 +20,7 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
     <table>
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Bin ID</th>
           <th>Status</th>
           <th>Capacity</th>
           <th>Event Time</th>

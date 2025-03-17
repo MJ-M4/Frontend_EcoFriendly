@@ -6,9 +6,10 @@ import './css/general.css';
 import { approvedShiftsStore } from './mockData';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
+  // Static employee data with added IDs
   const employees = [
     {
-      id: uuidv4().slice(0, 10),
+      id: 'emp1', // Added for React key usage
       identity: '207705096',
       name: 'Worker 1',
       phone: '050-123-4567',
@@ -17,7 +18,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       workerType: 'Driver',
     },
     {
-      id: uuidv4().slice(0, 10),
+      id: 'emp2', // Added for React key usage
       identity: '205548491',
       name: 'Worker 2',
       phone: '052-987-6543',
@@ -25,9 +26,35 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       joiningDate: '15-03-2023',
       workerType: 'Cleaner',
     },
+
   ];
 
-  const [shifts, setShifts] = useState([...approvedShiftsStore.shifts]);
+  // Initial shift data to populate the table
+  const initialShifts = [
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '207705096',
+      workerName: 'Worker 1',
+      workerType: 'Driver',
+      date: '2025-03-17', // Example date (today's date as per system info)
+      startTime: '09:00',
+      endTime: '17:00',
+      location: 'Tel Aviv',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '205548491',
+      workerName: 'Worker 2',
+      workerType: 'Cleaner',
+      date: '2025-03-18',
+      startTime: '08:00',
+      endTime: '16:00',
+      location: 'Jerusalem',
+    },
+  ];
+
+  // State for shifts, search, and forms
+  const [shifts, setShifts] = useState([...(approvedShiftsStore.shifts || []), ...initialShifts]);
   const [searchId, setSearchId] = useState('');
   const [newShift, setNewShift] = useState({
     workerId: '',
@@ -45,10 +72,13 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     location: '',
   });
 
+  // Mock user data
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
+  // Filter shifts based on search input
   const filteredShifts = shifts.filter((shift) => shift.workerId.includes(searchId));
 
+  // Handle adding a new shift
   const handleAddShift = () => {
     if (
       newShift.workerId &&
@@ -93,10 +123,12 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     }
   };
 
+  // Handle deleting a shift
   const handleDeleteShift = (id) => {
     setShifts(shifts.filter((shift) => shift.id !== id));
   };
 
+  // Load shift data for updating
   const handleUpdateShift = () => {
     const shiftToUpdate = shifts.find((s) => s.workerId === updateWorkerId);
     if (shiftToUpdate) {
@@ -112,6 +144,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     }
   };
 
+  // Save updated shift data
   const handleSaveUpdate = () => {
     setShifts(
       shifts.map((shift) =>
@@ -122,6 +155,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     setUpdatedShift({ date: '', startTime: '', endTime: '', location: '' });
   };
 
+  // Restrict access to managers only
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -131,6 +165,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       <Sidebar user={user} activePage="shifts" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Shifts</h1>
+        {/* Search input */}
         <div className="form-container">
           <input
             type="text"
@@ -140,6 +175,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             className="search-input"
           />
         </div>
+        {/* Form to add a new shift */}
         <div className="form-container">
           <input
             type="text"
@@ -186,6 +222,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             Add Shift
           </button>
         </div>
+        {/* Form to update an existing shift */}
         <div className="form-container">
           <input
             type="text"
@@ -230,6 +267,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             </>
           )}
         </div>
+        {/* Table to display shifts */}
         <div className="table-container">
           <table>
             <thead>

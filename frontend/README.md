@@ -49,7 +49,7 @@ For official instructions on installing Node and npm, see [Node.js Official Docu
 3. Start the Development Server:
    npm start
    
-   - Opens on [http://localhost:3000].  
+   - Opens on [http://localhost:3000](http://localhost:3000).  
    - The application will reload automatically as you edit the code.
 
 4. Build for Production (Optional):
@@ -62,7 +62,7 @@ For official instructions on installing Node and npm, see [Node.js Official Docu
 ## Usage Instructions
 
 1. Access the App  
-   - Go to [http://localhost:3000] after running npm start.  
+   - Go to [http://localhost:3000](http://localhost:3000) after running npm start.  
    - The Home page introduces the system’s features.
 
 2. Login Flow  

@@ -1,44 +1,92 @@
-# Getting Started with Create React App
+## Smart Waste Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ecofriendly designed to monitor garbage containers in real-time, optimize collection routes, and streamline overall waste management operations. The project is particularly suitable for local municipalities or private waste-management companies looking to reduce operational costs and minimize environmental impact through data-driven collection strategies.
 
-## Available Scripts
+## Key Features
 
-In the project directory, you can run:
+1. Real-Time Bin Monitoring  
+   - Displays container fullness percentage and battery status (via the IoT hardware mockup in the code).  
+   - Updates in the UI help managers know which bins require urgent attention.
 
-### `npm start`
+2. Role-Based Access 
+   - Managers: Access to employee management, bin management, hardware checks, payments, shift scheduling, and generating data-rich reports.  
+   - Workers: Can view assigned shifts, propose shift times, and see relevant alerts.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. Alerts & Notifications  
+   - Automatically flags “bin full” or “low battery” events to ensure timely intervention and avoid public health concerns.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+4. Reports & Analysis 
+   - Generates charts (using [Chart.js](https://www.chartjs.org/)) to track fill rates, worker data, and vehicle maintenance.  
+   - Supports CSV export for further analysis.
 
-### `npm test`
+5. Vehicles & Hardware Examination  
+   - Monitors vehicle status, last maintenance date, and location.  
+   - Checks IoT hardware battery levels and operational status.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+6. Map Integration 
+   - Uses [Leaflet](https://leafletjs.com/) for interactive maps, showing bin locations and suggested routes (via Waze links).
 
-### `npm run build`
+## Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js (≥ 14 or 16 LTS recommended)  
+- npm (usually bundled with Node.js)  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+For official instructions on installing Node and npm, see [Node.js Official Documentation](https://nodejs.org/en/docs/).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation & Setup
 
-### `npm run eject`
+1. Clone or Download the project:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   git clone https://github.com/MJ-M4/Frontend_EcoFriendly.git
+   cd Frontend_EcoFriendly
+   
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Install Dependencies:
+   npm install
+   
+   Installs all needed packages (React, React Router, Leaflet, Chart.js, etc.) as specified in package.json.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Start the Development Server:
+   npm start
+   
+   - Opens on [http://localhost:3000].  
+   - The application will reload automatically as you edit the code.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. Build for Production (Optional):
+   npm run build
+   
+   - Outputs minified production code to build/.  
+   - For details on deployment, see [Create React App – Deployment](https://create-react-app.dev/docs/deployment/).
 
+
+## Usage Instructions
+
+1. Access the App  
+   - Go to [http://localhost:3000] after running npm start.  
+   - The Home page introduces the system’s features.
+
+2. Login Flow  
+   - Click “Login” to choose a role (Manager or Worker).  
+   - Enter a mock username/password (e.g. “admin” / “admin”).  
+   - The app simulates successful login, granting role-based access. (In production, replace with real authentication.)
+
+3. Navigate via Sidebar  
+   - General: Main dashboard with map and bin status table.  
+   - Alerts: Shows warnings about bins or hardware.  
+   - Bin Management (Manager Only): Create, search, or delete bins.  
+   - Hardware Examination (Manager Only): Inspect IoT hardware battery and maintenance status.  
+   - Employees (Manager Only): Add/delete employees, generate random passwords.  
+   - Shifts (Manager Only): Add or edit worker shifts, search by Worker ID.  
+   - Shift Proposals (Manager): Approve or deny worker shift proposals.  
+   - My Shifts (Worker Only): Workers view assigned shifts.  
+   - Propose Shifts (Worker Only): Workers request shifts for upcoming weeks.  
+   - Payment (Manager Only): Manage and record payments to employees.  
+   - Reports (Manager Only): Generate charts and export data (Bins, Vehicles, Hardware, etc.) as CSV.  
+   - Settings: Change your display name, password (mock), theme (Light/Dark), and notifications.
+
+4. Alerts & Real-Time Updates  
+   - While the code uses mock data, any bin with status: 'Full' or battery < 50 triggers an alert icon.  
+  
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).

@@ -47,6 +47,7 @@ For official instructions on installing Node and npm, see [Node.js Official Docu
    Installs all needed packages (React, React Router, Leaflet, Chart.js, etc.) as specified in package.json.
 
 3. Start the Development Server:
+   cd frontend
    npm start
    
    - Opens on [http://localhost:3000](http://localhost:3000).  

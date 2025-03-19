@@ -1,6 +1,8 @@
 // src/components/Sidebar.js
 import React from 'react';
 import {
+  FaCalendar,
+  FaCalendarAlt,
   FaChartBar,
   FaClock,
   FaCog,
@@ -36,21 +38,19 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
               <FaHouseUser /> General
             </Link>
           </li>
-          <li className={activePage === "alerts" ? "active" : ""}>
+          <li className={activePage === 'alerts' ? 'active' : ''}>
             <Link to="/alerts">
               <FaExclamationTriangle /> Alerts
             </Link>
           </li>
-
-          {/* Manager Only */}
-          {userRole === "manager" && (
+          {userRole === 'manager' && (
             <>
-              <li className={activePage === "reports" ? "active" : ""}>
+              <li className={activePage === 'reports' ? 'active' : ''}>
                 <Link to="/reports">
                   <FaChartBar /> Reports
                 </Link>
               </li>
-              <li className={activePage === "employees" ? "active" : ""}>
+              <li className={activePage === 'employees' ? 'active' : ''}>
                 <Link to="/employees">
                   <FaUsers /> Employees
                 </Link>
@@ -87,18 +87,21 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
               </li>
             </>
           )}
-
-          {/* Worker Only */}
-          {userRole === "worker" && (
-            <li className={activePage === "my-shifts" ? "active" : ""}>
-              <Link to="/my-shifts">
-                <FaClock /> My Shifts
-              </Link>
-            </li>
+          {userRole === 'worker' && (
+            <>
+              <li className={activePage === 'my-shifts' ? 'active' : ''}>
+                <Link to="/my-shifts">
+                  <FaClock /> My Shifts
+                </Link>
+              </li>
+              <li className={activePage === 'propose-shifts' ? 'active' : ''}>
+                <Link to="/propose-shifts">
+                  <FaCalendar /> Propose Shifts
+                </Link>
+              </li>
+            </>
           )}
-
-          {/* Common: Settings */}
-          <li className={activePage === "settings" ? "active" : ""}>
+          <li className={activePage === 'settings' ? 'active' : ''}>
             <Link to="/settings">
               <FaCog /> Settings
             </Link>

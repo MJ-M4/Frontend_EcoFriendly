@@ -1,12 +1,14 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
 
+const LOGIN_API = 'http://localhost:5000/api/auth/login';
+
 const Login = ({ onLogin, isAuthenticated }) => {
-  const [username, setUsername] = useState('');
+  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('worker');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -18,22 +20,28 @@ const Login = ({ onLogin, isAuthenticated }) => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (!username || !password) {
-      setError('Please enter both username and password');
+    if (!id || !password) {
+      setError('Please enter both ID and password');
       return;
     }
 
     setIsLoading(true);
-    // Simulate an API call
-    setTimeout(() => {
-      // Mock login success
+    try {
+      const response = await axios.post(LOGIN_API, {
+        user_id: id,
+        password: password,
+      });
+
+      const { role } = response.data;
       onLogin(role);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -44,14 +52,14 @@ const Login = ({ onLogin, isAuthenticated }) => {
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="id">ID</label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="id"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
               required
-              placeholder="Enter your username"
+              placeholder="Enter your ID (e.g., 207705096)"
               className="form-input"
             />
           </div>
@@ -75,18 +83,6 @@ const Login = ({ onLogin, isAuthenticated }) => {
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
-          </div>
-          <div className="form-group">
-            <label htmlFor="role">Role</label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="form-input"
-            >
-              <option value="worker">Worker</option>
-              <option value="manager">Manager</option>
-            </select>
           </div>
           <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}

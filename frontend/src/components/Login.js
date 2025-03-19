@@ -4,11 +4,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
 
-// Define API endpoints as constants
 const LOGIN_API = 'http://localhost:5000/api/auth/login';
 
 const Login = ({ onLogin, isAuthenticated }) => {
-  const [id, setId] = useState(''); // Changed from username to id
+  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -32,11 +31,10 @@ const Login = ({ onLogin, isAuthenticated }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(LOGIN_API, {
-        user_id: id, // Changed to user_id to match backend
+        user_id: id,
         password: password,
       });
 
-      // On successful login, call onLogin with the role from the response
       const { role } = response.data;
       onLogin(role);
     } catch (err) {
@@ -54,7 +52,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="id">ID</label> {/* Changed label to ID */}
+            <label htmlFor="id">ID</label>
             <input
               type="text"
               id="id"

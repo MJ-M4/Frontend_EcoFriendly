@@ -6,16 +6,40 @@ import './css/general.css';
 const PaymentPage = ({ onLogout, userRole }) => {
   // Mock workers data (ideally passed as props or fetched from a shared state)
   const workers = [
-    { id: 1, name: 'Worker 1', workerType: 'Driver' },
-    { id: 2, name: 'Worker 2', workerType: 'Cleaner' },
-    { id: 3, name: 'Worker 3', workerType: 'Maintenance Worker' },
+    { id: '207705096', name: 'mhagne', workerType: 'Driver' },
+    { id: '207878686', name: 'jayusi', workerType: 'Cleaner' },
+    { id: '12121212', name: 'Worker 12121212', workerType: 'Maintenance Worker' },
   ];
 
   // Mock payments data
   const initialPayments = [
-    { id: 1, workerId: 1, workerName: 'Worker 1', amount: 1500, paymentDate: '2025-03-01', status: 'Paid', notes: 'Monthly salary' },
-    { id: 2, workerId: 2, workerName: 'Worker 2', amount: 1200, paymentDate: '2025-03-02', status: 'Pending', notes: 'Bonus' },
-    { id: 3, workerId: 3, workerName: 'Worker 3', amount: 1800, paymentDate: '', status: 'Pending', notes: 'Overtime' },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '207705096',
+      workerName: 'mhagne',
+      amount: 1500,
+      paymentDate: '2025-03-01',
+      status: 'Paid',
+      notes: 'Monthly salary',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '207878686',
+      workerName: 'jayusi',
+      amount: 1200,
+      paymentDate: '2025-03-02',
+      status: 'Pending',
+      notes: 'Bonus',
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      workerId: '12121212',
+      workerName: 'Worker 12121212',
+      amount: 12121200,
+      paymentDate: 'N/A',
+      status: 'Pending',
+      notes: '121212',
+    },
   ];
 
   const [payments, setPayments] = useState(initialPayments);

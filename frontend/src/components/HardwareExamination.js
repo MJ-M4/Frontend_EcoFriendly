@@ -12,7 +12,7 @@ const HardwareExamination = ({ onLogout, userRole }) => {
       status: "Operational",
       battery: 95,
       lastChecked: "2025-03-01",
-      location: "Tel Aviv",
+      location: "Nazareth",
       address: "A12 Tawfiq Ziad",
     },
     {
@@ -21,7 +21,7 @@ const HardwareExamination = ({ onLogout, userRole }) => {
       status: "Needs Maintenance",
       battery: 20,
       lastChecked: "2025-03-02",
-      location: "Jerusalem",
+      location: "Nazareth",
       address: "45B Some Street",
     },
   ];

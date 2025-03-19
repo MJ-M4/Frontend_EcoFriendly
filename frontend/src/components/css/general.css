@@ -296,7 +296,6 @@ tr.selected {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   font-size: 1.2rem;
 }
 
@@ -651,41 +650,4 @@ body.dark-theme .form-input {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
-}
-/* Style for primary action buttons like "Generate Password" and "Add Worker" */
-.action-button {
-  background-color: #007BFF; /* Solid blue, matching "Add Shift" */
-  color: white;
-  font-weight: bold;
-  font-family: Arial, sans-serif; /* Or use your app’s preferred sans-serif font */
-  padding: 10px 20px; /* More horizontal padding for a wider, modern look */
-  border: none;
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer;
-  text-align: center; /* Ensure text is centered */
-  transition: background-color 0.2s ease-in-out; /* Smooth hover transition */
-}
-
-/* Hover effect for better interactivity */
-.action-button:hover {
-  background-color: #0056b3; /* Slightly darker blue */
-}
-
-/* Style for the "Delete" button */
-.delete-button {
-  background-color: #ff4d4f; /* Retain red for destructive action */
-  color: white;
-  font-weight: bold;
-  font-family: Arial, sans-serif;
-  padding: 5px 10px; /* Slightly less padding, as in your original */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-align: center;
-  transition: background-color 0.2s ease-in-out;
-}
-
-/* Hover effect for delete button */
-.delete-button:hover {
-  background-color: #cc0000; /* Darker red */
 }

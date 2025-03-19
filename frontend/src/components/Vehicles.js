@@ -6,9 +6,30 @@ import './css/general.css';
 const VehiclesPage = ({ onLogout, userRole }) => {
   // Mock vehicles data
   const initialVehicles = [
-    { id: 1, type: 'Garbage Truck', licensePlate: 'ABC-123', status: 'Available', lastMaintenance: '2025-02-01' },
-    { id: 2, type: 'Van', licensePlate: 'XYZ-789', status: 'In Use', lastMaintenance: '2025-01-15' },
-    { id: 3, type: 'Maintenance Vehicle', licensePlate: 'MNT-456', status: 'Under Maintenance', lastMaintenance: '2025-03-01' },
+    {
+      id: uuidv4(), // Generate unique ID
+      type: "Garbage Truck",
+      licensePlate: "ABC-123",
+      status: "Available",
+      location: "Tel Aviv",
+      lastMaintenance: "2025-02-01",
+    },
+    {
+      id: uuidv4(),
+      type: "Van",
+      licensePlate: "XYZ-789",
+      status: "In Use",
+      location: "Haifa",
+      lastMaintenance: "2025-01-15",
+    },
+    {
+      id: uuidv4(),
+      type: "Maintenance Vehicle",
+      licensePlate: "MNT-456",
+      status: "Under Maintenance",
+      location: "Nazareth",
+      lastMaintenance: "2025-03-01",
+    },
   ];
 
   const [vehicles, setVehicles] = useState(initialVehicles);

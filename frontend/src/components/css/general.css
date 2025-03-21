@@ -518,7 +518,11 @@ body.dark-theme .settings-card {
 }
 
 .settings-message.error {
+<<<<<<< HEAD
   background-color: #35d415;
+=======
+  background-color: #44d817;
+>>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
   color: white;
   height: inherit;
 }

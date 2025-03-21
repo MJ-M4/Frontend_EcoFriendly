@@ -3,12 +3,19 @@ import { v4 as uuidv4 } from 'uuid';
 import MapComponent from './MapComponent';
 import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
-import './css/general.css';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
 
 const GeneralPage = ({ onLogout, userRole }) => {
   const [selectedBin, setSelectedBin] = useState(null);
 
+<<<<<<< HEAD
+=======
   // Mock bin data using UUID
+>>>>>>> main
   const mockBins = [
     {
       id: uuidv4().slice(0, 10),

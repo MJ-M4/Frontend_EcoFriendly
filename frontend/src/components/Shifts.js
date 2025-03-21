@@ -2,8 +2,16 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
+<<<<<<< HEAD
 import './css/general.css';
 import { approvedShiftsStore } from './mockData';
+=======
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
+>>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
 
 const ShiftsPage = ({ onLogout, userRole }) => {
   // Mock employees

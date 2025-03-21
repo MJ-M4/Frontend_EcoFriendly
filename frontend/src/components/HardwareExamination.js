@@ -1,17 +1,7 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import './css/reset.css';
-import './css/layout.css';
-import './css/components.css';
-import './css/themes.css';
-import './css/responsive.css';
-=======
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/general.css";
->>>>>>> main
 
 const HardwareExamination = ({ onLogout, userRole }) => {
   // We store the actual UUID in "id" and remove hardwareId from display
@@ -180,16 +170,8 @@ const HardwareExamination = ({ onLogout, userRole }) => {
             </tbody>
           </table>
         </div>
-<<<<<<< HEAD
-        <div className="download-report-container">
-          <button className="download-report-btn" onClick={() => alert('Hardware report downloaded!')}>
-            Download Report
-          </button>
-        </div>
-=======
 
         {/* Removed the Download File button */}
->>>>>>> main
       </div>
     </div>
   );

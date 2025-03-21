@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { FaTrash } from 'react-icons/fa';
-import Sidebar from './Sidebar';
-import './css/reset.css';
-import './css/layout.css';
-import './css/components.css';
-import './css/themes.css';
-import './css/responsive.css';
-
-const ReportsPage = ({ onLogout, userRole }) => {
-  const mockReports = [
-    { id: 'bin_10', status: 'Full', capacity: 90, location: 'nazareth, 4 088', lastCollected: '18-1-2025' },
-    { id: 'bin_11', status: 'Near Full', capacity: 55, location: 'nazareth, anis kardosh 26', lastCollected: '14-1-2025' },
-    { id: 'bin_12', status: 'Full', capacity: 95, location: 'nazareth, 2 6057', lastCollected: '16-1-2025' },
-    { id: 'bin_13', status: 'Not Full', capacity: 12, location: 'nazareth, 4 6030', lastCollected: '15-1-2025' },
-    { id: 'bin_14', status: 'Not Full', capacity: 15, location: 'nazareth, 8 6116', lastCollected: '15-1-2025' },
-  ];
-
-  const [reports, setReports] = useState(mockReports);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-=======
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { saveAs } from "file-saver";
 import React, { useRef, useState } from "react";
@@ -64,29 +41,13 @@ const ReportsPage = ({ onLogout, userRole }) => {
   const [workerSearch, setWorkerSearch] = useState("");
   const [vehicleSearch, setVehicleSearch] = useState("");
   const [hardwareSearch, setHardwareSearch] = useState("");
-<<<<<<< HEAD
   const [selectedReport, setSelectedReport] = useState("");
-=======
-<<<<<<< HEAD
-  const [selectedReport, setSelectedReport] = useState("");
-=======
-  const [showBins, setShowBins] = useState(false);
-  const [showWorkers, setShowWorkers] = useState(false);
-  const [showVehicles, setShowVehicles] = useState(false);
-  const [showHardware, setShowHardware] = useState(false);
->>>>>>> main
->>>>>>> b2f3d5bc5597dbb573dfb63294948d845e2b560c
->>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
 
   const binChartRef = useRef(null);
   const workerChartRef = useRef(null);
   const vehicleChartRef = useRef(null);
   const hardwareChartRef = useRef(null);
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
   // Filter Data with Exact Match Preference
   const filteredBins = binSearch
     ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase()).length > 0
@@ -108,37 +69,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
       ? hardwareData.filter(h => h.hardwareId.toLowerCase() === hardwareSearch.toLowerCase())
       : hardwareData.filter(h => Object.values(h).some(field => field.toString().toLowerCase().includes(hardwareSearch.toLowerCase())))
     : hardwareData;
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'Full':
-        return <FaTrash className="status-icon full" />;
-      case 'Near Full':
-        return <FaTrash className="status-icon near-full" />;
-      case 'Not Full':
-        return <FaTrash className="status-icon not-full" />;
-      default:
-        return null;
-    }
-=======
-  // Filter Data
-  const filteredBins = binData.filter((b) =>
-    [b.binId, b.location, b.lastCollected].some((field) => field.toLowerCase().includes(binSearch.toLowerCase()))
-  );
-  const filteredWorkers = workersData.filter((w) =>
-    [w.workerId, w.name, w.phone, w.shift].some((field) => field.toLowerCase().includes(workerSearch.toLowerCase()))
-  );
-  const filteredVehicles = vehiclesData.filter((v) =>
-    [v.licensePlate, v.type, v.status].some((field) => field.toLowerCase().includes(vehicleSearch.toLowerCase()))
-  );
-  const filteredHardware = hardwareData.filter((h) =>
-    [h.hardwareId, h.binId, h.status, h.lastChecked].some((field) => field.toLowerCase().includes(hardwareSearch.toLowerCase()))
-  );
->>>>>>> b2f3d5bc5597dbb573dfb63294948d845e2b560c
->>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
 
   // Download CSV Function
   const downloadCsv = (headers, rows, filename) => {
@@ -148,7 +78,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
     ].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, filename);
->>>>>>> main
   };
 
   // Bar Chart Data & Options
@@ -247,43 +176,9 @@ const ReportsPage = ({ onLogout, userRole }) => {
   // UI Rendering
   return (
     <div className="dashboard">
-<<<<<<< HEAD
-      <Sidebar user={user} activePage="reports" onLogout={onLogout} userRole={userRole} />
-      <div className="content">
-        <div className="table-container reports-table">
-          <table>
-            <thead>
-              <tr>
-                <th>ID_bin</th>
-                <th>Status</th>
-                <th>Capacity</th>
-                <th>Location</th>
-                <th>Last Collected</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reports.map((report) => (
-                <tr key={report.id}>
-                  <td>{report.id}</td>
-                  <td>
-                    {getStatusIcon(report.status)}
-                    {report.status}
-                  </td>
-                  <td>{report.capacity}%</td>
-                  <td>{report.location}</td>
-                  <td>{report.lastCollected}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-=======
       <Sidebar user={{ name: "Mohamed Mhagne", avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Reports</h1>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
         <div className="dropdown-container">
           <select
             value={selectedReport}
@@ -296,25 +191,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
             <option value="vehicles">Vehicles Reports</option>
             <option value="hardware">Hardware Reports</option>
           </select>
-<<<<<<< HEAD
-=======
-=======
-        <div className="button-container">
-          <button className="download-report-btn" onClick={() => setShowBins(!showBins)}>
-            {showBins ? "Hide Bin Reports" : "Show Bin Reports"}
-          </button>
-          <button className="download-report-btn" onClick={() => setShowWorkers(!showWorkers)}>
-            {showWorkers ? "Hide Workers Reports" : "Show Workers Reports"}
-          </button>
-          <button className="download-report-btn" onClick={() => setShowVehicles(!showVehicles)}>
-            {showVehicles ? "Hide Vehicles Reports" : "Show Vehicles Reports"}
-          </button>
-          <button className="download-report-btn" onClick={() => setShowHardware(!showHardware)}>
-            {showHardware ? "Hide Hardware Reports" : "Show Hardware Reports"}
-          </button>
->>>>>>> main
->>>>>>> b2f3d5bc5597dbb573dfb63294948d845e2b560c
->>>>>>> 46c39febec1d91ced1444da4bfa6d8b95387220d
         </div>
 
         {/* Conditional Rendering Based on Dropdown Selection */}

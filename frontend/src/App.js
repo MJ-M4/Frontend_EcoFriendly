@@ -16,25 +16,27 @@ import ProposeShiftsPage from './components/ProposeShiftsPage';
 import ReportsPage from './components/Reports';
 import SettingsPage from './components/Settings';
 import ShiftProposalsPage from './components/ShiftProposalsPage';
-import ShiftsPage from './components/Shifts';
+import ShiftsPage from './components/ShiftsPage';
 import VehiclesPage from './components/Vehicles';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState('worker');
-  const [userId, setUserId] = useState('207705096'); // Mock userId for demo
+  const [userRole, setUserRole] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userName, setUserName] = useState('');
 
-  const handleLogin = (role) => {
+  const handleLogin = (role, userId, name) => {
     setIsAuthenticated(true);
     setUserRole(role);
-    // Mock userId assignment based on role; in reality, from auth
-    setUserId(role === 'worker' ? '207705096' : null);
+    setUserId(userId);
+    setUserName(name);
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUserRole('worker');
     setUserId(null);
+    setUserName('');
   };
 
   return (
@@ -71,17 +73,23 @@ function App() {
           path="/employees"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <EmployeesPage onLogout={handleLogout} userRole={userRole} />
+              <EmployeesPage
+               onLogout={handleLogout}
+                userRole={userRole}
+                userName={userName}
+                 userId={userId} />
+                 
             ) : (
               <Navigate to="/login" replace />
             )
           }
         />
+        
         <Route
           path="/shifts"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <ShiftsPage onLogout={handleLogout} userRole={userRole} />
+              <ShiftsPage onLogout={handleLogout} userRole={userRole} userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -91,7 +99,7 @@ function App() {
           path="/shift-proposals"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <ShiftProposalsPage onLogout={handleLogout} userRole={userRole} />
+              <ShiftProposalsPage onLogout={handleLogout} userRole={userRole} userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -161,7 +169,7 @@ function App() {
           path="/my-shifts"
           element={
             isAuthenticated && userRole === 'worker' ? (
-              <MyShiftsPage onLogout={handleLogout} userRole={userRole} />
+              <MyShiftsPage onLogout={handleLogout} userRole={userRole} userId={userId} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -171,11 +179,7 @@ function App() {
           path="/propose-shifts"
           element={
             isAuthenticated && userRole === 'worker' ? (
-              <ProposeShiftsPage
-                onLogout={handleLogout}
-                userRole={userRole}
-                userId={userId}
-              />
+              <ProposeShiftsPage onLogout={handleLogout} userRole={userRole} userId={userId} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -185,5 +189,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

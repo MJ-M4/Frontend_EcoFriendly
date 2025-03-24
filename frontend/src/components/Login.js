@@ -1,3 +1,4 @@
+// src/components/Login.js
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -35,8 +36,8 @@ const Login = ({ onLogin, isAuthenticated }) => {
         password: password,
       });
 
-      const { role } = response.data;
-      onLogin(role);
+      const { role, user_id, name } = response.data;
+      onLogin(role, user_id, name);
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

@@ -1,31 +1,46 @@
 // src/components/ShiftProposalsPage.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Sidebar from './Sidebar';
 import './css/general.css';
-import { shiftProposalsStore, approvedShiftsStore } from './mockData';
 
-const ShiftProposalsPage = ({ onLogout, userRole }) => {
-  const proposals = shiftProposalsStore.getPendingProposals();
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
+const ShiftProposalsPage = ({ onLogout, userRole, userName }) => {
+  const [proposals, setProposals] = useState([]);
+  const [error, setError] = useState('');
 
-  const handleApprove = (proposal) => {
-    shiftProposalsStore.updateProposalStatus(proposal.id, 'approved');
-    approvedShiftsStore.addShift({
-      id: proposal.id,
-      workerId: proposal.workerId,
-      workerName: proposal.workerName,
-      workerType: proposal.workerType,
-      date: proposal.date,
-      startTime: proposal.startTime,
-      endTime: proposal.endTime,
-      location: proposal.location,
-    });
-    alert(`Shift for ${proposal.workerName} on ${proposal.date} approved!`);
+  const fetchProposals = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/shifts', {
+        params: { status: 'pending' },
+      });
+      setProposals(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to fetch shift proposals');
+    }
   };
 
-  const handleDeny = (proposalId) => {
-    shiftProposalsStore.updateProposalStatus(proposalId, 'denied');
-    alert('Shift proposal denied.');
+  useEffect(() => {
+    fetchProposals();
+  }, []);
+
+  const handleApprove = async (shiftId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/shifts/${shiftId}/approve`);
+      setProposals(proposals.filter((p) => p.id !== shiftId));
+      alert('Shift approved successfully!');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to approve shift');
+    }
+  };
+
+  const handleDeny = async (shiftId) => {
+    try {
+      await axios.put(`http://localhost:5000/api/shifts/${shiftId}/deny`);
+      setProposals(proposals.filter((p) => p.id !== shiftId));
+      alert('Shift denied successfully!');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to deny shift');
+    }
   };
 
   if (userRole !== 'manager') {
@@ -34,9 +49,10 @@ const ShiftProposalsPage = ({ onLogout, userRole }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="shift-proposals" onLogout={onLogout} userRole={userRole} />
+      <Sidebar userName={userName} activePage="shift-proposals" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <h1>Shift Proposals</h1>
+        {error && <p className="error">{error}</p>}
         <div className="table-container">
           <table>
             <thead>
@@ -55,17 +71,17 @@ const ShiftProposalsPage = ({ onLogout, userRole }) => {
             <tbody>
               {proposals.map((proposal) => (
                 <tr key={proposal.id}>
-                  <td>{proposal.workerId}</td>
-                  <td>{proposal.workerName}</td>
-                  <td>{proposal.workerType}</td>
+                  <td>{proposal.worker_id}</td>
+                  <td>{proposal.worker_name}</td>
+                  <td>{proposal.worker_type}</td>
                   <td>{proposal.date}</td>
-                  <td>{proposal.startTime}</td>
-                  <td>{proposal.endTime}</td>
+                  <td>{proposal.start_time}</td>
+                  <td>{proposal.end_time}</td>
                   <td>{proposal.location}</td>
-                  <td>{new Date(proposal.submittedAt).toLocaleString()}</td>
+                  <td>{proposal.submitted_at}</td>
                   <td>
                     <button
-                      onClick={() => handleApprove(proposal)}
+                      onClick={() => handleApprove(proposal.id)}
                       className="download-report-btn"
                       style={{ marginRight: '5px' }}
                     >

@@ -7,9 +7,6 @@ import Sidebar from './Sidebar';
 const ShiftsPage = ({ onLogout, userRole, userName }) => {
   const [shifts, setShifts] = useState([]);
   const [searchId, setSearchId] = useState('');
-  const [error, setError] = useState('');
-
-  // SHIFT form fields: manager must fill them manually
   const [newShift, setNewShift] = useState({
     workerId: '',
     workerName: '',
@@ -20,8 +17,8 @@ const ShiftsPage = ({ onLogout, userRole, userName }) => {
     startTime: '',
     endTime: '',
   });
+  const [error, setError] = useState('');
 
-  // Load "approved" shifts on component mount
   const fetchShifts = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/shifts', {
@@ -37,66 +34,77 @@ const ShiftsPage = ({ onLogout, userRole, userName }) => {
     fetchShifts();
   }, []);
 
-  // ------------
-  // NO AUTO-FETCH of worker from /api/users. 
-  // The manager manually types everything.
-  // ------------
+  const handleWorkerIdChange = async (e) => {
+    const workerId = e.target.value;
+    setNewShift({ ...newShift, workerId });
 
-  // Track text inputs
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewShift((prev) => ({ ...prev, [name]: value }));
+    if (workerId.length >= 9) {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/users/${workerId}`);
+        const user = response.data;
+        if (user.role !== 'worker') {
+          setError('Selected user is not a worker');
+          setNewShift({ ...newShift, workerId, workerName: '', workerType: '', phone: '', location: '' });
+          return;
+        }
+        setNewShift({
+          ...newShift,
+          workerId,
+          workerName: user.name,
+          workerType: user.worker_type || 'Driver',
+          phone: user.phone || '',
+          location: user.location || '',
+        });
+        setError('');
+      } catch (err) {
+        setError(err.response?.data?.message || 'Worker not found');
+        setNewShift({ ...newShift, workerId, workerName: '', workerType: '', phone: '', location: '' });
+      }
+    } else {
+      setNewShift({ ...newShift, workerId, workerName: '', workerType: '', phone: '', location: '' });
+    }
   };
 
-  // Create SHIFT
   const handleAddShift = async () => {
-    // Validate required fields
     if (
-      !newShift.workerId ||
-      !newShift.workerName ||
-      !newShift.workerType ||
-      !newShift.phone ||
-      !newShift.location ||
-      !newShift.date ||
-      !newShift.startTime ||
-      !newShift.endTime
+      newShift.workerId &&
+      newShift.workerName &&
+      newShift.workerType &&
+      newShift.phone &&
+      newShift.location &&
+      newShift.date &&
+      newShift.startTime &&
+      newShift.endTime
     ) {
+      try {
+        const response = await axios.post('http://localhost:5000/api/shifts', {
+          worker_id: newShift.workerId,
+          date: newShift.date,
+          start_time: newShift.startTime,
+          end_time: newShift.endTime,
+          location: newShift.location,
+          status: 'approved',
+        });
+        setShifts([...shifts, response.data]);
+        setNewShift({
+          workerId: '',
+          workerName: '',
+          workerType: '',
+          phone: '',
+          location: '',
+          date: '',
+          startTime: '',
+          endTime: '',
+        });
+        setError('');
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to add shift');
+      }
+    } else {
       setError('Please fill in all shift fields');
-      return;
-    }
-
-    try {
-      // POST to create a shift with status=approved
-      const response = await axios.post('http://localhost:5000/api/shifts', {
-        worker_id: newShift.workerId,
-        date: newShift.date,
-        start_time: newShift.startTime,
-        end_time: newShift.endTime,
-        location: newShift.location,
-        status: 'approved',
-      });
-
-      // SHIFT created => add to state or re-fetch
-      setShifts([...shifts, response.data]);
-
-      // Clear form
-      setNewShift({
-        workerId: '',
-        workerName: '',
-        workerType: '',
-        phone: '',
-        location: '',
-        date: '',
-        startTime: '',
-        endTime: '',
-      });
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add shift');
     }
   };
 
-  // Delete SHIFT
   const handleDeleteShift = async (shiftId) => {
     try {
       await axios.delete(`http://localhost:5000/api/shifts/${shiftId}`);
@@ -106,12 +114,8 @@ const ShiftsPage = ({ onLogout, userRole, userName }) => {
     }
   };
 
-  // Filter SHIFT table by worker ID
-  const filteredShifts = shifts.filter((shift) =>
-    shift.worker_id.includes(searchId)
-  );
+  const filteredShifts = shifts.filter((shift) => shift.worker_id.includes(searchId));
 
-  // Manager-only
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -119,16 +123,13 @@ const ShiftsPage = ({ onLogout, userRole, userName }) => {
   return (
     <div className="dashboard">
       <Sidebar
-        userName={userName} // manager name
+       userName={userName}
         activePage="shifts"
-        onLogout={onLogout}
-        userRole={userRole}
-      />
+         onLogout={onLogout}
+          userRole={userRole} />
       <div className="content">
         <h1>Shifts</h1>
         {error && <p className="error">{error}</p>}
-
-        {/* Search Shifts by Worker ID */}
         <div className="form-container">
           <input
             type="text"
@@ -138,84 +139,64 @@ const ShiftsPage = ({ onLogout, userRole, userName }) => {
             className="search-input"
           />
         </div>
-
-        {/* Add SHIFT form */}
         <div className="form-container">
           <input
             type="text"
-            name="workerId"
             placeholder="Worker ID"
             value={newShift.workerId}
-            onChange={handleChange}
+            onChange={handleWorkerIdChange}
             className="form-input"
           />
-
           <input
             type="text"
-            name="workerName"
             placeholder="Worker Name"
             value={newShift.workerName}
-            onChange={handleChange}
+            readOnly
             className="form-input"
           />
-
           <input
             type="text"
-            name="workerType"
-            placeholder="Worker Type (Driver, Cleaner...)"
+            placeholder="Worker Type"
             value={newShift.workerType}
-            onChange={handleChange}
+            readOnly
             className="form-input"
           />
-
           <input
             type="text"
-            name="phone"
             placeholder="Phone Number"
             value={newShift.phone}
-            onChange={handleChange}
+            readOnly
             className="form-input"
           />
-
           <input
             type="text"
-            name="location"
             placeholder="Location"
             value={newShift.location}
-            onChange={handleChange}
+            readOnly
             className="form-input"
           />
-
           <input
             type="date"
-            name="date"
             value={newShift.date}
-            onChange={handleChange}
+            onChange={(e) => setNewShift({ ...newShift, date: e.target.value })}
             className="form-input"
           />
-
           <input
             type="time"
-            name="startTime"
             value={newShift.startTime}
-            onChange={handleChange}
+            onChange={(e) => setNewShift({ ...newShift, startTime: e.target.value })}
             className="form-input"
           />
-
           <input
             type="time"
-            name="endTime"
             value={newShift.endTime}
-            onChange={handleChange}
+            onChange={(e) => setNewShift({ ...newShift, endTime: e.target.value })}
             className="form-input"
           />
-
           <button onClick={handleAddShift} className="download-report-btn">
             Add Shift
           </button>
         </div>
-
-        {/* SHIFT table */}
         <div className="table-container">
           <table>
             <thead>

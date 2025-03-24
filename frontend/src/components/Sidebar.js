@@ -17,7 +17,7 @@ import {
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ user, activePage, onLogout, userRole }) => {
+const Sidebar = ({ userName, activePage, onLogout, userRole }) => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -28,8 +28,8 @@ const Sidebar = ({ user, activePage, onLogout, userRole }) => {
   return (
     <div className="sidebar">
       <div className="user-profile">
-        <img src={user.avatar} alt="User Avatar" />
-        <h2>{user.name}</h2>
+        <img src="/images/sami.png" alt="User Avatar" />
+        <h2>{userName}</h2>
       </div>
       <nav>
         <ul>

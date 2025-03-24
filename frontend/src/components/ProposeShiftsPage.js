@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import './css/general.css';
 import Sidebar from './Sidebar';
 
-const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
+const ProposeShiftsPage = ({ onLogout, userRole, userId,userName }) => {
   const [shifts, setShifts] = useState([]);
   const [newShift, setNewShift] = useState({
     date: '',
@@ -69,7 +69,11 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar activePage="propose-shifts" onLogout={onLogout} userRole={userRole} userName="Worker" />
+      <Sidebar
+       activePage="propose-shifts"
+        onLogout={onLogout}
+         userRole={userRole}
+         userName={userName} />
       <div className="content">
         <h1>Propose Shifts</h1>
         {error && <p className="error">{error}</p>}

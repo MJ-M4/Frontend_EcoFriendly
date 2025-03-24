@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/general.css";
 
-const BinManagementPage = ({ onLogout, userRole }) => {
+const BinManagementPage = ({ onLogout, userRole,userName }) => {
   // Each bin uses a random UUID for binId
   const initialBins = [
     {
@@ -87,6 +87,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
         activePage="bin-management"
         onLogout={onLogout}
         userRole={userRole}
+        userName={userName}
       />
       <div className="content">
         <h1>Bin Management</h1>

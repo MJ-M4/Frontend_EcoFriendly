@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import './css/general.css';
 import Sidebar from './Sidebar';
 
-const AlertsPage = ({ onLogout, userRole }) => {
+const AlertsPage = ({ onLogout, userRole,userName }) => {
   // Mock data
   const mockAlerts = [
     {
@@ -40,7 +40,13 @@ const AlertsPage = ({ onLogout, userRole }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="alerts" onLogout={onLogout} userRole={userRole} />
+      <Sidebar 
+      user={user} 
+      activePage="alerts" 
+      onLogout={onLogout} 
+      userRole={userRole}
+      userName={userName} 
+      />
       <div className="content">
         <div className="table-container">
           <table>

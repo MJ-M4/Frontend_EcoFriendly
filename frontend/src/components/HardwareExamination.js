@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/general.css";
 
-const HardwareExamination = ({ onLogout, userRole }) => {
+const HardwareExamination = ({ onLogout, userRole,userName }) => {
   // We store the actual UUID in "id" and remove hardwareId from display
   const initialHardware = [
     {
@@ -92,6 +92,7 @@ const HardwareExamination = ({ onLogout, userRole }) => {
         activePage="hardware-examination"
         onLogout={onLogout}
         userRole={userRole}
+        userName={userName}
       />
       <div className="content">
         <h1>Hardware Examination</h1>

@@ -47,13 +47,18 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route
           path="/login"
-          element={<Login onLogin={handleLogin} isAuthenticated={isAuthenticated} />}
+          element={<Login 
+            onLogin={handleLogin} 
+            isAuthenticated={isAuthenticated} />}
         />
         <Route
           path="/general"
           element={
             isAuthenticated ? (
-              <GeneralPage onLogout={handleLogout} userRole={userRole} />
+              <GeneralPage
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -63,7 +68,10 @@ function App() {
           path="/reports"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <ReportsPage onLogout={handleLogout} userRole={userRole} />
+              <ReportsPage
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -74,10 +82,10 @@ function App() {
           element={
             isAuthenticated && userRole === 'manager' ? (
               <EmployeesPage
-               onLogout={handleLogout}
-                userRole={userRole}
-                userName={userName}
-                 userId={userId} />
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName}
+              userId={userId} />
                  
             ) : (
               <Navigate to="/login" replace />
@@ -89,7 +97,10 @@ function App() {
           path="/shifts"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <ShiftsPage onLogout={handleLogout} userRole={userRole} userName={userName} />
+              <ShiftsPage
+              onLogout={handleLogout} 
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -99,7 +110,10 @@ function App() {
           path="/shift-proposals"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <ShiftProposalsPage onLogout={handleLogout} userRole={userRole} userName={userName} />
+              <ShiftProposalsPage
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -109,7 +123,10 @@ function App() {
           path="/vehicles"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <VehiclesPage onLogout={handleLogout} userRole={userRole} />
+              <VehiclesPage
+               onLogout={handleLogout} 
+               userRole={userRole}
+               userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -119,7 +136,10 @@ function App() {
           path="/payment"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <PaymentPage onLogout={handleLogout} userRole={userRole} />
+              <PaymentPage
+               onLogout={handleLogout} 
+               userRole={userRole}
+               userName={userName}/>
             ) : (
               <Navigate to="/login" replace />
             )
@@ -129,7 +149,10 @@ function App() {
           path="/bin-management"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <BinManagementPage onLogout={handleLogout} userRole={userRole} />
+              <BinManagementPage 
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -139,7 +162,10 @@ function App() {
           path="/hardware-examination"
           element={
             isAuthenticated && userRole === 'manager' ? (
-              <HardwareExamination onLogout={handleLogout} userRole={userRole} />
+              <HardwareExamination 
+              onLogout={handleLogout} 
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -149,7 +175,10 @@ function App() {
           path="/alerts"
           element={
             isAuthenticated ? (
-              <AlertsPage onLogout={handleLogout} userRole={userRole} />
+              <AlertsPage
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -159,7 +188,10 @@ function App() {
           path="/settings"
           element={
             isAuthenticated ? (
-              <SettingsPage onLogout={handleLogout} userRole={userRole} />
+              <SettingsPage
+              onLogout={handleLogout}
+              userRole={userRole}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -169,7 +201,11 @@ function App() {
           path="/my-shifts"
           element={
             isAuthenticated && userRole === 'worker' ? (
-              <MyShiftsPage onLogout={handleLogout} userRole={userRole} userId={userId} />
+              <MyShiftsPage
+              onLogout={handleLogout}
+              userRole={userRole}
+              userId={userId}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -179,7 +215,11 @@ function App() {
           path="/propose-shifts"
           element={
             isAuthenticated && userRole === 'worker' ? (
-              <ProposeShiftsPage onLogout={handleLogout} userRole={userRole} userId={userId} />
+              <ProposeShiftsPage
+              onLogout={handleLogout}
+              userRole={userRole} 
+              userId={userId}
+              userName={userName} />
             ) : (
               <Navigate to="/login" replace />
             )

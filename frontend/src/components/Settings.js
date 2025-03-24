@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/general.css';
 
-const SettingsPage = ({ onLogout, userRole }) => {
+const SettingsPage = ({ onLogout, userRole,userName }) => {
   const [name, setName] = useState('Mohamed Mhagne');
   const [language, setLanguage] = useState('English');
   const [theme, setTheme] = useState('Light');
@@ -91,7 +91,11 @@ const SettingsPage = ({ onLogout, userRole }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="settings" onLogout={onLogout} userRole={userRole} />
+      <Sidebar
+        activePage="settings"
+         onLogout={onLogout} 
+         userRole={userRole}
+         userName={userName} />
       <div className="content">
         <div className="settings-container">
           <h2 className="settings-title">Settings</h2>

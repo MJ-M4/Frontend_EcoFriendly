@@ -1,41 +1,16 @@
-import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for unique IDs
-import "./css/general.css";
+// src/components/VehiclesPage.js
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import "./css/general.css";
 
-const VehiclesPage = ({ onLogout, userRole }) => {
-  // Mock vehicles data with unique IDs
-  const initialVehicles = [
-    {
-      id: uuidv4(), // Generate unique ID
-      type: "Garbage Truck",
-      licensePlate: "0000001",
-      status: "Available",
-      location: "Nazareth",
-      lastMaintenance: "2025-02-01",
-    },
-    {
-      id: uuidv4(),
-      type: "Van",
-      licensePlate: "0000002",
-      status: "In Use",
-      location: "Nazareth",
-      lastMaintenance: "2025-01-15",
-    },
-    {
-      id: uuidv4(),
-      type: "Maintenance Vehicle",
-      licensePlate: "0000003",
-      status: "Under Maintenance",
-      location: "Nazareth",
-      lastMaintenance: "2025-03-01",
-    },
-  ];
-
-  const [vehicles, setVehicles] = useState(initialVehicles);
+const VehiclesPage = ({ onLogout, userRole, userName }) => {
+  const [vehicles, setVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
+
+  // State for new vehicle form
   const [newVehicle, setNewVehicle] = useState({
-    id: uuidv4(), // Generate unique ID for new vehicle
     type: "Garbage Truck",
     licensePlate: "",
     status: "Available",
@@ -43,24 +18,27 @@ const VehiclesPage = ({ onLogout, userRole }) => {
     lastMaintenance: "",
   });
 
-  const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
-
+  // Only managers can see this page
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  // Filter vehicles by type OR licensePlate
-  const filteredVehicles = vehicles.filter(
-    (v) =>
-      v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Fetch all vehicles from backend
+  const fetchVehicles = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/vehicles");
+      setVehicles(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch vehicles");
+    }
+  };
 
-  const handleAddVehicle = () => {
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
-    const maintenanceDate = new Date(newVehicle.lastMaintenance);
+  useEffect(() => {
+    fetchVehicles();
+  }, []); // run once
 
-    // Validation
+  const handleAddVehicle = async () => {
+    // Validate fields
     if (
       !newVehicle.type ||
       !newVehicle.licensePlate ||
@@ -68,48 +46,60 @@ const VehiclesPage = ({ onLogout, userRole }) => {
       !newVehicle.location ||
       !newVehicle.lastMaintenance
     ) {
-      alert("Please fill in all fields.");
-      return;
-    }
-    if (maintenanceDate > new Date()) {
-      alert("Last Maintenance date cannot be in the future.");
-      return;
-    }
-    if (vehicles.some((v) => v.licensePlate === newVehicle.licensePlate)) {
-      alert("License Plate already exists. Please use a unique license plate.");
+      alert("Please fill in all fields");
       return;
     }
 
-    // Add new vehicle to state
-    setVehicles([...vehicles, newVehicle]);
-
-    // Reset newVehicle state with a new ID
-    setNewVehicle({
-      id: uuidv4(),
-      type: "Garbage Truck",
-      licensePlate: "",
-      status: "Available",
-      location: "",
-      lastMaintenance: "",
-    });
+    try {
+      await axios.post("http://localhost:5000/api/vehicles", {
+        type: newVehicle.type,
+        license_plate: newVehicle.licensePlate,
+        status: newVehicle.status,
+        location: newVehicle.location,
+        last_maintenance: newVehicle.lastMaintenance,
+      });
+      // Refresh list
+      fetchVehicles();
+      // Reset form
+      setNewVehicle({
+        type: "Garbage Truck",
+        licensePlate: "",
+        status: "Available",
+        location: "",
+        lastMaintenance: "",
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add vehicle");
+    }
   };
 
-  const handleDeleteVehicle = (id) => {
-    setVehicles(vehicles.filter((v) => v.id !== id));
+  const handleDeleteVehicle = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/vehicles/${id}`);
+      setVehicles(vehicles.filter((v) => v.id !== id));
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete vehicle");
+    }
   };
+
+  // Filter for search
+  const filteredVehicles = vehicles.filter((v) =>
+    v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    v.license_plate.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="dashboard">
       <Sidebar
-        user={user}
         activePage="vehicles"
         onLogout={onLogout}
         userRole={userRole}
+        userName={userName}
       />
       <div className="content">
         <h1>Vehicles</h1>
+        {error && <p className="error">{error}</p>}
 
-        {/* Search Box */}
         <div className="form-container">
           <input
             type="text"
@@ -120,13 +110,11 @@ const VehiclesPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Vehicle Form */}
         <div className="form-container">
+          {/* Type */}
           <select
             value={newVehicle.type}
-            onChange={(e) =>
-              setNewVehicle({ ...newVehicle, type: e.target.value })
-            }
+            onChange={(e) => setNewVehicle({ ...newVehicle, type: e.target.value })}
             className="form-input"
           >
             <option value="Garbage Truck">Garbage Truck</option>
@@ -141,6 +129,8 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             <option value="Water Tanker">Water Tanker</option>
             <option value="Mini Truck">Mini Truck</option>
           </select>
+
+          {/* License Plate */}
           <input
             type="text"
             placeholder="License Plate"
@@ -150,26 +140,28 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             }
             className="form-input"
           />
+
+          {/* Status */}
           <select
             value={newVehicle.status}
-            onChange={(e) =>
-              setNewVehicle({ ...newVehicle, status: e.target.value })
-            }
+            onChange={(e) => setNewVehicle({ ...newVehicle, status: e.target.value })}
             className="form-input"
           >
             <option value="Available">Available</option>
             <option value="In Use">In Use</option>
             <option value="Under Maintenance">Under Maintenance</option>
           </select>
+
+          {/* Location */}
           <input
             type="text"
             placeholder="Location"
             value={newVehicle.location}
-            onChange={(e) =>
-              setNewVehicle({ ...newVehicle, location: e.target.value })
-            }
+            onChange={(e) => setNewVehicle({ ...newVehicle, location: e.target.value })}
             className="form-input"
           />
+
+          {/* Last Maintenance */}
           <input
             type="date"
             value={newVehicle.lastMaintenance}
@@ -178,6 +170,8 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             }
             className="form-input"
           />
+
+          {/* Add Button */}
           <button onClick={handleAddVehicle} className="download-report-btn">
             Add Vehicle
           </button>
@@ -199,11 +193,11 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredVehicles.map((vehicle) => (
                 <tr key={vehicle.id}>
-                  <td>{vehicle.licensePlate}</td>
+                  <td>{vehicle.license_plate}</td>
                   <td>{vehicle.type}</td>
                   <td>{vehicle.status}</td>
                   <td>{vehicle.location}</td>
-                  <td>{vehicle.lastMaintenance}</td>
+                  <td>{vehicle.last_maintenance}</td>
                   <td>
                     <button
                       onClick={() => handleDeleteVehicle(vehicle.id)}

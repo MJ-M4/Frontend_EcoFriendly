@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
 
-const GeneralPage = ({ onLogout, userRole }) => {
+const GeneralPage = ({ onLogout, userRole,userName }) => {
   const [selectedBin, setSelectedBin] = useState(null);
 
   // Mock bin data using UUID
@@ -75,7 +75,12 @@ const GeneralPage = ({ onLogout, userRole }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} />
+      <Sidebar
+       user={user}
+        activePage="general"
+         onLogout={onLogout}
+          userRole={userRole} 
+          userName={userName}/>
       <div className="content">
         <div className="map-container">
           <MapComponent bins={mockBins} selectedBin={selectedBin} />

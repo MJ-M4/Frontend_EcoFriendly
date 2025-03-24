@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ReportsPage = ({ onLogout, userRole }) => {
+const ReportsPage = ({ onLogout, userRole,userName }) => {
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -176,7 +176,13 @@ const ReportsPage = ({ onLogout, userRole }) => {
   // UI Rendering
   return (
     <div className="dashboard">
-      <Sidebar user={{ name: "Mohamed Mhagne", avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} />
+      <Sidebar
+       activePage="reports"
+       onLogout={onLogout} 
+       userRole={userRole}
+       userName={userName}
+        />
+       
       <div className="content">
         <h1>Reports</h1>
         <div className="dropdown-container">

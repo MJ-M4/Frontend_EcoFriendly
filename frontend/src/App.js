@@ -191,7 +191,8 @@ function App() {
               <SettingsPage
               onLogout={handleLogout}
               userRole={userRole}
-              userName={userName} />
+              userName={userName}
+              userId={userId}  />
             ) : (
               <Navigate to="/login" replace />
             )

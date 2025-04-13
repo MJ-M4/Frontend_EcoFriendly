@@ -18,7 +18,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -28,12 +28,35 @@ const Login = ({ onLogin, isAuthenticated }) => {
     }
 
     setIsLoading(true);
-    // Simulate an API call
-    setTimeout(() => {
-      // Mock login success
-      onLogin(role);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          role,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Login successful
+        onLogin(role); // Pass the role to the parent component to set isAuthenticated
+        setIsLoading(false);
+      } else {
+        // Handle error from backend
+        setError(data.error || 'Login failed. Please try again.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('An error occurred. Please check your network and try again.');
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (

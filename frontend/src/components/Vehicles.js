@@ -1,101 +1,142 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for unique IDs
 import "./css/general.css";
 
 const VehiclesPage = ({ onLogout, userRole }) => {
-  // Mock vehicles data with unique IDs
-  const initialVehicles = [
-    {
-      id: uuidv4(), // Generate unique ID
-      type: "Garbage Truck",
-      licensePlate: "0000001",
-      status: "Available",
-      location: "Nazareth",
-      lastMaintenance: "2025-02-01",
-    },
-    {
-      id: uuidv4(),
-      type: "Van",
-      licensePlate: "0000002",
-      status: "In Use",
-      location: "Nazareth",
-      lastMaintenance: "2025-01-15",
-    },
-    {
-      id: uuidv4(),
-      type: "Maintenance Vehicle",
-      licensePlate: "0000003",
-      status: "Under Maintenance",
-      location: "Nazareth",
-      lastMaintenance: "2025-03-01",
-    },
-  ];
-
-  const [vehicles, setVehicles] = useState(initialVehicles);
+  const [vehicles, setVehicles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [newVehicle, setNewVehicle] = useState({
-    id: uuidv4(), // Generate unique ID for new vehicle
     type: "Garbage Truck",
-    licensePlate: "",
+    license_plate: "",  // Changed to snake_case
     status: "Available",
-    location: "",
-    lastMaintenance: "",
+    location: "",       // Keep if adding to backend, remove otherwise
+    last_maintenance: "" // Changed to snake_case
   });
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
+
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+
+  const fetchVehicles = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/vehicles/getVehicles", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setVehicles(data);
+      } else {
+        setError(data.error || "Failed to fetch vehicles");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching vehicles");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  // Filter vehicles by type OR licensePlate
   const filteredVehicles = vehicles.filter(
     (v) =>
       v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.licensePlate.toLowerCase().includes(searchTerm.toLowerCase())
+      v.license_plate.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddVehicle = () => {
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
-    const maintenanceDate = new Date(newVehicle.lastMaintenance);
+  const handleAddVehicle = async () => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const maintenanceDate = new Date(newVehicle.last_maintenance);
 
-    // Validation
     if (
       !newVehicle.type ||
-      !newVehicle.licensePlate ||
+      !newVehicle.license_plate ||
       !newVehicle.status ||
-      !newVehicle.location ||
-      !newVehicle.lastMaintenance
+      !newVehicle.last_maintenance
     ) {
-      alert("Please fill in all fields.");
+      setError("Please fill in all required fields.");
       return;
     }
     if (maintenanceDate > new Date()) {
-      alert("Last Maintenance date cannot be in the future.");
+      setError("Last Maintenance date cannot be in the future.");
       return;
     }
-    if (vehicles.some((v) => v.licensePlate === newVehicle.licensePlate)) {
-      alert("License Plate already exists. Please use a unique license plate.");
+    if (vehicles.some((v) => v.license_plate === newVehicle.license_plate)) {
+      setError("License Plate already exists. Please use a unique license plate.");
       return;
     }
 
-    // Add new vehicle to state
-    setVehicles([...vehicles, newVehicle]);
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/vehicles/addVehicles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: newVehicle.type,
+          license_plate: newVehicle.license_plate,
+          status: newVehicle.status,
+          last_maintenance: newVehicle.last_maintenance,
+          location: newVehicle.location  // Include if added to backend
+        }),
+      });
 
-    // Reset newVehicle state with a new ID
-    setNewVehicle({
-      id: uuidv4(),
-      type: "Garbage Truck",
-      licensePlate: "",
-      status: "Available",
-      location: "",
-      lastMaintenance: "",
-    });
+      const data = await response.json();
+      if (response.ok) {
+        setVehicles([...vehicles, data]);
+        setNewVehicle({
+          type: "Garbage Truck",
+          license_plate: "",
+          status: "Available",
+          location: "",
+          last_maintenance: ""
+        });
+        setError("");
+      } else {
+        setError(data.error || "Failed to add vehicle");
+      }
+    } catch (err) {
+      setError("An error occurred while adding the vehicle");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDeleteVehicle = (id) => {
-    setVehicles(vehicles.filter((v) => v.id !== id));
+  const handleDeleteVehicle = async (vehicleId) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/vehicles/deleteVehicles${vehicleId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        setVehicles(vehicles.filter((v) => v.id !== vehicleId));
+        setError("");
+      } else {
+        const data = await response.json();
+        setError(data.error || "Failed to delete vehicle");
+      }
+    } catch (err) {
+      setError("An error occurred while deleting the vehicle");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -109,7 +150,9 @@ const VehiclesPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Vehicles</h1>
 
-        {/* Search Box */}
+        {error && <p className="error-message">{error}</p>}
+        {isLoading && <p>Loading...</p>}
+
         <div className="form-container">
           <input
             type="text"
@@ -117,10 +160,10 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
+            disabled={isLoading}
           />
         </div>
 
-        {/* Add Vehicle Form */}
         <div className="form-container">
           <select
             value={newVehicle.type}
@@ -128,6 +171,7 @@ const VehiclesPage = ({ onLogout, userRole }) => {
               setNewVehicle({ ...newVehicle, type: e.target.value })
             }
             className="form-input"
+            disabled={isLoading}
           >
             <option value="Garbage Truck">Garbage Truck</option>
             <option value="Van">Van</option>
@@ -144,11 +188,12 @@ const VehiclesPage = ({ onLogout, userRole }) => {
           <input
             type="text"
             placeholder="License Plate"
-            value={newVehicle.licensePlate}
+            value={newVehicle.license_plate}
             onChange={(e) =>
-              setNewVehicle({ ...newVehicle, licensePlate: e.target.value })
+              setNewVehicle({ ...newVehicle, license_plate: e.target.value })
             }
             className="form-input"
+            disabled={isLoading}
           />
           <select
             value={newVehicle.status}
@@ -156,6 +201,7 @@ const VehiclesPage = ({ onLogout, userRole }) => {
               setNewVehicle({ ...newVehicle, status: e.target.value })
             }
             className="form-input"
+            disabled={isLoading}
           >
             <option value="Available">Available</option>
             <option value="In Use">In Use</option>
@@ -169,21 +215,26 @@ const VehiclesPage = ({ onLogout, userRole }) => {
               setNewVehicle({ ...newVehicle, location: e.target.value })
             }
             className="form-input"
+            disabled={isLoading}
           />
           <input
             type="date"
-            value={newVehicle.lastMaintenance}
+            value={newVehicle.last_maintenance}
             onChange={(e) =>
-              setNewVehicle({ ...newVehicle, lastMaintenance: e.target.value })
+              setNewVehicle({ ...newVehicle, last_maintenance: e.target.value })
             }
             className="form-input"
+            disabled={isLoading}
           />
-          <button onClick={handleAddVehicle} className="download-report-btn">
-            Add Vehicle
+          <button
+            onClick={handleAddVehicle}
+            className="download-report-btn"
+            disabled={isLoading}
+          >
+            {isLoading ? "Adding..." : "Add Vehicle"}
           </button>
         </div>
 
-        {/* Vehicles Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -199,15 +250,16 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredVehicles.map((vehicle) => (
                 <tr key={vehicle.id}>
-                  <td>{vehicle.licensePlate}</td>
+                  <td>{vehicle.license_plate}</td>
                   <td>{vehicle.type}</td>
                   <td>{vehicle.status}</td>
-                  <td>{vehicle.location}</td>
-                  <td>{vehicle.lastMaintenance}</td>
+                  <td>{vehicle.location || "N/A"}</td> {/* Handle missing location */}
+                  <td>{vehicle.last_maintenance || "N/A"}</td>
                   <td>
                     <button
                       onClick={() => handleDeleteVehicle(vehicle.id)}
                       className="delete-btn"
+                      disabled={isLoading}
                     >
                       Delete
                     </button>

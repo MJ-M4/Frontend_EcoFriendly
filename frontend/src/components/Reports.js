@@ -3,7 +3,7 @@ import { saveAs } from "file-saver";
 import React, { useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { v4 as uuidv4 } from "uuid";
-import "./css/general.css";
+import "./css/reports.css";
 import Sidebar from "./Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -13,7 +13,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  // Mock Data
   const initialBinData = [
     { binId: uuidv4().slice(0, 10), capacity: 85, location: "Nazareth", lastCollected: "2025-03-15" },
     { binId: uuidv4().slice(0, 10), capacity: 30, location: "Nazareth", lastCollected: "2025-03-01" },
@@ -32,7 +31,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
     { hardwareId: uuidv4().slice(0, 10), binId: uuidv4().slice(0, 10), status: "Needs Maintenance", battery: 20, lastChecked: "2025-03-02" },
   ];
 
-  // State
   const [binData] = useState(initialBinData);
   const [workersData] = useState(initialWorkersData);
   const [vehiclesData] = useState(initialVehiclesData);
@@ -42,13 +40,13 @@ const ReportsPage = ({ onLogout, userRole }) => {
   const [vehicleSearch, setVehicleSearch] = useState("");
   const [hardwareSearch, setHardwareSearch] = useState("");
   const [selectedReport, setSelectedReport] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const binChartRef = useRef(null);
   const workerChartRef = useRef(null);
   const vehicleChartRef = useRef(null);
   const hardwareChartRef = useRef(null);
 
-  // Filter Data with Exact Match Preference
   const filteredBins = binSearch
     ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase()).length > 0
       ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase())
@@ -70,7 +68,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
       : hardwareData.filter(h => Object.values(h).some(field => field.toString().toLowerCase().includes(hardwareSearch.toLowerCase())))
     : hardwareData;
 
-  // Download CSV Function
   const downloadCsv = (headers, rows, filename) => {
     const csvContent = [
       headers.join(','),
@@ -80,14 +77,13 @@ const ReportsPage = ({ onLogout, userRole }) => {
     saveAs(blob, filename);
   };
 
-  // Bar Chart Data & Options
   const binsChartData = {
     labels: filteredBins.map(b => b.binId),
     datasets: [{ label: "Bin Capacity", data: filteredBins.map(b => b.capacity), backgroundColor: "#3498db" }],
   };
   const binsChartOptions = {
     responsive: true,
-    maintainAspectRatio: false, // Allow custom sizing
+    maintainAspectRatio: false,
     scales: { y: { beginAtZero: true, max: 100 } },
     plugins: {
       legend: { position: "top" },
@@ -173,10 +169,16 @@ const ReportsPage = ({ onLogout, userRole }) => {
     },
   };
 
-  // UI Rendering
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
-      <Sidebar user={{ name: "Mohamed Mhagne", avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={{ name: "Mohamed Mhagne", avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>Reports</h1>
         <div className="dropdown-container">
@@ -193,7 +195,6 @@ const ReportsPage = ({ onLogout, userRole }) => {
           </select>
         </div>
 
-        {/* Conditional Rendering Based on Dropdown Selection */}
         {selectedReport === "bins" && (
           <div className="report-section">
             <h2>Bin Reports</h2>
@@ -219,10 +220,10 @@ const ReportsPage = ({ onLogout, userRole }) => {
                 <tbody>
                   {filteredBins.map(bin => (
                     <tr key={bin.binId}>
-                      <td>{bin.binId}</td>
-                      <td>{bin.capacity}%</td>
-                      <td>{bin.location}</td>
-                      <td>{bin.lastCollected}</td>
+                      <td data-label="Bin ID">{bin.binId}</td>
+                      <td data-label="Capacity (%)">{bin.capacity}%</td>
+                      <td data-label="Location">{bin.location}</td>
+                      <td data-label="Last Collected">{bin.lastCollected}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -270,11 +271,11 @@ const ReportsPage = ({ onLogout, userRole }) => {
                 <tbody>
                   {filteredWorkers.map(w => (
                     <tr key={w.workerId}>
-                      <td>{w.workerId}</td>
-                      <td>{w.name}</td>
-                      <td>{w.phone}</td>
-                      <td>{w.startDate}</td>
-                      <td>{w.shift}</td>
+                      <td data-label="Worker ID">{w.workerId}</td>
+                      <td data-label="Name">{w.name}</td>
+                      <td data-label="Phone">{w.phone}</td>
+                      <td data-label="Start Date">{w.startDate}</td>
+                      <td data-label="Shift">{w.shift}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -321,10 +322,10 @@ const ReportsPage = ({ onLogout, userRole }) => {
                 <tbody>
                   {filteredVehicles.map(v => (
                     <tr key={v.licensePlate}>
-                      <td>{v.licensePlate}</td>
-                      <td>{v.type}</td>
-                      <td>{v.status}</td>
-                      <td>{v.lastMaintenance}</td>
+                      <td data-label="License Plate">{v.licensePlate}</td>
+                      <td data-label="Type">{v.type}</td>
+                      <td data-label="Status">{v.status}</td>
+                      <td data-label="Last Maintenance">{v.lastMaintenance}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -372,11 +373,11 @@ const ReportsPage = ({ onLogout, userRole }) => {
                 <tbody>
                   {filteredHardware.map(h => (
                     <tr key={h.hardwareId}>
-                      <td>{h.hardwareId}</td>
-                      <td>{h.binId}</td>
-                      <td>{h.status}</td>
-                      <td>{h.battery}%</td>
-                      <td>{h.lastChecked}</td>
+                      <td data-label="Hardware ID">{h.hardwareId}</td>
+                      <td data-label="Bin ID">{h.binId}</td>
+                      <td data-label="Status">{h.status}</td>
+                      <td data-label="Battery (%)">{h.battery}%</td>
+                      <td data-label="Last Checked">{h.lastChecked}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,12 +1,12 @@
-// src/components/ShiftProposalsPage.js
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/shift-proposals.css';
 import { shiftProposalsStore, approvedShiftsStore } from './mockData';
 
 const ShiftProposalsPage = ({ onLogout, userRole }) => {
   const proposals = shiftProposalsStore.getPendingProposals();
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleApprove = (proposal) => {
     shiftProposalsStore.updateProposalStatus(proposal.id, 'approved');
@@ -28,13 +28,20 @@ const ShiftProposalsPage = ({ onLogout, userRole }) => {
     alert('Shift proposal denied.');
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="shift-proposals" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={user} activePage="shift-proposals" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>Shift Proposals</h1>
         <div className="table-container">
@@ -55,25 +62,24 @@ const ShiftProposalsPage = ({ onLogout, userRole }) => {
             <tbody>
               {proposals.map((proposal) => (
                 <tr key={proposal.id}>
-                  <td>{proposal.workerId}</td>
-                  <td>{proposal.workerName}</td>
-                  <td>{proposal.workerType}</td>
-                  <td>{proposal.date}</td>
-                  <td>{proposal.startTime}</td>
-                  <td>{proposal.endTime}</td>
-                  <td>{proposal.location}</td>
-                  <td>{new Date(proposal.submittedAt).toLocaleString()}</td>
-                  <td>
+                  <td data-label="Worker ID">{proposal.workerId}</td>
+                  <td data-label="Worker Name">{proposal.workerName}</td>
+                  <td data-label="Worker Type">{proposal.workerType}</td>
+                  <td data-label="Date">{proposal.date}</td>
+                  <td data-label="Start Time">{proposal.startTime}</td>
+                  <td data-label="End Time">{proposal.endTime}</td>
+                  <td data-label="Location">{proposal.location}</td>
+                  <td data-label="Submitted At">{new Date(proposal.submittedAt).toLocaleString()}</td>
+                  <td data-label="Actions">
                     <button
                       onClick={() => handleApprove(proposal)}
-                      className="download-report-btn"
-                      style={{ marginRight: '5px' }}
+                      className="approve-btn"
                     >
                       Approve
                     </button>
                     <button
                       onClick={() => handleDeny(proposal.id)}
-                      className="delete-btn"
+                      className="deny-btn"
                     >
                       Deny
                     </button>

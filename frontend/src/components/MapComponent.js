@@ -16,10 +16,10 @@ const MapComponent = ({ bins }) => {
   const zoomLevel = 8;
 
   return (
-    <MapContainer center={mapCenter} zoom={zoomLevel} style={{ height: '100%', width: '100%' }}>
+    <MapContainer center={mapCenter} zoom={zoomLevel} className="map">
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution="&copy; OpenStreetMap contributors"
+        attribution="© OpenStreetMap contributors"
       />
       {bins.map((bin) => (
         <Marker key={bin.id} position={[bin.lat, bin.lon]}>

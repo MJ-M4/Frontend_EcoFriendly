@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
-import { v4 as uuidv4 } from "uuid"; // Import uuidv4 for unique IDs
-import "./css/general.css";
+import { v4 as uuidv4 } from "uuid"; 
+import "./css/vehicles.css";
 
 const VehiclesPage = ({ onLogout, userRole }) => {
-  // Mock vehicles data with unique IDs
   const initialVehicles = [
     {
-      id: uuidv4(), // Generate unique ID
+      id: uuidv4(), 
       type: "Garbage Truck",
       licensePlate: "0000001",
       status: "Available",
@@ -35,13 +34,14 @@ const VehiclesPage = ({ onLogout, userRole }) => {
   const [vehicles, setVehicles] = useState(initialVehicles);
   const [searchTerm, setSearchTerm] = useState("");
   const [newVehicle, setNewVehicle] = useState({
-    id: uuidv4(), // Generate unique ID for new vehicle
+    id: uuidv4(), 
     type: "Garbage Truck",
     licensePlate: "",
     status: "Available",
     location: "",
     lastMaintenance: "",
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
@@ -49,7 +49,6 @@ const VehiclesPage = ({ onLogout, userRole }) => {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  // Filter vehicles by type OR licensePlate
   const filteredVehicles = vehicles.filter(
     (v) =>
       v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,10 +56,9 @@ const VehiclesPage = ({ onLogout, userRole }) => {
   );
 
   const handleAddVehicle = () => {
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    const currentDate = new Date().toISOString().split("T")[0];
     const maintenanceDate = new Date(newVehicle.lastMaintenance);
 
-    // Validation
     if (
       !newVehicle.type ||
       !newVehicle.licensePlate ||
@@ -80,10 +78,8 @@ const VehiclesPage = ({ onLogout, userRole }) => {
       return;
     }
 
-    // Add new vehicle to state
     setVehicles([...vehicles, newVehicle]);
 
-    // Reset newVehicle state with a new ID
     setNewVehicle({
       id: uuidv4(),
       type: "Garbage Truck",
@@ -98,19 +94,27 @@ const VehiclesPage = ({ onLogout, userRole }) => {
     setVehicles(vehicles.filter((v) => v.id !== id));
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
       <Sidebar
         user={user}
         activePage="vehicles"
         onLogout={onLogout}
         userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
       />
       <div className="content">
         <h1>Vehicles</h1>
 
-        {/* Search Box */}
-        <div className="form-container">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by type or license plate..."
@@ -120,7 +124,6 @@ const VehiclesPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Vehicle Form */}
         <div className="form-container">
           <select
             value={newVehicle.type}
@@ -178,12 +181,11 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             }
             className="form-input"
           />
-          <button onClick={handleAddVehicle} className="download-report-btn">
+          <button onClick={handleAddVehicle} className="add-vehicle-btn">
             Add Vehicle
           </button>
         </div>
 
-        {/* Vehicles Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -199,12 +201,12 @@ const VehiclesPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredVehicles.map((vehicle) => (
                 <tr key={vehicle.id}>
-                  <td>{vehicle.licensePlate}</td>
-                  <td>{vehicle.type}</td>
-                  <td>{vehicle.status}</td>
-                  <td>{vehicle.location}</td>
-                  <td>{vehicle.lastMaintenance}</td>
-                  <td>
+                  <td data-label="License Plate">{vehicle.licensePlate}</td>
+                  <td data-label="Type">{vehicle.type}</td>
+                  <td data-label="Status">{vehicle.status}</td>
+                  <td data-label="Location">{vehicle.location}</td>
+                  <td data-label="Last Maintenance">{vehicle.lastMaintenance}</td>
+                  <td data-label="Actions">
                     <button
                       onClick={() => handleDeleteVehicle(vehicle.id)}
                       className="delete-btn"

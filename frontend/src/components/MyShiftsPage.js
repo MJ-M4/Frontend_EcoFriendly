@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/my-shifts.css';
 
 const MyShiftsPage = ({ onLogout, userRole }) => {
-  // Mock shift data for the worker. In real apps, you fetch from server using their ID.
   const [myShifts, setMyShifts] = useState([
     {
       id: uuidv4().slice(0, 10),
@@ -21,17 +20,24 @@ const MyShiftsPage = ({ onLogout, userRole }) => {
       location: 'Haifa',
     },
   ]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // If not worker, or if user tries direct route
   if (userRole !== 'worker') {
     return <div className="error">Access Denied: Workers Only</div>;
   }
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="my-shifts" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={user} activePage="my-shifts" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>My Shifts</h1>
         <div className="table-container">
@@ -47,10 +53,10 @@ const MyShiftsPage = ({ onLogout, userRole }) => {
             <tbody>
               {myShifts.map((shift) => (
                 <tr key={shift.id}>
-                  <td>{shift.date}</td>
-                  <td>{shift.startTime}</td>
-                  <td>{shift.endTime}</td>
-                  <td>{shift.location}</td>
+                  <td data-label="Date">{shift.date}</td>
+                  <td data-label="Start Time">{shift.startTime}</td>
+                  <td data-label="End Time">{shift.endTime}</td>
+                  <td data-label="Location">{shift.location}</td>
                 </tr>
               ))}
             </tbody>

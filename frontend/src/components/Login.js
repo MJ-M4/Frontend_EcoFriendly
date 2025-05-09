@@ -37,7 +37,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
   };
 
   return (
-    <div className="login-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/EcofriendlyBackground.jpg)`, backgroundSize: 'cover' }}>
+    <div className="login-container" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/EcofriendlyBackground.jpg)` }}>
       <div className="login-box">
         <img src={ecoFriendlyLogo} alt="EcoFriendly System Logo" className="login-logo" />
         <h2>Login to EcoFriendly System</h2>
@@ -53,6 +53,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
               required
               placeholder="Enter your username"
               className="form-input"
+              aria-describedby="username-error"
             />
           </div>
           <div className="form-group">
@@ -66,11 +67,13 @@ const Login = ({ onLogin, isAuthenticated }) => {
                 required
                 placeholder="Enter your password"
                 className="form-input"
+                aria-describedby="password-error"
               />
               <button
                 type="button"
                 className="show-password-btn"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? 'Hide' : 'Show'}
               </button>
@@ -83,12 +86,13 @@ const Login = ({ onLogin, isAuthenticated }) => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="form-input"
+              aria-label="Select user role"
             >
               <option value="worker">Worker</option>
               <option value="manager">Manager</option>
             </select>
           </div>
-          <button type="submit" className="login-button" disabled={isLoading}>
+          <button type="submit" className="login-button" disabled={isLoading} aria-busy={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>

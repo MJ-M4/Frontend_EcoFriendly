@@ -1,8 +1,7 @@
-// src/components/ProposeShiftsPage.js
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/propose-shifts.css';
 import { shiftProposalsStore } from './mockData';
 
 const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
@@ -13,6 +12,7 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
     endTime: '',
     location: '',
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const today = new Date();
   const day = today.getDay();
@@ -63,12 +63,15 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
       alert('Please add at least one shift.');
       return;
     }
-    // Mock worker data for submission (in reality, fetch from server or context)
-    const workerName = user.name; // From Sidebar props
-    const workerType = 'Driver'; // Hardcoded for demo; ideally from employee data
+    const workerName = user.name;
+    const workerType = 'Driver';
     shiftProposalsStore.addProposal(userId, workerName, workerType, proposedShifts);
     alert('Proposal submitted successfully!');
     setProposedShifts([]);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
@@ -79,7 +82,10 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="propose-shifts" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={user} activePage="propose-shifts" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>Propose Shifts for Next Week</h1>
         <p>Select shifts for the week of {minDate} to {maxDate}</p>
@@ -111,7 +117,7 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
             onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
             className="form-input"
           />
-          <button onClick={handleAddShift} className="download-report-btn">
+          <button onClick={handleAddShift} className="add-shift-btn">
             Add Shift
           </button>
         </div>
@@ -129,11 +135,11 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
             <tbody>
               {proposedShifts.map((shift) => (
                 <tr key={shift.id}>
-                  <td>{shift.date}</td>
-                  <td>{shift.startTime}</td>
-                  <td>{shift.endTime}</td>
-                  <td>{shift.location}</td>
-                  <td>
+                  <td data-label="Date">{shift.date}</td>
+                  <td data-label="Start Time">{shift.startTime}</td>
+                  <td data-label="End Time">{shift.endTime}</td>
+                  <td data-label="Location">{shift.location}</td>
+                  <td data-label="Actions">
                     <button
                       onClick={() => handleDeleteShift(shift.id)}
                       className="delete-btn"
@@ -146,7 +152,7 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
             </tbody>
           </table>
         </div>
-        <button onClick={handleSubmitProposal} className="download-report-btn">
+        <button onClick={handleSubmitProposal} className="submit-proposal-btn">
           Submit Proposal
         </button>
       </div>

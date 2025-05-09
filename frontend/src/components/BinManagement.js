@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
-import "./css/general.css";
+import "./css/bin-management.css";
 
 const BinManagementPage = ({ onLogout, userRole }) => {
-  // Each bin uses a random UUID for binId
   const initialBins = [
     {
-      id: uuidv4().slice(0, 10), // internal "id" used for row keys
-      binId: uuidv4().slice(0, 10), // the "binId" is now a true UUID
+      id: uuidv4().slice(0, 10), 
+      binId: uuidv4().slice(0, 10), 
       location: "Nazareth",
       address: "A12 Tawfiq Ziad",
       status: "Full",
@@ -35,6 +34,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     location: "",
     address: "",
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
@@ -42,7 +42,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  // Filter bins
   const filteredBins = bins.filter(
     (bin) =>
       bin.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,8 +54,8 @@ const BinManagementPage = ({ onLogout, userRole }) => {
       setBins([
         ...bins,
         {
-          id: uuidv4().slice(0, 10), // row key
-          binId: uuidv4().slice(0, 10), // new random binId
+          id: uuidv4().slice(0, 10),
+          binId: uuidv4().slice(0, 10),
           location: newBin.location,
           address: newBin.address,
           status: "Empty",
@@ -80,19 +79,27 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     setNewBin((prev) => ({ ...prev, [name]: value }));
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
       <Sidebar
         user={user}
         activePage="bin-management"
         onLogout={onLogout}
         userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
       />
       <div className="content">
         <h1>Bin Management</h1>
 
-        {/* Search */}
-        <div className="form-container">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by bin ID, location, or address..."
@@ -102,7 +109,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Bin */}
         <div className="form-container">
           <input
             type="text"
@@ -120,7 +126,7 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             onChange={handleInputChange}
             className="form-input"
           />
-          <button onClick={handleAddBin} className="download-report-btn">
+          <button onClick={handleAddBin} className="add-bin-btn">
             Add Bin
           </button>
         </div>
@@ -139,11 +145,11 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredBins.map((bin) => (
                 <tr key={bin.id}>
-                  <td>{bin.binId}</td>
-                  <td>{bin.location}</td>
-                  <td>{bin.address}</td>
-                  <td>{bin.status}</td>
-                  <td>
+                  <td data-label="Bin ID">{bin.binId}</td>
+                  <td data-label="Location">{bin.location}</td>
+                  <td data-label="Address">{bin.address}</td>
+                  <td data-label="Status">{bin.status}</td>
+                  <td data-label="Actions">
                     <button
                       onClick={() => handleDeleteBin(bin.id)}
                       className="delete-btn"

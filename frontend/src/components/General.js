@@ -7,6 +7,7 @@ import './css/general.css';
 
 const GeneralPage = ({ onLogout, userRole }) => {
   const [selectedBin, setSelectedBin] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar toggle
 
   // Mock bin data using UUID
   const mockBins = [
@@ -73,9 +74,23 @@ const GeneralPage = ({ onLogout, userRole }) => {
     setSelectedBin(bin);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar
+        user={user}
+        activePage="general"
+        onLogout={onLogout}
+        userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <div className="content">
         <div className="map-container">
           <MapComponent bins={mockBins} selectedBin={selectedBin} />

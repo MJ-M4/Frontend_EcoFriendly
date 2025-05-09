@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
-import wazeIcon from '../Photos/Waze.jpeg'; // confirm path if needed
+import wazeIcon from '../Photos/Waze.jpeg';
 
 const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
   const getStatusIcon = (status) => {
@@ -17,59 +17,58 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
   };
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Bin ID</th>
-          <th>Status</th>
-          <th>Capacity</th>
-          <th>Event Time</th>
-          <th>Date</th>
-          <th>Route Suggest</th>
-          <th>Battery Level</th>
-        </tr>
-      </thead>
-      <tbody>
-        {bins.map((bin) => (
-          <tr
-            key={bin.id}
-            className={selectedBin && selectedBin.id === bin.id ? 'selected' : ''}
-          >
-            <td>{bin.id}</td>
-            <td>
-              {getStatusIcon(bin.status)}
-              {bin.status}
-            </td>
-            <td>{bin.capacity}%</td>
-            <td>{bin.time}</td>
-            <td>{bin.date}</td>
-            <td>
-              <a
-                href={`https://waze.com/ul?ll=${bin.lat},${bin.lon}&navigate=yes`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ textDecoration: 'underline', color: '#3498db', display: 'flex', alignItems: 'center' }}
-              >
-                <img
-                  src={wazeIcon}
-                  alt="Navigate with Waze"
-                  style={{ width: '24px', height: '24px', marginRight: '8px' }}
-                />
-              </a>
-            </td>
-            <td>
-              {bin.battery}%{' '}
-              <div className="battery-bar">
-                <div
-                  className="battery-fill"
-                  style={{ width: `${bin.battery}%`, backgroundColor: bin.battery > 50 ? '#4caf50' : '#ff4d4f' }}
-                ></div>
-              </div>
-            </td>
+    <div className="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Bin ID</th>
+            <th>Status</th>
+            <th>Capacity</th>
+            <th>Event Time</th>
+            <th>Date</th>
+            <th>Route Suggest</th>
+            <th>Battery Level</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {bins.map((bin) => (
+            <tr
+              key={bin.id}
+              className={selectedBin && selectedBin.id === bin.id ? 'selected' : ''}
+              onClick={() => onSelectBin(bin)}
+            >
+              <td data-label="Bin ID">{bin.id}</td>
+              <td data-label="Status">
+                {getStatusIcon(bin.status)}
+                {bin.status}
+              </td>
+              <td data-label="Capacity">{bin.capacity}%</td>
+              <td data-label="Event Time">{bin.time}</td>
+              <td data-label="Date">{bin.date}</td>
+              <td data-label="Route Suggest">
+                <a
+                  href={`https://waze.com/ul?ll=${bin.lat},${bin.lon}&navigate=yes`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="waze-link"
+                >
+                  <img src={wazeIcon} alt="Navigate with Waze" className="waze-icon" />
+                </a>
+              </td>
+              <td data-label="Battery Level">
+                {bin.battery}%{' '}
+                <div className="battery-bar">
+                  <div
+                    className="battery-fill"
+                    style={{ width: `${bin.battery}%`, backgroundColor: bin.battery > 50 ? '#4caf50' : '#ff4d4f' }}
+                  ></div>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

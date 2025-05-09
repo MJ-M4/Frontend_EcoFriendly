@@ -1,15 +1,13 @@
-// src/components/ShiftsPage.js
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/shifts.css';
 import { approvedShiftsStore } from './mockData';
 
 const ShiftsPage = ({ onLogout, userRole }) => {
-  // Static employee data with added IDs
   const employees = [
     {
-      id: 'emp1', // Added for React key usage
+      id: 'emp1',
       identity: '207705096',
       name: 'Worker 1',
       phone: '050-123-4567',
@@ -18,7 +16,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       workerType: 'Driver',
     },
     {
-      id: 'emp2', // Added for React key usage
+      id: 'emp2',
       identity: '205548491',
       name: 'Worker 2',
       phone: '052-987-6543',
@@ -26,17 +24,15 @@ const ShiftsPage = ({ onLogout, userRole }) => {
       joiningDate: '15-03-2023',
       workerType: 'Cleaner',
     },
-
   ];
 
-  // Initial shift data to populate the table
   const initialShifts = [
     {
       id: uuidv4().slice(0, 10),
       workerId: '207705096',
       workerName: 'Worker 1',
       workerType: 'Driver',
-      date: '2025-03-17', // Example date (today's date as per system info)
+      date: '2025-03-17',
       startTime: '09:00',
       endTime: '17:00',
       location: 'Tel Aviv',
@@ -53,7 +49,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     },
   ];
 
-  // State for shifts, search, and forms
   const [shifts, setShifts] = useState([...(approvedShiftsStore.shifts || []), ...initialShifts]);
   const [searchId, setSearchId] = useState('');
   const [newShift, setNewShift] = useState({
@@ -71,14 +66,12 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     endTime: '',
     location: '',
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Mock user data
   const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-  // Filter shifts based on search input
   const filteredShifts = shifts.filter((shift) => shift.workerId.includes(searchId));
 
-  // Handle adding a new shift
   const handleAddShift = () => {
     if (
       newShift.workerId &&
@@ -123,12 +116,10 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     }
   };
 
-  // Handle deleting a shift
   const handleDeleteShift = (id) => {
     setShifts(shifts.filter((shift) => shift.id !== id));
   };
 
-  // Load shift data for updating
   const handleUpdateShift = () => {
     const shiftToUpdate = shifts.find((s) => s.workerId === updateWorkerId);
     if (shiftToUpdate) {
@@ -144,7 +135,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     }
   };
 
-  // Save updated shift data
   const handleSaveUpdate = () => {
     setShifts(
       shifts.map((shift) =>
@@ -155,18 +145,23 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     setUpdatedShift({ date: '', startTime: '', endTime: '', location: '' });
   };
 
-  // Restrict access to managers only
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="shifts" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={user} activePage="shifts" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>Shifts</h1>
-        {/* Search input */}
-        <div className="form-container">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by Worker ID..."
@@ -175,8 +170,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             className="search-input"
           />
         </div>
-        {/* Form to add a new shift */}
-        <div className="form-container">
+        <div className="form-container add-shift-form">
           <input
             type="text"
             placeholder="Worker ID"
@@ -218,12 +212,11 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
             className="form-input"
           />
-          <button onClick={handleAddShift} className="download-report-btn">
+          <button onClick={handleAddShift} className="action-btn">
             Add Shift
           </button>
         </div>
-        {/* Form to update an existing shift */}
-        <div className="form-container">
+        <div className="form-container update-shift-form">
           <input
             type="text"
             placeholder="Worker ID to update"
@@ -231,7 +224,7 @@ const ShiftsPage = ({ onLogout, userRole }) => {
             onChange={(e) => setUpdateWorkerId(e.target.value)}
             className="form-input"
           />
-          <button onClick={handleUpdateShift} className="download-report-btn">
+          <button onClick={handleUpdateShift} className="action-btn">
             Load Update
           </button>
           {updateWorkerId && (
@@ -261,13 +254,12 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                 onChange={(e) => setUpdatedShift({ ...updatedShift, location: e.target.value })}
                 className="form-input"
               />
-              <button onClick={handleSaveUpdate} className="download-report-btn">
+              <button onClick={handleSaveUpdate} className="action-btn">
                 Save Update
               </button>
             </>
           )}
         </div>
-        {/* Table to display shifts */}
         <div className="table-container">
           <table>
             <thead>
@@ -288,15 +280,15 @@ const ShiftsPage = ({ onLogout, userRole }) => {
                 const emp = employees.find((e) => e.identity === shift.workerId);
                 return (
                   <tr key={shift.id}>
-                    <td>{shift.workerId}</td>
-                    <td>{shift.workerName}</td>
-                    <td>{shift.workerType}</td>
-                    <td>{emp ? emp.phone : ''}</td>
-                    <td>{shift.date}</td>
-                    <td>{shift.startTime}</td>
-                    <td>{shift.endTime}</td>
-                    <td>{shift.location}</td>
-                    <td>
+                    <td data-label="Worker ID">{shift.workerId}</td>
+                    <td data-label="Worker Name">{shift.workerName}</td>
+                    <td data-label="Worker Type">{shift.workerType}</td>
+                    <td data-label="Phone">{emp ? emp.phone : ''}</td>
+                    <td data-label="Date">{shift.date}</td>
+                    <td data-label="Start Time">{shift.startTime}</td>
+                    <td data-label="End Time">{shift.endTime}</td>
+                    <td data-label="Location">{shift.location}</td>
+                    <td data-label="Actions">
                       <button
                         onClick={() => handleDeleteShift(shift.id)}
                         className="delete-btn"

@@ -4,11 +4,11 @@ import Sidebar from "./Sidebar";
 import "./css/general.css";
 
 const HardwareExamination = ({ onLogout, userRole }) => {
-  // We store the actual UUID in "id" and remove hardwareId from display
+
   const initialHardware = [
     {
       id: uuidv4().slice(0, 10),
-      binId: uuidv4().slice(0, 10), // if you also want binId as a UUID
+      binId: uuidv4().slice(0, 10), 
       status: "Operational",
       battery: 95,
       lastChecked: "2025-03-01",
@@ -171,7 +171,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
           </table>
         </div>
 
-        {/* Removed the Download File button */}
       </div>
     </div>
   );

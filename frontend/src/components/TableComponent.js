@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaTrash } from 'react-icons/fa';
-import wazeIcon from '../Photos/Waze.jpeg'; // confirm path if needed
+import wazeIcon from '../Photos/Waze.jpeg'; 
 
 const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
   const getStatusIcon = (status) => {

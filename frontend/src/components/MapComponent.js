@@ -3,7 +3,6 @@ import 'leaflet/dist/leaflet.css';
 import React from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
-// Fix for default marker icons in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -12,7 +11,7 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = ({ bins }) => {
-  const mapCenter = [32.0461, 34.8516]; // Center in Israel
+  const mapCenter = [32.0461, 34.8516]; 
   const zoomLevel = 8;
 
   return (

@@ -12,13 +12,13 @@ const EmployeesPage = ({ onLogout, userRole }) => {
     location: '',
     joining_date: '',
     worker_type: 'Driver',
-    password: '',  // Added password field
+    password: '',  
   });
   const [generatedPassword, setGeneratedPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
+  const user = { name: user.name, avatar: '/images/sami.png' };
 
   useEffect(() => {
     fetchEmployees();
@@ -65,7 +65,7 @@ const EmployeesPage = ({ onLogout, userRole }) => {
   const handleGeneratePassword = () => {
     const pwd = generateRandomPassword();
     setGeneratedPassword(pwd);
-    setNewEmployee({ ...newEmployee, password: pwd });  // Store password in newEmployee
+    setNewEmployee({ ...newEmployee, password: pwd });  
   };
 
   const handleAddEmployee = async () => {
@@ -76,7 +76,7 @@ const EmployeesPage = ({ onLogout, userRole }) => {
       newEmployee.location &&
       newEmployee.joining_date &&
       newEmployee.worker_type &&
-      newEmployee.password  // Ensure password is provided
+      newEmployee.password 
     ) {
       setIsLoading(true);
       try {

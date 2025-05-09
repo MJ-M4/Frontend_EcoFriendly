@@ -8,7 +8,7 @@ import './css/general.css';
 const GeneralPage = ({ onLogout, userRole }) => {
   const [selectedBin, setSelectedBin] = useState(null);
 
-  // Mock bin data using UUID
+
   const mockBins = [
     {
       id: uuidv4().slice(0, 10),

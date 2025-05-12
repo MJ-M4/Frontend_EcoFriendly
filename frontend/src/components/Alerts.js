@@ -1,87 +1,40 @@
-import React, { useState } from 'react';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { v4 as uuidv4 } from 'uuid';
-import './css/general.css';
-import Sidebar from './Sidebar';
+import React from 'react';
+import PageTemplate from './PageTemplate';
 
-const AlertsPage = ({ onLogout, userRole,userName }) => {
-  // Mock data
+const AlertsPage = ({ onLogout, userRole, userName }) => {
   const mockAlerts = [
-    {
-      binId: uuidv4().slice(0, 10),
-      type: 'Critical',
-      message: 'Bin is full',
-      eventTime: '10:00',
-      date: '15-1-2025',
-    },
-    {
-      binId: uuidv4().slice(0, 10),
-      type: 'Warning',
-      message: 'Low battery',
-      eventTime: '12:30',
-      date: '15-1-2025',
-    },
-    {
-      binId: uuidv4().slice(0, 10),
-      type: 'Critical',
-      message: 'Bin is full',
-      eventTime: '14:00',
-      date: '16-1-2025',
-    },
+    { id: '28f9a440-d', type: 'Critical', message: 'Bin is full', time: '10:00', date: '15-1-2025' },
+    { id: '08e6b29a-8', type: 'Warning', message: 'Low battery', time: '12:30', date: '15-1-2025' },
+    { id: '1b627d42-3', type: 'Critical', message: 'Bin is full', time: '14:00', date: '16-1-2025' },
   ];
-  const [alerts] = useState(mockAlerts);
-  const [loading] = useState(false);
-  const [error] = useState(null);
-
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
-
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
 
   return (
-    <div className="dashboard">
-      <Sidebar 
-      user={user} 
-      activePage="alerts" 
-      onLogout={onLogout} 
-      userRole={userRole}
-      userName={userName} 
-      />
-      <div className="content">
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Bin ID</th>
-                <th>Alert Type</th>
-                <th>Message</th>
-                <th>Event Time</th>
-                <th>Date</th>
+    <PageTemplate title="Alerts" onLogout={onLogout} userRole={userRole} userName={userName} activePage="alerts">
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Bin ID</th>
+              <th>Alert Type</th>
+              <th>Message</th>
+              <th>Event Time</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mockAlerts.map((alert) => (
+              <tr key={alert.id}>
+                <td>{alert.id}</td>
+                <td>{alert.type}</td>
+                <td>{alert.message}</td>
+                <td>{alert.time}</td>
+                <td>{alert.date}</td>
               </tr>
-            </thead>
-            <tbody>
-              {alerts.map((alert) => (
-                <tr key={alert.id}>
-                  <td>{alert.binId}</td>
-                  <td>
-                    <FaExclamationTriangle
-                      style={{
-                        color: alert.type === 'Critical' ? '#ff4d4f' : '#ffeb3b',
-                        marginRight: '8px',
-                      }}
-                    />
-                    {alert.type}
-                  </td>
-                  <td>{alert.message}</td>
-                  <td>{alert.eventTime}</td>
-                  <td>{alert.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </div>
+    </PageTemplate>
   );
 };
 

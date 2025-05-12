@@ -2,11 +2,9 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { loginAPI } from '../components/api';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
-
-const LOGIN_API = 'http://localhost:5000/api/auth/login';
-
 const Login = ({ onLogin, isAuthenticated }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +29,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(LOGIN_API, {
+      const response = await axios.post(loginAPI, {
         user_id: id,
         password: password,
       });

@@ -12,48 +12,12 @@ const Login = ({ onLogin, isAuthenticated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/general');
-    }
-  }, [isAuthenticated, navigate]);
-
-=======
->>>>>>> 68fa09bf9813974cbf1e28028ae9e4abf76402a3
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
     try {
-<<<<<<< HEAD
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password,
-          role,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Login successful
-        onLogin(role); // Pass the role to the parent component to set isAuthenticated
-        setIsLoading(false);
-      } else {
-        // Handle error from backend
-        setError(data.error || 'Login failed. Please try again.');
-        setIsLoading(false);
-      }
-    } catch (err) {
-      setError('An error occurred. Please check your network and try again.');
-=======
       const response = await fetch('http://localhost:5005/local/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -73,7 +37,6 @@ const Login = ({ onLogin, isAuthenticated }) => {
       console.error('Fetch Error:', err);
       setError('Failed to connect to the server. Please check if the backend is running.');
     } finally {
->>>>>>> 68fa09bf9813974cbf1e28028ae9e4abf76402a3
       setIsLoading(false);
     }
   };

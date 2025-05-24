@@ -3,12 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/hardware-examination.css";
 
-<<<<<<< HEAD
-const HardwareExamination = ({ onLogout, userRole }) => {
-
-=======
 const HardwareExamination = ({ onLogout, userRole, user}) => {
->>>>>>> 68fa09bf9813974cbf1e28028ae9e4abf76402a3
   const initialHardware = [
     {
       id: uuidv4().slice(0, 10),
@@ -177,10 +172,6 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
             </tbody>
           </table>
         </div>
-<<<<<<< HEAD
-
-=======
->>>>>>> 68fa09bf9813974cbf1e28028ae9e4abf76402a3
       </div>
     </div>
   );

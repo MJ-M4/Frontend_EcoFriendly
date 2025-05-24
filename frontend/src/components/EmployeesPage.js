@@ -1,52 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from './Sidebar';
-import './css/general.css';
+import React, { useState, useEffect } from "react";
+import Sidebar from "./Sidebar";
+import "./css/employees.css";
 
-const EmployeesPage = ({ onLogout, userRole }) => {
+const EmployeesPage = ({ onLogout, userRole, user }) => {
   const [employees, setEmployees] = useState([]);
-  const [searchValue, setSearchValue] = useState('');
-  const [newEmployee, setNewEmployee] = useState({
-    identity: '',
-    name: '',
-    phone: '',
-    location: '',
-    joining_date: '',
-    worker_type: 'Driver',
-    password: '',  
-  });
-  const [generatedPassword, setGeneratedPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const user = { name: user.name, avatar: '/images/sami.png' };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5005/local/getEmployees"
+        );
+        const data = await response.json();
+        if (data.status === "success") {
+          console.log("Fetched employees:", data.employees);
+          setEmployees(data.employees || []);
+        } else {
+          console.error("Failed to fetch employees:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchEmployees();
   }, []);
 
-  const fetchEmployees = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('http://localhost:5000/api/employees/getEmployees', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setEmployees(data);
-      } else {
-        setError(data.error || 'Failed to fetch employees');
-      }
-    } catch (err) {
-      setError('An error occurred while fetching employees');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [searchValue, setSearchValue] = useState("");
+  const [newEmployee, setNewEmployee] = useState({
+    identity: "",
+    name: "",
+    phone: "",
+    location: "",
+    joining_date: "",
+    worker_type: "Driver",
+    role: "worker",
+  });
+  const [generatedPassword, setGeneratedPassword] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const filteredEmployees = employees.filter(
+  const filteredEmployees = (employees || []).filter(
     (emp) =>
       emp.location?.toLowerCase().includes(searchValue.toLowerCase()) ||
       emp.identity?.toLowerCase().includes(searchValue.toLowerCase())
@@ -66,8 +62,15 @@ const EmployeesPage = ({ onLogout, userRole }) => {
   const handleGeneratePassword = () => {
     const pwd = generateRandomPassword();
     setGeneratedPassword(pwd);
-    setNewEmployee({ ...newEmployee, password: pwd });  
   };
+
+  // const hashPassword = async (password) => {
+  //   const encoder = new TextEncoder();
+  //   const data = encoder.encode(password);
+  //   const hash = await crypto.subtle.digest("SHA-256", data);
+  //   const hashArray = Array.from(new Uint8Array(hash));
+  //   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  // };
 
   const handleAddEmployee = async () => {
     if (
@@ -77,74 +80,79 @@ const EmployeesPage = ({ onLogout, userRole }) => {
       newEmployee.location &&
       newEmployee.joining_date &&
       newEmployee.worker_type &&
-      newEmployee.password 
+      newEmployee.role
     ) {
-      setIsLoading(true);
+
+      const employeePayload = {
+        identity: newEmployee.identity,
+        name: newEmployee.name,
+        phone: newEmployee.phone,
+        location: newEmployee.location,
+        joining_date: newEmployee.joining_date,
+        worker_type: newEmployee.worker_type,
+        role: newEmployee.role,
+        password: generatedPassword || "", // Send plain text password to backend
+      };
+
       try {
-        const response = await fetch('http://localhost:5000/api/employees/addEmployees', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            identity: newEmployee.identity,
-            name: newEmployee.name,
-            phone: newEmployee.phone,
-            location: newEmployee.location,
-            joining_date: newEmployee.joining_date,
-            worker_type: newEmployee.worker_type,
-            password: newEmployee.password,
-          }),
-        });
+        const response = await fetch(
+          "http://localhost:5005/local/addEmployees",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(employeePayload),
+          }
+        );
 
         const data = await response.json();
-        if (response.ok) {
-          setEmployees([...employees, data]);
+        console.log("API2025 Response:", data);
+        if (data.status === "success") {
+          console.log("Employee added successfully:", data.employees);
+          setEmployees((prev) => [...prev, data.employees]);
+          alert("Employee added successfully");
           setNewEmployee({
-            identity: '',
-            name: '',
-            phone: '',
-            location: '',
-            joining_date: '',
-            worker_type: 'Driver',
-            password: '',
+            identity: "",
+            name: "",
+            phone: "",
+            location: "",
+            joining_date: "",
+            worker_type: "Driver",
+            role: "worker",
           });
-          setGeneratedPassword('');
-          setError('');
+          setGeneratedPassword("");
         } else {
-          setError(data.error || 'Failed to add employee');
+          console.error("Failed to add employee:", data.message);
         }
-      } catch (err) {
-        setError('An error occurred while adding the employee');
-      } finally {
-        setIsLoading(false);
+      } catch (error) {
+        console.error("Error adding employee:", error);
+        alert("Server error");
       }
-    } else {
-      setError('Please fill in all fields, including generating a password.');
     }
   };
 
-  const handleDeleteEmployee = async (id) => {
-    setIsLoading(true);
+  const handleDeleteEmployee = async (identity) => {
+    if (!confirm(`Delete Employee ${identity}?`)) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/employees/deleteEmployees${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        setEmployees(employees.filter((emp) => emp.id !== id));
-        setError('');
+      const response = await fetch(
+        `http://localhost:5005/local/deleteEmployees/${identity}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        setEmployees(employees.filter((emp) => emp.identity !== identity));
       } else {
-        const data = await response.json();
-        setError(data.error || 'Failed to delete employee');
+        console.error("Failed to delete employee:", data.message);
       }
-    } catch (err) {
-      setError('An error occurred while deleting the employee');
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      alert("Server error");
     }
   };
 
@@ -176,30 +184,25 @@ const EmployeesPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Employees</h1>
 
-        {error && <p className="error-message">{error}</p>}
-        {isLoading && <p>Loading...</p>}
-
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by region or ID..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className="search-input"
-            disabled={isLoading}
           />
         </div>
 
         <div className="form-container">
           <input
             type="text"
-            placeholder="Identity (used as username)"
+            placeholder="Identity"
             value={newEmployee.identity}
             onChange={(e) =>
               setNewEmployee({ ...newEmployee, identity: e.target.value })
             }
             className="form-input"
-            disabled={isLoading}
           />
           <input
             type="text"
@@ -209,7 +212,6 @@ const EmployeesPage = ({ onLogout, userRole }) => {
               setNewEmployee({ ...newEmployee, name: e.target.value })
             }
             className="form-input"
-            disabled={isLoading}
           />
           <input
             type="text"
@@ -219,7 +221,6 @@ const EmployeesPage = ({ onLogout, userRole }) => {
               setNewEmployee({ ...newEmployee, phone: e.target.value })
             }
             className="form-input"
-            disabled={isLoading}
           />
           <input
             type="text"
@@ -229,39 +230,41 @@ const EmployeesPage = ({ onLogout, userRole }) => {
               setNewEmployee({ ...newEmployee, location: e.target.value })
             }
             className="form-input"
-            disabled={isLoading}
           />
           <input
             type="date"
             value={newEmployee.joining_date}
-            onChange={(e) => setNewEmployee({ ...newEmployee, joining_date: e.target.value })}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, joining_date: e.target.value })
+            }
             className="form-input"
-            disabled={isLoading}
           />
           <select
             value={newEmployee.worker_type}
-            onChange={(e) => setNewEmployee({ ...newEmployee, worker_type: e.target.value })}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, worker_type: e.target.value })
+            }
             className="form-input"
-            disabled={isLoading}
           >
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
             <option value="Maintenance Worker">Maintenance Worker</option>
           </select>
 
+          <select
+            value={newEmployee.role}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, role: e.target.value })
+            }
+            className="form-input"
+          >
+            <option value="worker">Worker</option>
+            <option value="manager">Manager</option>
+          </select>
+
           <button
             onClick={handleGeneratePassword}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#2ecc71',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              height: '40px',
-              margin: '5px',
-            }}
-            disabled={isLoading}
+            className="generate-password-btn"
           >
             Generate Password
           </button>
@@ -275,13 +278,8 @@ const EmployeesPage = ({ onLogout, userRole }) => {
             />
           )}
 
-          <button
-            onClick={handleAddEmployee}
-            className="download-report-btn"
-            style={{ padding: '10px 20px', height: '40px', width: '200px', margin: '5px' }}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Adding...' : 'Add Employee'}
+          <button onClick={handleAddEmployee} className="add-employee-btn">
+            Add Employee
           </button>
         </div>
 
@@ -301,17 +299,16 @@ const EmployeesPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredEmployees.map((emp) => (
                 <tr key={emp.id}>
-                  <td>{emp.identity}</td>
-                  <td>{emp.name}</td>
-                  <td>{emp.phone}</td>
-                  <td>{emp.location}</td>
-                  <td>{emp.joining_date}</td>
-                  <td>{emp.worker_type}</td>
-                  <td>
+                  <td data-label="ID">{emp.identity}</td>
+                  <td data-label="Name">{emp.name}</td>
+                  <td data-label="Phone">{emp.phone}</td>
+                  <td data-label="Location">{emp.location}</td>
+                  <td data-label="Joining Date">{emp.joining_date}</td>
+                  <td data-label="Worker Type">{emp.worker_type}</td>
+                  <td data-label="Actions">
                     <button
                       onClick={() => handleDeleteEmployee(emp.identity)}
                       className="delete-btn"
-                      disabled={isLoading}
                     >
                       Delete
                     </button>

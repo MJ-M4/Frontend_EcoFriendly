@@ -1,44 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/bin-management.css";
 
-const BinManagementPage = ({ onLogout, userRole }) => {
-  const [bins, setBins] = useState([]);
+const BinManagementPage = ({ onLogout, userRole,user }) => {
+  const initialBins = [
+    {
+      id: uuidv4().slice(0, 10), 
+      binId: uuidv4().slice(0, 10), 
+      location: "Nazareth",
+      address: "A12 Tawfiq Ziad",
+      status: "Full",
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      binId: uuidv4().slice(0, 10),
+      location: "Nazareth",
+      address: "45B Some Street",
+      status: "Full",
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      binId: uuidv4().slice(0, 10),
+      location: "Nazareth",
+      address: "78C Another Ave",
+      status: "Full",
+    },
+  ];
+
+  const [bins, setBins] = useState(initialBins);
   const [searchTerm, setSearchTerm] = useState("");
   const [newBin, setNewBin] = useState({
     location: "",
     address: "",
   });
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-
-  useEffect(() => {
-    fetchBins();
-  }, []);
-
-  const fetchBins = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("http://localhost:5000/api/bins/getBins", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setBins(data);
-      } else {
-        setError(data.error || "Failed to fetch bins");
-      }
-    } catch (err) {
-      setError("An error occurred while fetching bins");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
@@ -46,71 +43,34 @@ const BinManagementPage = ({ onLogout, userRole }) => {
 
   const filteredBins = bins.filter(
     (bin) =>
-      bin.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      bin.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bin.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bin.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddBin = async () => {
+  const handleAddBin = () => {
     if (newBin.location && newBin.address) {
-      const binId = uuidv4().slice(0, 10);
-      setIsLoading(true);
-      try {
-        const response = await fetch("http://localhost:5000/api/bins/addBins", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: binId,
-            location: newBin.location,
-            address: newBin.address,
-          }),
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          setBins([...bins, data]);
-          setNewBin({
-            location: "",
-            address: "",
-          });
-          setError("");
-        } else {
-          setError(data.error || "Failed to add bin");
-        }
-      } catch (err) {
-        setError("An error occurred while adding the bin");
-      } finally {
-        setIsLoading(false);
-      }
+      setBins([
+        ...bins,
+        {
+          id: uuidv4().slice(0, 10),
+          binId: uuidv4().slice(0, 10),
+          location: newBin.location,
+          address: newBin.address,
+          status: "Empty",
+        },
+      ]);
+      setNewBin({
+        location: "",
+        address: "",
+      });
     } else {
-      setError("Please fill in all fields (Location and Address) to add a bin.");
+      alert("Please fill in all fields (Location and Address) to add a bin.");
     }
   };
 
-  const handleDeleteBin = async (binId) => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`http://localhost:5000/api/bins/deleteBins${binId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setBins(bins.filter((b) => b.id !== binId));
-        setError("");
-      } else {
-        const data = await response.json();
-        setError(data.error || "Failed to delete bin");
-      }
-    } catch (err) {
-      setError("An error occurred while deleting the bin");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleDeleteBin = (rowId) => {
+    setBins(bins.filter((b) => b.id !== rowId));
   };
 
   const handleInputChange = (e) => {
@@ -138,17 +98,13 @@ const BinManagementPage = ({ onLogout, userRole }) => {
       <div className="content">
         <h1>Bin Management</h1>
 
-        {error && <p className="error-message">{error}</p>}
-        {isLoading && <p>Loading...</p>}
-
-        <div className="form-container">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by bin ID, location, or address..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
-            disabled={isLoading}
           />
         </div>
 
@@ -160,7 +116,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             value={newBin.location}
             onChange={handleInputChange}
             className="form-input"
-            disabled={isLoading}
           />
           <input
             type="text"
@@ -169,14 +124,9 @@ const BinManagementPage = ({ onLogout, userRole }) => {
             value={newBin.address}
             onChange={handleInputChange}
             className="form-input"
-            disabled={isLoading}
           />
-          <button
-            onClick={handleAddBin}
-            className="download-report-btn"
-            disabled={isLoading}
-          >
-            {isLoading ? "Adding..." : "Add Bin"}
+          <button onClick={handleAddBin} className="add-bin-btn">
+            Add Bin
           </button>
         </div>
 
@@ -187,20 +137,21 @@ const BinManagementPage = ({ onLogout, userRole }) => {
                 <th>Bin ID</th>
                 <th>Location</th>
                 <th>Address</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredBins.map((bin) => (
                 <tr key={bin.id}>
-                  <td>{bin.id}</td>
-                  <td>{bin.location}</td>
-                  <td>{bin.address}</td>
-                  <td>
+                  <td data-label="Bin ID">{bin.binId}</td>
+                  <td data-label="Location">{bin.location}</td>
+                  <td data-label="Address">{bin.address}</td>
+                  <td data-label="Status">{bin.status}</td>
+                  <td data-label="Actions">
                     <button
                       onClick={() => handleDeleteBin(bin.id)}
                       className="delete-btn"
-                      disabled={isLoading}
                     >
                       Delete
                     </button>

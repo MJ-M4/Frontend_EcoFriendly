@@ -48,14 +48,15 @@ const EmployeesPage = ({ onLogout, userRole }) => {
 
   const filteredEmployees = employees.filter(
     (emp) =>
-      emp.location.toLowerCase().includes(searchValue.toLowerCase()) ||
-      emp.identity.toLowerCase().includes(searchValue.toLowerCase())
+      emp.location?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      emp.identity?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const generateRandomPassword = () => {
     const length = 12;
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
-    let newPass = '';
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let newPass = "";
     for (let i = 0; i < length; i++) {
       newPass += charset.charAt(Math.floor(Math.random() * charset.length));
     }
@@ -147,13 +148,31 @@ const EmployeesPage = ({ onLogout, userRole }) => {
     }
   };
 
-  if (userRole !== 'manager') {
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="employees" onLogout={onLogout} userRole={userRole} />
+      <button
+        className="sidebar-toggle"
+        onClick={toggleSidebar}
+        aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+      >
+        {isSidebarOpen ? "✖" : "☰"}
+      </button>
+      <Sidebar
+        user={user}
+        activePage="employees"
+        onLogout={onLogout}
+        userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <div className="content">
         <h1>Employees</h1>
 
@@ -171,20 +190,14 @@ const EmployeesPage = ({ onLogout, userRole }) => {
           />
         </div>
 
-        <div
-          style={{
-            marginBottom: '20px',
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '10px',
-            alignItems: 'center',
-          }}
-        >
+        <div className="form-container">
           <input
             type="text"
             placeholder="Identity (used as username)"
             value={newEmployee.identity}
-            onChange={(e) => setNewEmployee({ ...newEmployee, identity: e.target.value })}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, identity: e.target.value })
+            }
             className="form-input"
             disabled={isLoading}
           />
@@ -192,7 +205,9 @@ const EmployeesPage = ({ onLogout, userRole }) => {
             type="text"
             placeholder="Name"
             value={newEmployee.name}
-            onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, name: e.target.value })
+            }
             className="form-input"
             disabled={isLoading}
           />
@@ -200,7 +215,9 @@ const EmployeesPage = ({ onLogout, userRole }) => {
             type="text"
             placeholder="Phone"
             value={newEmployee.phone}
-            onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, phone: e.target.value })
+            }
             className="form-input"
             disabled={isLoading}
           />
@@ -208,7 +225,9 @@ const EmployeesPage = ({ onLogout, userRole }) => {
             type="text"
             placeholder="Location"
             value={newEmployee.location}
-            onChange={(e) => setNewEmployee({ ...newEmployee, location: e.target.value })}
+            onChange={(e) =>
+              setNewEmployee({ ...newEmployee, location: e.target.value })
+            }
             className="form-input"
             disabled={isLoading}
           />
@@ -252,8 +271,7 @@ const EmployeesPage = ({ onLogout, userRole }) => {
               type="text"
               value={generatedPassword}
               readOnly
-              className="form-input"
-              style={{ backgroundColor: '#f0f0f0', maxWidth: '300px' }}
+              className="form-input generated-password"
             />
           )}
 
@@ -291,7 +309,7 @@ const EmployeesPage = ({ onLogout, userRole }) => {
                   <td>{emp.worker_type}</td>
                   <td>
                     <button
-                      onClick={() => handleDeleteEmployee(emp.id)}
+                      onClick={() => handleDeleteEmployee(emp.identity)}
                       className="delete-btn"
                       disabled={isLoading}
                     >

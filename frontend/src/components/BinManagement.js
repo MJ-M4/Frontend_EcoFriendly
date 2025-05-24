@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
-import "./css/general.css";
+import "./css/bin-management.css";
 
 const BinManagementPage = ({ onLogout, userRole }) => {
   const [bins, setBins] = useState([]);
@@ -13,7 +13,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
   useEffect(() => {
     fetchBins();
@@ -119,13 +118,22 @@ const BinManagementPage = ({ onLogout, userRole }) => {
     setNewBin((prev) => ({ ...prev, [name]: value }));
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
       <Sidebar
         user={user}
         activePage="bin-management"
         onLogout={onLogout}
         userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
       />
       <div className="content">
         <h1>Bin Management</h1>

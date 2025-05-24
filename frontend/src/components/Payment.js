@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/payment.css';
 
-const PaymentPage = ({ onLogout, userRole }) => {
+const PaymentPage = ({ onLogout, userRole, user }) => {
   const workers = [
     { id: '207705096', name: 'mhagne', workerType: 'Driver' },
     { id: '205548491', name: 'jayusi', workerType: 'Cleaner' },
@@ -45,18 +45,17 @@ const PaymentPage = ({ onLogout, userRole }) => {
   const [newPayment, setNewPayment] = useState({
     workerId: '',
     amount: '',
-    paymentDate: '', // Added paymentDate
+    paymentDate: '',
     notes: '',
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   const filteredPayments = payments.filter((payment) =>
     payment.workerId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleAddPayment = () => {
-    // Validation
     if (
       !newPayment.workerId ||
       !newPayment.amount ||
@@ -95,7 +94,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
         workerId: newPayment.workerId,
         workerName: worker.name,
         amount: amount,
-        paymentDate: newPayment.paymentDate, // Use the manually entered date
+        paymentDate: newPayment.paymentDate,
         status: 'Pending',
         notes: newPayment.notes,
       },
@@ -105,14 +104,14 @@ const PaymentPage = ({ onLogout, userRole }) => {
   };
 
   const handleMarkAsPaid = (id) => {
-    const currentDate = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+    const currentDate = new Date().toISOString().split('T')[0];
     setPayments(
       payments.map((p) =>
         p.id === id
           ? {
               ...p,
               status: 'Paid',
-              paymentDate: currentDate, // Update paymentDate when marking as paid
+              paymentDate: currentDate,
             }
           : p
       )
@@ -123,17 +122,24 @@ const PaymentPage = ({ onLogout, userRole }) => {
     setPayments(payments.filter((p) => p.id !== id));
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   if (userRole !== 'manager') {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="payment" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={user} activePage="payment" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>Payments</h1>
 
-        <div className="form-container">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by Worker ID..."
@@ -176,7 +182,7 @@ const PaymentPage = ({ onLogout, userRole }) => {
             onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
             className="form-input"
           />
-          <button onClick={handleAddPayment} className="download-report-btn">
+          <button onClick={handleAddPayment} className="add-payment-btn">
             Add Payment
           </button>
         </div>
@@ -198,16 +204,16 @@ const PaymentPage = ({ onLogout, userRole }) => {
             <tbody>
               {filteredPayments.map((payment) => (
                 <tr key={payment.id}>
-                  <td>{payment.id}</td>
-                  <td>{payment.workerId}</td>
-                  <td>{payment.workerName}</td>
-                  <td>${payment.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                  <td style={{ color: payment.paymentDate === 'N/A' ? '#888' : 'inherit' }}>
+                  <td data-label="Payment ID">{payment.id}</td>
+                  <td data-label="Worker ID">{payment.workerId}</td>
+                  <td data-label="Worker Name">{payment.workerName}</td>
+                  <td data-label="Amount">${payment.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                  <td data-label="Payment Date" style={{ color: payment.paymentDate === 'N/A' ? '#888' : 'inherit' }}>
                     {payment.paymentDate}
                   </td>
-                  <td>{payment.status}</td>
-                  <td>{payment.notes}</td>
-                  <td>
+                  <td data-label="Status">{payment.status}</td>
+                  <td data-label="Notes">{payment.notes}</td>
+                  <td data-label="Actions">
                     {payment.status === 'Pending' && (
                       <button
                         onClick={() => handleMarkAsPaid(payment.id)}

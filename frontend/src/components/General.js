@@ -5,8 +5,9 @@ import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
 
-const GeneralPage = ({ onLogout, userRole }) => {
+const GeneralPage = ({ onLogout, userRole , user }) => {
   const [selectedBin, setSelectedBin] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar toggle
 
 
   const mockBins = [
@@ -66,16 +67,28 @@ const GeneralPage = ({ onLogout, userRole }) => {
       lon: 35.3100,
     },
   ];
-
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
-
+  
   const handleSelectBin = (bin) => {
     setSelectedBin(bin);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar
+        user={user}
+        activePage="general"
+        onLogout={onLogout}
+        userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <div className="content">
         <div className="map-container">
           <MapComponent bins={mockBins} selectedBin={selectedBin} />

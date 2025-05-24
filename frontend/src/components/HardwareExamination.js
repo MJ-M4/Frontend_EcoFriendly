@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
-import "./css/general.css";
+import "./css/hardware-examination.css";
 
+<<<<<<< HEAD
 const HardwareExamination = ({ onLogout, userRole }) => {
 
+=======
+const HardwareExamination = ({ onLogout, userRole, user}) => {
+>>>>>>> 68fa09bf9813974cbf1e28028ae9e4abf76402a3
   const initialHardware = [
     {
       id: uuidv4().slice(0, 10),
@@ -32,14 +36,13 @@ const HardwareExamination = ({ onLogout, userRole }) => {
     binId: "",
     address: "",
   });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  // Filter hardware by binId, location, or address
   const filteredHardware = hardware.filter(
     (hw) =>
       hw.binId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,7 +50,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
       hw.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Mark as maintained
   const handleMarkAsMaintained = (uuid) => {
     const currentDate = new Date().toISOString().split("T")[0];
     setHardware(
@@ -59,7 +61,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
     );
   };
 
-  // Add new hardware (the "id" is the real UUID we display)
   const handleAddHardware = () => {
     if (newHardware.binId && newHardware.address) {
       setHardware([
@@ -85,19 +86,27 @@ const HardwareExamination = ({ onLogout, userRole }) => {
     setNewHardware((prev) => ({ ...prev, [name]: value }));
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
       <Sidebar
         user={user}
         activePage="hardware-examination"
         onLogout={onLogout}
         userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
       />
       <div className="content">
         <h1>Hardware Examination</h1>
 
-        {/* Search */}
-        <div className="form-container">
+        <div className="search-container">
           <input
             type="text"
             placeholder="Search by bin ID, location, or address..."
@@ -107,7 +116,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
           />
         </div>
 
-        {/* Add Hardware */}
         <div className="form-container">
           <input
             type="text"
@@ -125,12 +133,11 @@ const HardwareExamination = ({ onLogout, userRole }) => {
             onChange={handleInputChange}
             className="form-input"
           />
-          <button onClick={handleAddHardware} className="download-report-btn">
+          <button onClick={handleAddHardware} className="add-hardware-btn">
             Add Hardware
           </button>
         </div>
 
-        {/* Hardware Table */}
         <div className="table-container">
           <table>
             <thead>
@@ -148,14 +155,14 @@ const HardwareExamination = ({ onLogout, userRole }) => {
             <tbody>
               {filteredHardware.map((hw) => (
                 <tr key={hw.id}>
-                  <td>{hw.id}</td>
-                  <td>{hw.binId}</td>
-                  <td>{hw.location}</td>
-                  <td>{hw.address}</td>
-                  <td>{hw.status}</td>
-                  <td>{hw.battery}%</td>
-                  <td>{hw.lastChecked}</td>
-                  <td>
+                  <td data-label="Hardware ID">{hw.id}</td>
+                  <td data-label="Bin ID">{hw.binId}</td>
+                  <td data-label="Location">{hw.location}</td>
+                  <td data-label="Address">{hw.address}</td>
+                  <td data-label="Status">{hw.status}</td>
+                  <td data-label="Battery">{hw.battery}%</td>
+                  <td data-label="Last Checked">{hw.lastChecked}</td>
+                  <td data-label="Actions">
                     {hw.status === "Needs Maintenance" && (
                       <button
                         onClick={() => handleMarkAsMaintained(hw.id)}
@@ -170,7 +177,10 @@ const HardwareExamination = ({ onLogout, userRole }) => {
             </tbody>
           </table>
         </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 68fa09bf9813974cbf1e28028ae9e4abf76402a3
       </div>
     </div>
   );

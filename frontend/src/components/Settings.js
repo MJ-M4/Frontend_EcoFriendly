@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import './css/general.css';
+import './css/settings.css';
 
-const SettingsPage = ({ onLogout, userRole }) => {
-  const [name, setName] = useState('Mohamed Mhagne');
+const SettingsPage = ({ onLogout, userRole ,user}) => {
+  const [name, setName] = useState('');
   const [language, setLanguage] = useState('English');
   const [theme, setTheme] = useState('Light');
   const [notifications, setNotifications] = useState({
@@ -17,8 +17,9 @@ const SettingsPage = ({ onLogout, userRole }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name, avatar: '/images/sami.png' };
+
 
   const handleNameChange = (e) => {
     e.preventDefault();
@@ -72,9 +73,16 @@ const SettingsPage = ({ onLogout, userRole }) => {
     }, 1000);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard">
-      <Sidebar user={user} activePage="settings" onLogout={onLogout} userRole={userRole} />
+      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+      <Sidebar user={user} activePage="settings" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <div className="settings-container">
           <h2 className="settings-title">Settings</h2>

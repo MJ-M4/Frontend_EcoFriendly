@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
 
-const GeneralPage = ({ onLogout, userRole }) => {
+const GeneralPage = ({ onLogout, userRole , user }) => {
   const [selectedBin, setSelectedBin] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar toggle
 
@@ -67,9 +67,7 @@ const GeneralPage = ({ onLogout, userRole }) => {
       lon: 35.3100,
     },
   ];
-
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
-
+  
   const handleSelectBin = (bin) => {
     setSelectedBin(bin);
   };

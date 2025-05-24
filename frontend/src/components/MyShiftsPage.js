@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/my-shifts.css';
 
-const MyShiftsPage = ({ onLogout, userRole }) => {
+const MyShiftsPage = ({ onLogout, userRole, user }) => {
   const [myShifts, setMyShifts] = useState([
     {
       id: uuidv4().slice(0, 10),
@@ -22,7 +22,6 @@ const MyShiftsPage = ({ onLogout, userRole }) => {
   ]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   if (userRole !== 'worker') {
     return <div className="error">Access Denied: Workers Only</div>;

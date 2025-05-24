@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/settings.css';
 
-const SettingsPage = ({ onLogout, userRole }) => {
-  const [name, setName] = useState('Mohamed Mhagne');
+const SettingsPage = ({ onLogout, userRole ,user}) => {
+  const [name, setName] = useState('');
   const [language, setLanguage] = useState('English');
   const [theme, setTheme] = useState('Light');
   const [notifications, setNotifications] = useState({
@@ -19,7 +19,7 @@ const SettingsPage = ({ onLogout, userRole }) => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name, avatar: '/images/sami.png' };
+
 
   const handleNameChange = (e) => {
     e.preventDefault();

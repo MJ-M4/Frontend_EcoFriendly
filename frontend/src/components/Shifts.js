@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import './css/shifts.css';
 import { approvedShiftsStore } from './mockData';
 
-const ShiftsPage = ({ onLogout, userRole }) => {
+const ShiftsPage = ({ onLogout, userRole, user }) => {
   const employees = [
     {
       id: 'emp1',
@@ -67,8 +67,6 @@ const ShiftsPage = ({ onLogout, userRole }) => {
     location: '',
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   const filteredShifts = shifts.filter((shift) => shift.workerId.includes(searchId));
 

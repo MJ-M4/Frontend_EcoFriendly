@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ReportsPage = ({ onLogout, userRole }) => {
+const ReportsPage = ({ onLogout, userRole, user }) => {
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -30,6 +30,7 @@ const ReportsPage = ({ onLogout, userRole }) => {
     { hardwareId: uuidv4().slice(0, 10), binId: uuidv4().slice(0, 10), status: "Operational", battery: 95, lastChecked: "2025-03-01" },
     { hardwareId: uuidv4().slice(0, 10), binId: uuidv4().slice(0, 10), status: "Needs Maintenance", battery: 20, lastChecked: "2025-03-02" },
   ];
+  
 
   const [binData] = useState(initialBinData);
   const [workersData] = useState(initialWorkersData);
@@ -178,7 +179,7 @@ const ReportsPage = ({ onLogout, userRole }) => {
       <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
         {isSidebarOpen ? '✖' : '☰'}
       </button>
-      <Sidebar user={{ name: "Mohamed Mhagne", avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar user={{ name: user.name, avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content">
         <h1>Reports</h1>
         <div className="dropdown-container">

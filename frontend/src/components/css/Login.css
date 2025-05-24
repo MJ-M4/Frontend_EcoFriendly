@@ -72,8 +72,8 @@
 
 .show-password-btn {
   position: absolute;
-  right: 1.25rem;
-  top: 50%;
+  right: 1rem;
+  top: 70%;
   transform: translateY(-50%);
   background: none;
   border: none;

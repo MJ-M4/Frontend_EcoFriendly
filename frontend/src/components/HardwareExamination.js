@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/hardware-examination.css";
 
-const HardwareExamination = ({ onLogout, userRole }) => {
+const HardwareExamination = ({ onLogout, userRole, user}) => {
   const initialHardware = [
     {
       id: uuidv4().slice(0, 10),
@@ -33,7 +33,6 @@ const HardwareExamination = ({ onLogout, userRole }) => {
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;

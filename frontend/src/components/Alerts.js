@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/alerts.css';
 
-const AlertsPage = ({ onLogout, userRole }) => {
+const AlertsPage = ({ onLogout, userRole,user }) => {
   const mockAlerts = [
     {
       binId: uuidv4().slice(0, 10),
@@ -33,7 +33,6 @@ const AlertsPage = ({ onLogout, userRole }) => {
   const [error] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Add state for sidebar toggle
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;

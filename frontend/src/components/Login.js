@@ -1,39 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
 
 const Login = ({ onLogin, isAuthenticated }) => {
-  const [username, setUsername] = useState('');
+  const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('worker');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/general');
-    }
-  }, [isAuthenticated, navigate]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    if (!username || !password) {
-      setError('Please enter both username and password');
-      return;
-    }
-
     setIsLoading(true);
-    // Simulate an API call
-    setTimeout(() => {
-      // Mock login success
-      onLogin(role);
+
+    try {
+      const response = await fetch('http://localhost:5005/local/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identity, password }),
+      });
+
+      const data = await response.json();
+      console.log('API Response:', data);
+
+      if (response.ok && data.status === 'success') {
+        onLogin(data);
+        navigate('/general');
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error('Fetch Error:', err);
+      setError('Failed to connect to the server. Please check if the backend is running.');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -44,59 +49,42 @@ const Login = ({ onLogin, isAuthenticated }) => {
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="identity">Identity</label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="identity"
+              value={identity}
+              onChange={(e) => setIdentity(e.target.value)}
               required
-              placeholder="Enter your username"
+              placeholder="Enter your identity"
               className="form-input"
-              aria-describedby="username-error"
             />
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <div className="password-container">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Enter your password"
-                className="form-input"
-                aria-describedby="password-error"
-              />
-              <button
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="Enter your password"
+              className="form-input"
+              aria-describedby="password-error"
+            />
+            <button
                 type="button"
                 className="show-password-btn"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? 'Hide' : 'Show'}
+              >{showPassword ? 'Hide' : 'Show'}
               </button>
-            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="role">Role</label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="form-input"
-              aria-label="Select user role"
-            >
-              <option value="worker">Worker</option>
-              <option value="manager">Manager</option>
-            </select>
-          </div>
-          <button type="submit" className="login-button" disabled={isLoading} aria-busy={isLoading}>
+          <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <div className="forgot-password">
+          <div className="forgot-password">
           <Link to="/forgot-password">Forgot Password?</Link>
         </div>
       </div>

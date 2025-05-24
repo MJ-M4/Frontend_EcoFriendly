@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   FaCalendar,
   FaCalendarAlt,
@@ -16,8 +15,10 @@ import {
 } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
+
 const Sidebar = ({ user, activePage, onLogout, userRole, isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
+
 
   const handleSignOut = () => {
     onLogout();
@@ -42,7 +43,7 @@ const Sidebar = ({ user, activePage, onLogout, userRole, isOpen, toggleSidebar }
               <FaExclamationTriangle /> Alerts
             </Link>
           </li>
-          {userRole === 'manager' && (
+          {userRole.toLowerCase() === 'manager' && (
             <>
               <li className={activePage === 'reports' ? 'active' : ''}>
                 <Link to="/reports" onClick={toggleSidebar}>
@@ -86,7 +87,7 @@ const Sidebar = ({ user, activePage, onLogout, userRole, isOpen, toggleSidebar }
               </li>
             </>
           )}
-          {userRole === 'worker' && (
+          {userRole.toLowerCase() === 'worker' && (
             <>
               <li className={activePage === 'my-shifts' ? 'active' : ''}>
                 <Link to="/my-shifts" onClick={toggleSidebar}>

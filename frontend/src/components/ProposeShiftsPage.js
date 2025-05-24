@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import './css/propose-shifts.css';
 import { shiftProposalsStore } from './mockData';
 
-const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
+const ProposeShiftsPage = ({ onLogout, userRole, userId , user }) => {
   const [proposedShifts, setProposedShifts] = useState([]);
   const [newShift, setNewShift] = useState({
     date: '',
@@ -74,7 +74,6 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId }) => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   if (userRole !== 'worker') {
     return <div className="error">Access Denied: Workers Only</div>;

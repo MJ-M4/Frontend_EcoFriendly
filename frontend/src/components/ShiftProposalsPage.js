@@ -3,9 +3,8 @@ import Sidebar from './Sidebar';
 import './css/shift-proposals.css';
 import { shiftProposalsStore, approvedShiftsStore } from './mockData';
 
-const ShiftProposalsPage = ({ onLogout, userRole }) => {
+const ShiftProposalsPage = ({ onLogout, userRole,user }) => {
   const proposals = shiftProposalsStore.getPendingProposals();
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleApprove = (proposal) => {

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/bin-management.css";
 
-const BinManagementPage = ({ onLogout, userRole }) => {
+const BinManagementPage = ({ onLogout, userRole,user }) => {
   const initialBins = [
     {
       id: uuidv4().slice(0, 10), 
@@ -36,7 +36,6 @@ const BinManagementPage = ({ onLogout, userRole }) => {
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name: "Mohamed Mhagne", avatar: "/images/sami.png" };
 
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;

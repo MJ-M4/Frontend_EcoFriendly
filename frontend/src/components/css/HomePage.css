@@ -3,10 +3,10 @@
 /* General Reset */
 .home-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #2c3e50;
+  color: #fdfdfd;
 }
 
-/* Hero Section */
+
 .hero-section {
   background-size: cover;
   background-position: center;
@@ -26,7 +26,7 @@
 .hero-content h1 {
   font-size: 3.5rem;
   margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .tagline {
@@ -71,7 +71,7 @@
   transform: scale(1.05);
 }
 
-/* Features Section */
+
 .features-section {
   padding: 60px 20px;
   background-color: #f5f7fa;
@@ -133,7 +133,7 @@
   text-decoration: underline;
 }
 
-/* Testimonials Section */
+
 .testimonials-section {
   padding: 60px 20px;
   background-color: #fff;
@@ -180,7 +180,7 @@
   color: #7f8c8d;
 }
 
-/* Contact Section */
+
 .contact-section {
   padding: 60px 20px;
   background-color: #f5f7fa;
@@ -245,7 +245,7 @@
   background-color: #2980b9;
 }
 
-/* Footer */
+
 .footer {
   background-color: #2c3e50;
   color: #ecf0f1;

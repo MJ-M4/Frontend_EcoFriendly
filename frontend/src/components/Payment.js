@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/payment.css';
 
-const PaymentPage = ({ onLogout, userRole }) => {
+const PaymentPage = ({ onLogout, userRole, user }) => {
   const workers = [
     { id: '207705096', name: 'mhagne', workerType: 'Driver' },
     { id: '205548491', name: 'jayusi', workerType: 'Cleaner' },
@@ -50,7 +50,6 @@ const PaymentPage = ({ onLogout, userRole }) => {
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
   const filteredPayments = payments.filter((payment) =>
     payment.workerId.toLowerCase().includes(searchTerm.toLowerCase())

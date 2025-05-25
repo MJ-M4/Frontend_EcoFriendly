@@ -25,7 +25,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
         setIsLoading(false);
       }
     };
-
+    
     fetchEmployees();
   }, []);
 
@@ -64,13 +64,6 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
     setGeneratedPassword(pwd);
   };
 
-  // const hashPassword = async (password) => {
-  //   const encoder = new TextEncoder();
-  //   const data = encoder.encode(password);
-  //   const hash = await crypto.subtle.digest("SHA-256", data);
-  //   const hashArray = Array.from(new Uint8Array(hash));
-  //   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-  // };
 
   const handleAddEmployee = async () => {
     if (
@@ -96,7 +89,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
 
       try {
         const response = await fetch(
-          "http://localhost:5005/local/addEmployees",
+          "http://localhost:5005/local/addEmployee",
           {
             method: "POST",
             headers: {
@@ -136,7 +129,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
     if (!confirm(`Delete Employee ${identity}?`)) return;
     try {
       const response = await fetch(
-        `http://localhost:5005/local/deleteEmployees/${identity}`,
+        `http://localhost:5005/local/deleteEmployee/${identity}`,
         {
           method: "DELETE",
           headers: {
@@ -147,6 +140,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
       const data = await response.json();
       if (data.status === "success") {
         setEmployees(employees.filter((emp) => emp.identity !== identity));
+        alert("Employee deleted successfully");
       } else {
         console.error("Failed to delete employee:", data.message);
       }

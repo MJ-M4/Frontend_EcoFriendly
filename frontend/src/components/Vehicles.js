@@ -96,7 +96,11 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
       setIsLoading(true);
       const response = await fetch(
         `http://localhost:5005/local/deleteVehicle/${licensePlate}`,
-        { method: "DELETE" }
+        { method: "DELETE", 
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       const data = await response.json();
@@ -104,8 +108,9 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
         setVehicles((prev) =>
           prev.filter((v) => v.licensePlate !== licensePlate)
         );
+        alert("Vehicle deleted successfully");
       } else {
-        throw new Error(data.message || "Failed to delete");
+        throw new Error(data.message || "Failed to delete vehicle");
       }
     } catch (error) {
       console.error("Delete error:", error);
@@ -116,12 +121,14 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
   };
 
   const filteredVehicles = vehicles
-    .filter(v => v) // إزالة العناصر الفارغة
-    .filter(v => {
+    .filter((v) => v) // إزالة العناصر الفارغة
+    .filter((v) => {
       const search = searchTerm.toLowerCase();
       return (
-        (v.type?.toLowerCase().includes(search) || false) ||
-        (v.licensePlate?.toLowerCase().includes(search) || false)
+        v.type?.toLowerCase().includes(search) ||
+        false ||
+        v.licensePlate?.toLowerCase().includes(search) ||
+        false
       );
     });
 
@@ -221,7 +228,11 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
             }
             className="form-input"
           />
-          <button onClick={handleAddVehicle} disabled={isLoading} className="add-vehicle-btn">
+          <button
+            onClick={handleAddVehicle}
+            disabled={isLoading}
+            className="add-vehicle-btn"
+          >
             {isLoading ? "Adding..." : "Add Vehicle"}
           </button>
         </div>
@@ -239,37 +250,38 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
               </tr>
             </thead>
             <tbody>
-
-              {filteredVehicles.length > 0 ?(
-              filteredVehicles.map((vehicle) => (
-                <tr key={vehicle.licensePlate}>
-                  <td data-label="License Plate">{vehicle.licensePlate}</td>
-                  <td data-label="Type">{vehicle.type}</td>
-                  <td data-label="Status">{vehicle.status}</td>
-                  <td data-label="Location">{vehicle.location}</td>
-                  <td data-label="Last Maintenance">
-                    {vehicle.lastMaintenance}
-                  </td>
-                  <td data-label="Actions">
-                    <button
-                      onClick={() => handleDeleteVehicle(vehicle.licensePlate)}
-                      disabled={isLoading}
-                      className="delete-btn"
-                    >
-                      Delete
-                    </button>
+              {filteredVehicles.length > 0 ? (
+                filteredVehicles.map((vehicle) => (
+                  <tr key={vehicle.licensePlate}>
+                    <td data-label="License Plate">{vehicle.licensePlate}</td>
+                    <td data-label="Type">{vehicle.type}</td>
+                    <td data-label="Status">{vehicle.status}</td>
+                    <td data-label="Location">{vehicle.location}</td>
+                    <td data-label="Last Maintenance">
+                      {vehicle.lastMaintenance}
+                    </td>
+                    <td data-label="Actions">
+                      <button
+                        onClick={() =>
+                          handleDeleteVehicle(vehicle.licensePlate)
+                        }
+                        disabled={isLoading}
+                        className="delete-btn"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="no-data">
+                    {vehicles.length === 0
+                      ? "No vehicles available"
+                      : "No matching vehicles found"}
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="no-data">
-                  {vehicles.length === 0
-                    ? "No vehicles available"
-                    : "No matching vehicles found"}
-                </td>
-              </tr>
-            )}
+              )}
             </tbody>
           </table>
         </div>

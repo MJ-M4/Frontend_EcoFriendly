@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/propose-shifts.css';
-import { shiftProposalsStore } from './mockData';
 
-const ProposeShiftsPage = ({ onLogout, userRole, userId , user }) => {
+
+const ProposeShiftsPage = ({ onLogout, userRole , user }) => {
   const [proposedShifts, setProposedShifts] = useState([]);
   const [newShift, setNewShift] = useState({
     date: '',
@@ -15,15 +14,16 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId , user }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const today = new Date();
-  const day = today.getDay();
-  const daysUntilNextMonday = day === 0 ? 1 : (day === 1 ? 7 : 8 - day);
-  const nextMonday = new Date(today);
-  nextMonday.setDate(today.getDate() + daysUntilNextMonday);
-  const nextSunday = new Date(nextMonday);
-  nextSunday.setDate(nextMonday.getDate() + 6);
+  const day = today.getDay();// 0 = الأحد، 1 = الاثنين، ... 6 = السبت
 
-  const minDate = nextMonday.toISOString().split('T')[0];
-  const maxDate = nextSunday.toISOString().split('T')[0];
+const daysUntilNextSunday = day === 0 ? 7 : (7 - day);
+const nextSunday = new Date(today);
+nextSunday.setDate(today.getDate() + daysUntilNextSunday);
+const nextSaturday = new Date(nextSunday);
+nextSaturday.setDate(nextSunday.getDate() + 6);
+
+const minDate = nextSunday.toISOString().split('T')[0];
+const maxDate = nextSaturday.toISOString().split('T')[0];
 
   const handleAddShift = () => {
     if (
@@ -41,7 +41,7 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId , user }) => {
       setProposedShifts([
         ...proposedShifts,
         {
-          id: uuidv4().slice(0, 10),
+          id: Date.now().toString(),
           date: newShift.date,
           startTime: newShift.startTime,
           endTime: newShift.endTime,
@@ -58,26 +58,43 @@ const ProposeShiftsPage = ({ onLogout, userRole, userId , user }) => {
     setProposedShifts(proposedShifts.filter((shift) => shift.id !== id));
   };
 
-  const handleSubmitProposal = () => {
+const handleSubmitProposal = async () => {
     if (proposedShifts.length === 0) {
       alert('Please add at least one shift.');
       return;
     }
-    const workerName = user.name;
-    const workerType = 'Driver';
-    shiftProposalsStore.addProposal(userId, workerName, workerType, proposedShifts);
-    alert('Proposal submitted successfully!');
-    setProposedShifts([]);
+    try {
+      for (const shift of proposedShifts) {
+        const proposalPayload = {
+          worker_id: user.identity,
+          worker_name: user.name,
+          worker_type: user.worker_type || 'Driver',
+          date: shift.date,
+          start_time: shift.startTime + ':00',
+          end_time: shift.endTime + ':00',
+          location: shift.location,
+        };
+        const response = await fetch('http://localhost:5005/local/proposeShift', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(proposalPayload),
+        });
+        const data = await response.json();
+        if (data.status !== 'success') {
+          throw new Error(data.message);
+        }
+      }
+      alert('Proposal submitted successfully!');
+      setProposedShifts([]);
+    } catch (error) {
+      alert('Error submitting proposal: ' + error.message);
+    }
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-
-  if (userRole !== 'worker') {
-    return <div className="error">Access Denied: Workers Only</div>;
-  }
 
   return (
     <div className="dashboard">

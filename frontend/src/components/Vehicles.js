@@ -156,10 +156,6 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
       />
       <div className="content">
         <h1>Vehicles</h1>
-
-        {isLoading && <div className="loading">Loading...</div>}
-        {error && <div className="error-message">{error}</div>}
-
         <div className="search-container">
           <input
             type="text"

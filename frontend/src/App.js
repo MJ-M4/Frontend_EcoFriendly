@@ -32,7 +32,8 @@ function App() {
     setUserId(userData.user.userId);
     setUserData({
       name: userData.user.name, 
-      avatar: userData.user.avatar || '/images/sami.png' // Default if not provided
+      avatar: userData.user.avatar || '/images/sami.png', // Default if not provided
+      identity: userData.user.identity,
     });
   };
 

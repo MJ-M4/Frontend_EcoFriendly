@@ -154,9 +154,6 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  if (userRole !== "manager") {
-    return <div className="error">Access Denied: Managers Only</div>;
-  }
 
   return (
     <div className="dashboard">
@@ -292,7 +289,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
             </thead>
             <tbody>
               {filteredEmployees.map((emp) => (
-                <tr key={emp.id}>
+                <tr key={emp.identity}>
                   <td data-label="ID">{emp.identity}</td>
                   <td data-label="Name">{emp.name}</td>
                   <td data-label="Phone">{emp.phone}</td>

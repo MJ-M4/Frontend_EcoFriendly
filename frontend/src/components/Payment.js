@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/payment.css';
 
+
 const PaymentPage = ({ onLogout, userRole, user }) => {
   const workers = [
     { id: '207705096', name: 'mhagne', workerType: 'Driver' },
@@ -182,7 +183,7 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
             onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
             className="form-input"
           />
-          <button onClick={handleAddPayment} className="add-payment-btn">
+          <button onClick={handleAddPayment} className="btn">
             Add Payment
           </button>
         </div>

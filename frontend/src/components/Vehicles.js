@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
-import "./css/vehicles.css";
+
 
 const VehiclesPage = ({ onLogout, userRole, user }) => {
   const [vehicles, setVehicles] = useState([]);
@@ -227,7 +227,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
           <button
             onClick={handleAddVehicle}
             disabled={isLoading}
-            className="add-vehicle-btn"
+            className="btn"
           >
             {isLoading ? "Adding..." : "Add Vehicle"}
           </button>

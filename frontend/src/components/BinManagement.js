@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
-import "./css/bin-management.css";
 
 const BinManagementPage = ({ onLogout, userRole, user }) => {
   const [bins, setBins] = useState([]);
@@ -177,7 +176,7 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
             <option value="Full">Full</option>
           </select>
 
-          <button onClick={handleAddBin} className="add-bin-btn">
+          <button onClick={handleAddBin} className="btn">
             Add Bin
           </button>
         </div>

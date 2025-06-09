@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/propose-shifts.css';
+import './css/global.css';
 
 
 const ProposeShiftsPage = ({ onLogout, userRole , user }) => {
@@ -133,7 +134,7 @@ const handleSubmitProposal = async () => {
             onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
             className="form-input"
           />
-          <button onClick={handleAddShift} className="add-shift-btn">
+          <button onClick={handleAddShift} className="btn">
             Add Shift
           </button>
         </div>

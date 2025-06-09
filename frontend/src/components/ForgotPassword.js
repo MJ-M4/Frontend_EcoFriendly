@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
-import './css/Login.css';
+
+
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

@@ -234,7 +234,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
               <Bar ref={binChartRef} data={binsChartData} options={binsChartOptions} />
             </div>
             <button
-              className="download-report-btn"
+              className="btn"
               onClick={() => {
                 const headers = ["BinID", "Capacity", "Location", "LastCollected"];
                 const rows = filteredBins.map(b => [b.binId, b.capacity, b.location, b.lastCollected]);
@@ -286,7 +286,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
               <Bar ref={workerChartRef} data={workersChartData} options={workersChartOptions} />
             </div>
             <button
-              className="download-report-btn"
+              className="btn"
               onClick={() => {
                 const headers = ["WorkerID", "Name", "Phone", "StartDate", "Shift"];
                 const rows = filteredWorkers.map(w => [w.workerId, w.name, w.phone, w.startDate, w.shift]);
@@ -336,7 +336,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
               <Bar ref={vehicleChartRef} data={vehiclesChartData} options={vehiclesChartOptions} />
             </div>
             <button
-              className="download-report-btn"
+              className="btn"
               onClick={() => {
                 const headers = ["LicensePlate", "Type", "Status", "LastMaintenance"];
                 const rows = filteredVehicles.map(v => [v.licensePlate, v.type, v.status, v.lastMaintenance]);
@@ -388,7 +388,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
               <Bar ref={hardwareChartRef} data={hardwareChartData} options={hardwareChartOptions} />
             </div>
             <button
-              className="download-report-btn"
+              className="btn"
               onClick={() => {
                 const headers = ["HardwareID", "BinID", "Status", "Battery", "LastChecked"];
                 const rows = filteredHardware.map(h => [h.hardwareId, h.binId, h.status, h.battery, h.lastChecked]);

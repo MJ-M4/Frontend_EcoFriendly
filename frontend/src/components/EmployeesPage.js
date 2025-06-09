@@ -269,7 +269,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
             />
           )}
 
-          <button onClick={handleAddEmployee} className="add-employee-btn">
+          <button onClick={handleAddEmployee} className="btn">
             Add Employee
           </button>
         </div>

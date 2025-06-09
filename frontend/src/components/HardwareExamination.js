@@ -128,7 +128,7 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
             onChange={handleInputChange}
             className="form-input"
           />
-          <button onClick={handleAddHardware} className="add-hardware-btn">
+          <button onClick={handleAddHardware} className="btn">
             Add Hardware
           </button>
         </div>

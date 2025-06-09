@@ -3,6 +3,7 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/alerts.css';
+import './css/global.css';
 
 const AlertsPage = ({ onLogout, userRole,user }) => {
   const mockAlerts = [

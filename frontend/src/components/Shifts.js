@@ -257,7 +257,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
                 onChange={(e) => setNewShift({ ...newShift, location: e.target.value })}
                 className="form-input"
               />
-              <button onClick={handleAddShift} className="action-btn">
+              <button onClick={handleAddShift} className="btn">
                 Add Shift
               </button>
             </div>
@@ -296,7 +296,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
                     onChange={(e) => setUpdatedShift({ ...updatedShift, location: e.target.value })}
                     className="form-input"
                   />
-                  <button onClick={handleSaveUpdate} className="action-btn">
+                  <button onClick={handleSaveUpdate} className="btn">
                     Save Update
                   </button>
                 </>

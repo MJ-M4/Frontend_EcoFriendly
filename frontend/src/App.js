@@ -18,6 +18,7 @@ import ShiftsPage from './components/Shifts';
 import VehiclesPage from './components/Vehicles';
 import ProposeShiftsPage from './components/ProposeShiftsPage';
 import ShiftProposalsPage from './components/ShiftProposalsPage';
+import MyPaymentsPage from './components/MyPaymentsPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -183,6 +184,16 @@ function App() {
                 userId={userId}
                 user={userData}
               />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/my-payments"
+          element={
+            isAuthenticated && userRole === 'worker' ? (
+              <MyPaymentsPage onLogout={handleLogout} userRole={userRole} user={userData} />
             ) : (
               <Navigate to="/login" replace />
             )

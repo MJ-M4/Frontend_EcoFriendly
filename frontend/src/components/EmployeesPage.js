@@ -273,7 +273,13 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
             Add Employee
           </button>
         </div>
-
+        { isLoading ? (
+          <p>Loading employees...</p>
+        ) : (
+          <p className="employee-count">
+            Total Employees: {filteredEmployees.length}
+          </p>
+        )}
         <div className="table-container">
           <table>
             <thead>

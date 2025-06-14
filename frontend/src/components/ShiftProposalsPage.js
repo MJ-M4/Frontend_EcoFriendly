@@ -12,7 +12,7 @@ const ShiftProposalsPage = ({ onLogout, userRole, user }) => {
       try {
         const response = await fetch('http://localhost:5005/local/getPendingProposals');
         const data = await response.json();
-        console.log('Fetched proposals:', data); // Debugging line
+        console.log('Fetched proposals:', data); 
         if (data.status === 'success') {
           setProposals(data.proposals || []);
         } else {

@@ -99,6 +99,11 @@ const Sidebar = ({ user, activePage, onLogout, userRole, isOpen, toggleSidebar }
                   <FaCalendar /> Propose Shifts
                 </Link>
               </li>
+              <li className={activePage === 'my-payments' ? 'active' : ''}>
+                <Link to="/my-payments" onClick={toggleSidebar}>
+                  <FaDollarSign /> My Payments
+                </Link>
+              </li>
             </>
           )}
           <li className={activePage === 'settings' ? 'active' : ''}>

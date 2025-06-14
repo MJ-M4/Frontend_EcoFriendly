@@ -57,14 +57,16 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ location: newBin.location,
-        address: newBin.address,
-        status: newBin.status }),
+        body: JSON.stringify({
+          location: newBin.location,
+          address: newBin.address,
+          status: newBin.status,
+        }),
       });
 
       if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
 
       if (data.status === "success") {
@@ -135,9 +137,6 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
       />
       <div className="content">
         <h1>Bin Management</h1>
-
-        {isLoading && <div className="loading">Loading...</div>}
-
         <div className="search-container">
           <input
             type="text"
@@ -180,38 +179,43 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
             Add Bin
           </button>
         </div>
-
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Bin ID</th>
-                <th>Location</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredBins.map((bin) => (
-                <tr key={bin.binId}>
-                  <td data-label="Bin ID">{bin.binId}</td>
-                  <td data-label="Location">{bin.location}</td>
-                  <td data-label="Address">{bin.address}</td>
-                  <td data-label="Status">{bin.status}</td>
-                  <td data-label="Actions">
-                    <button
-                      onClick={() => handleDeleteBin(bin.binId)}
-                      className="delete-btn"
-                    >
-                      Delete
-                    </button>
-                  </td>
+        {isLoading ? (
+          <p>Loading bins...</p>
+        ) : filteredBins.length === 0 ? (
+          <p>No bins found. you can add bins</p>
+        ) : (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Bin ID</th>
+                  <th>Location</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredBins.map((bin) => (
+                  <tr key={bin.binId}>
+                    <td data-label="Bin ID">{bin.binId}</td>
+                    <td data-label="Location">{bin.location}</td>
+                    <td data-label="Address">{bin.address}</td>
+                    <td data-label="Status">{bin.status}</td>
+                    <td data-label="Actions">
+                      <button
+                        onClick={() => handleDeleteBin(bin.binId)}
+                        className="delete-btn"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

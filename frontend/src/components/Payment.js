@@ -1,142 +1,199 @@
-import React, { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import Sidebar from './Sidebar';
-import './css/payment.css';
-
+import React, { useState, useEffect } from "react";
+import Sidebar from "./Sidebar";
+import "./css/payment.css";
 
 const PaymentPage = ({ onLogout, userRole, user }) => {
-  const workers = [
-    { id: '207705096', name: 'mhagne', workerType: 'Driver' },
-    { id: '205548491', name: 'jayusi', workerType: 'Cleaner' },
-    { id: '212443412', name: 'Worker 3', workerType: 'Maintenance Worker' },
-  ];
-
-  const initialPayments = [
-    {
-      id: uuidv4().slice(0, 10),
-      workerId: '207705096',
-      workerName: 'mhagne',
-      amount: 1500,
-      paymentDate: '2025-03-01',
-      status: 'Paid',
-      notes: 'Monthly salary',
-    },
-    {
-      id: uuidv4().slice(0, 10),
-      workerId: '205548491',
-      workerName: 'jayusi',
-      amount: 1200,
-      paymentDate: '2025-03-02',
-      status: 'Pending',
-      notes: 'Bonus',
-    },
-    {
-      id: uuidv4().slice(0, 10),
-      workerId: '212443412',
-      workerName: 'Worker 3',
-      amount: 1000,
-      paymentDate: '2025-03-03',
-      status: 'Pending',
-      notes: 'Bonus',
-    },
-  ];
-
-  const [payments, setPayments] = useState(initialPayments);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [payments, setPayments] = useState([]);
+  const [workers, setWorkers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [newPayment, setNewPayment] = useState({
-    workerId: '',
-    amount: '',
-    paymentDate: '',
-    notes: '',
+    worker_id: "",
+    amount: "",
+    payment_date: "",
+    notes: "",
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch workers
+        const workersResponse = await fetch(
+          "http://localhost:5005/local/getEmployees"
+        );
+        const workersData = await workersResponse.json();
+        console.log("Response from getEmployees:", workersData);
+        if (workersData.status === "success") {
+          setWorkers(workersData.employees || []);
+        } else {
+          alert("Failed to fetch workers: " + workersData.message);
+        }
+
+        // Fetch payments
+        const paymentsResponse = await fetch(
+          "http://localhost:5005/local/getPayments"
+        );
+        const paymentsData = await paymentsResponse.json();
+        console.log("Response from getPayments:", paymentsData);
+        if (paymentsData.status === "success") {
+          setPayments(paymentsData.payments || []);
+        } else {
+          alert("Failed to fetch payments: " + paymentsData.message);
+        }
+      } catch (error) {
+        alert("Error fetching data: " + error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const filteredPayments = payments.filter((payment) =>
-    payment.workerId.toLowerCase().includes(searchTerm.toLowerCase())
+    payment.worker_id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddPayment = () => {
+  const handleAddPayment = async () => {
     if (
-      !newPayment.workerId ||
+      !newPayment.worker_id ||
       !newPayment.amount ||
-      !newPayment.paymentDate ||
+      !newPayment.payment_date ||
       !newPayment.notes
     ) {
-      alert('Please fill in all fields (Worker ID, Amount, Payment Date, and Notes).');
+      alert(
+        "Please fill in all fields (Worker ID, Amount, Payment Date, and Notes)."
+      );
       return;
     }
 
     const amount = parseFloat(newPayment.amount);
     if (isNaN(amount) || amount <= 0) {
-      alert('Amount must be a positive number.');
+      alert("Amount must be a positive number.");
       return;
     }
 
-    const paymentDate = new Date(newPayment.paymentDate);
-    const currentDate = new Date();
-    if (paymentDate > currentDate) {
-      alert('Payment Date cannot be in the future.');
-      return;
-    }
-
-    const worker = workers.find((w) => w.id === newPayment.workerId);
+    const worker = workers.find((w) => w.identity === newPayment.worker_id); // Assuming identity is the key
     if (!worker) {
-      alert('Worker ID not found. Please enter a valid Worker ID.');
+      alert("Worker ID not found. Please enter a valid Worker ID.");
       return;
     }
 
-    const newId = uuidv4().slice(0, 10);
+    const paymentPayload = {
+      worker_id: newPayment.worker_id,
+      worker_name: worker.name || "",
+      amount: amount,
+      payment_date: newPayment.payment_date,
+      notes: newPayment.notes,
+    };
 
-    setPayments([
-      ...payments,
-      {
-        id: newId,
-        workerId: newPayment.workerId,
-        workerName: worker.name,
-        amount: amount,
-        paymentDate: newPayment.paymentDate,
-        status: 'Pending',
-        notes: newPayment.notes,
-      },
-    ]);
-
-    setNewPayment({ workerId: '', amount: '', paymentDate: '', notes: '' });
+    try {
+      const response = await fetch("http://localhost:5005/local/addPayment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(paymentPayload),
+      });
+      const data = await response.json();
+      console.log("Response from addPayment:", data);
+      if (data.status === "success") {
+        setPayments([...payments, data.payment[0]]); // Adjust for list return
+        setNewPayment({
+          worker_id: "",
+          amount: "",
+          payment_date: "",
+          notes: "",
+        });
+        alert("Payment added successfully");
+      } else {
+        alert("Failed to add payment: " + data.message);
+      }
+    } catch (error) {
+      alert("Error adding payment: " + error.message);
+    }
   };
 
-  const handleMarkAsPaid = (id) => {
-    const currentDate = new Date().toISOString().split('T')[0];
-    setPayments(
-      payments.map((p) =>
-        p.id === id
-          ? {
-              ...p,
-              status: 'Paid',
-              paymentDate: currentDate,
-            }
-          : p
-      )
-    );
+  const handleMarkAsPaid = async (payment_id) => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const payment = payments.find((p) => p.payment_id === payment_id);
+    if (!payment) return;
+
+    const updatePayload = {
+      status: "Paid",
+      payment_date: currentDate,
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:5005/local/updatePayment/${payment_id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatePayload),
+        }
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        setPayments(
+          payments.map((p) =>
+            p.payment_id === payment_id ? { ...p, ...data.payment[0] } : p
+          )
+        );
+        alert("Payment marked as paid");
+      } else {
+        alert("Failed to update payment: " + data.message);
+      }
+    } catch (error) {
+      alert("Error marking as paid: " + error.message);
+    }
   };
 
-  const handleDeletePayment = (id) => {
-    setPayments(payments.filter((p) => p.id !== id));
+  const handleDeletePayment = async (payment_id) => {
+    if (!confirm(`Delete payment ${payment_id}?`)) return;
+    try {
+      const response = await fetch(
+        `http://localhost:5005/local/deletePayment/${payment_id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      const data = await response.json();
+      if (data.status === "success") {
+        setPayments(payments.filter((p) => p.payment_id !== payment_id));
+        alert("Payment deleted successfully");
+      } else {
+        alert("Failed to delete payment: " + data.message);
+      }
+    } catch (error) {
+      alert("Error deleting payment: " + error.message);
+    }
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  if (userRole !== 'manager') {
+  if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
   return (
     <div className="dashboard">
-      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
-        {isSidebarOpen ? '✖' : '☰'}
+      <button
+        className="sidebar-toggle"
+        onClick={toggleSidebar}
+        aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
+      >
+        {isSidebarOpen ? "✖" : "☰"}
       </button>
-      <Sidebar user={user} activePage="payment" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar
+        user={user}
+        activePage="payment"
+        onLogout={onLogout}
+        userRole={userRole}
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <div className="content">
         <h1>Payments</h1>
 
@@ -149,14 +206,15 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
             className="search-input"
           />
         </div>
-
         <div className="form-container">
           <input
             type="text"
             name="workerId"
-            placeholder="Worker ID (e.g., 207705096)"
-            value={newPayment.workerId}
-            onChange={(e) => setNewPayment({ ...newPayment, workerId: e.target.value })}
+            placeholder="Worker ID"
+            value={newPayment.worker_id}
+            onChange={(e) =>
+              setNewPayment({ ...newPayment, worker_id: e.target.value })
+            }
             className="form-input"
           />
           <input
@@ -164,15 +222,19 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
             name="amount"
             placeholder="Amount"
             value={newPayment.amount}
-            onChange={(e) => setNewPayment({ ...newPayment, amount: e.target.value })}
+            onChange={(e) =>
+              setNewPayment({ ...newPayment, amount: e.target.value })
+            }
             className="form-input"
           />
           <input
             type="date"
             name="paymentDate"
             placeholder="Payment Date"
-            value={newPayment.paymentDate}
-            onChange={(e) => setNewPayment({ ...newPayment, paymentDate: e.target.value })}
+            value={newPayment.payment_date}
+            onChange={(e) =>
+              setNewPayment({ ...newPayment, payment_date: e.target.value })
+            }
             className="form-input"
           />
           <input
@@ -180,7 +242,9 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
             name="notes"
             placeholder="Notes"
             value={newPayment.notes}
-            onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
+            onChange={(e) =>
+              setNewPayment({ ...newPayment, notes: e.target.value })
+            }
             className="form-input"
           />
           <button onClick={handleAddPayment} className="btn">
@@ -188,53 +252,63 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
           </button>
         </div>
 
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Payment ID</th>
-                <th>Worker ID</th>
-                <th>Worker Name</th>
-                <th>Amount</th>
-                <th>Payment Date</th>
-                <th>Status</th>
-                <th>Notes</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPayments.map((payment) => (
-                <tr key={payment.id}>
-                  <td data-label="Payment ID">{payment.id}</td>
-                  <td data-label="Worker ID">{payment.workerId}</td>
-                  <td data-label="Worker Name">{payment.workerName}</td>
-                  <td data-label="Amount">${payment.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                  <td data-label="Payment Date" style={{ color: payment.paymentDate === 'N/A' ? '#888' : 'inherit' }}>
-                    {payment.paymentDate}
-                  </td>
-                  <td data-label="Status">{payment.status}</td>
-                  <td data-label="Notes">{payment.notes}</td>
-                  <td data-label="Actions">
-                    {payment.status === 'Pending' && (
-                      <button
-                        onClick={() => handleMarkAsPaid(payment.id)}
-                        className="mark-paid-btn"
-                      >
-                        Mark as Paid
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDeletePayment(payment.id)}
-                      className="delete-btn"
-                    >
-                      Delete
-                    </button>
-                  </td>
+        {isLoading ? (
+          <p>Loading payments...</p>
+        ) : payments.length === 0 ? (
+          <p>No payments found. you can add payments for employees</p>
+        ) : (
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Payment ID</th>
+                  <th>Worker ID</th>
+                  <th>Worker Name</th>
+                  <th>Amount</th>
+                  <th>Payment Date</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredPayments.map((payment) => (
+                  <tr key={payment.payment_id}>
+                    <td data-label="Payment ID">{payment.payment_id}</td>
+                    <td data-label="Worker ID">{payment.worker_id}</td>
+                    <td data-label="Worker Name">{payment.worker_name}</td>
+                    <td data-label="Amount">
+                      $
+                      {payment.amount.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </td>
+                    <td data-label="Payment Date">{payment.payment_date}</td>
+                    <td data-label="Status">{payment.status}</td>
+                    <td data-label="Notes">{payment.notes}</td>
+                    <td data-label="Actions">
+                      {payment.status === "Pending" && (
+                        <button
+                          onClick={() => handleMarkAsPaid(payment.payment_id)}
+                          className="mark-paid-btn"
+                        >
+                          Mark as Paid
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeletePayment(payment.payment_id)}
+                        className="delete-btn"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

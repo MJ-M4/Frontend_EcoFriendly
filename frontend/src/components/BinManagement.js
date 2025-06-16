@@ -8,6 +8,8 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
+    let intervalId;
+
     const fetchBins = async () => {
       setIsLoading(true);
       try {
@@ -28,8 +30,10 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
       } finally {
         setIsLoading(false);
       }
-    };
+    }; 
     fetchBins();
+    intervalId = setInterval(fetchBins, 10000); // every 10 seconds
+    return () => clearInterval(intervalId); // cleanup
   }, []);
 
   const filteredBins = bins.filter(
@@ -42,6 +46,8 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
   const [newBin, setNewBin] = useState({
     location: "",
     address: "",
+    lat: "",
+    lon: "",
     status: "Empty",
   });
 
@@ -60,6 +66,8 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
         body: JSON.stringify({
           location: newBin.location,
           address: newBin.address,
+          lat: parseFloat(newBin.lat),
+          lon: parseFloat(newBin.lon),
           status: newBin.status,
         }),
       });
@@ -71,7 +79,13 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
 
       if (data.status === "success") {
         setBins((prev) => [...prev, data.bin]);
-        setNewBin({ location: "", address: "", status: "Empty" });
+        setNewBin({
+          location: "",
+          address: "",
+          lat: "",
+          lon: "",
+          status: "Empty",
+        });
         alert("Bin added successfully");
       } else {
         throw new Error(data.message || "Failed to add bin");
@@ -165,6 +179,22 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
             onChange={(e) => setNewBin({ ...newBin, address: e.target.value })}
             className="form-input"
           />
+          <input
+            type="text"
+            name="lat"
+            placeholder="Latitude"
+            value={newBin.lat}
+            onChange={(e) => setNewBin({ ...newBin, lat: e.target.value })}
+            className="form-input"
+          />
+          <input
+            type="text"
+            name="lon"
+            placeholder="Longitude"
+            value={newBin.lon}
+            onChange={(e) => setNewBin({ ...newBin, lon: e.target.value })}
+            className="form-input"
+          />
           <select
             value={newBin.status}
             onChange={(e) => setNewBin({ ...newBin, status: e.target.value })}
@@ -191,7 +221,10 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
                   <th>Bin ID</th>
                   <th>Location</th>
                   <th>Address</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
                   <th>Status</th>
+                  <th>Capacity</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -201,7 +234,10 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
                     <td data-label="Bin ID">{bin.binId}</td>
                     <td data-label="Location">{bin.location}</td>
                     <td data-label="Address">{bin.address}</td>
+                    <td data-label="Latitude">{bin.lat}</td>
+                    <td data-label="Longitude">{bin.lon}</td>
                     <td data-label="Status">{bin.status}</td>
+                    <td data-label="Capacity">{bin.capacity?.toFixed(1)}%</td>
                     <td data-label="Actions">
                       <button
                         onClick={() => handleDeleteBin(bin.binId)}

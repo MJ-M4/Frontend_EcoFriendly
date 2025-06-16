@@ -1,20 +1,25 @@
-import React from 'react';
-import { FaTrash } from 'react-icons/fa';
-import wazeIcon from '../Photos/Waze.jpeg';
+import React from "react";
+import { FaTrash } from "react-icons/fa";
+import wazeIcon from "../Photos/Waze.jpeg";
 
-const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
+const TableComponent = ({ bins, onSelectBin, selectedBin, onEmptyBin }) => {
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'Full':
-        return <FaTrash style={{ color: '#ff4d4f', marginRight: '8px' }} />;
-      case 'Near Full':
-        return <FaTrash style={{ color: '#ffeb3b', marginRight: '8px' }} />;
-      case 'Not Full':
-        return <FaTrash style={{ color: '#4caf50', marginRight: '8px' }} />;
+      case "Full":
+        return <FaTrash style={{ color: "#ff4d4f", marginRight: "8px" }} />;
+      case "Near Full":
+        return <FaTrash style={{ color: "#ffeb3b", marginRight: "8px" }} />;
+      case "Not Full":
+        return <FaTrash style={{ color: "#4caf50", marginRight: "8px" }} />;
       default:
         return null;
     }
   };
+
+  const now = new Date();
+  const currentDate = now.toLocaleDateString('en-GB'); 
+  const currentTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const currentBattery = Math.floor(Math.random() * 100); // Simulated battery percentage
 
   return (
     <div className="table-wrapper">
@@ -26,43 +31,44 @@ const TableComponent = ({ bins, onSelectBin, selectedBin }) => {
             <th>Capacity</th>
             <th>Event Time</th>
             <th>Date</th>
-            <th>Route Suggest</th>
-            <th>Battery Level</th>
+            <th>Route</th>
+            <th>Battery</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {bins.map((bin) => (
             <tr
-              key={bin.id}
-              className={selectedBin && selectedBin.id === bin.id ? 'selected' : ''}
+              key={bin.binId}
+              className={selectedBin?.binId === bin.binId ? "selected" : ""}
               onClick={() => onSelectBin(bin)}
             >
-              <td data-label="Bin ID">{bin.id}</td>
-              <td data-label="Status">
-                {getStatusIcon(bin.status)}
-                {bin.status}
-              </td>
-              <td data-label="Capacity">{bin.capacity}%</td>
-              <td data-label="Event Time">{bin.time}</td>
-              <td data-label="Date">{bin.date}</td>
-              <td data-label="Route Suggest">
+              <td>{bin.binId}</td>
+              <td>{bin.status}</td>
+              <td>{bin.capacity}%</td>
+              <td>{bin.time || currentTime}</td>
+              <td>{bin.date || currentDate}</td>
+              <td>
                 <a
                   href={`https://waze.com/ul?ll=${bin.lat},${bin.lon}&navigate=yes`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="waze-link"
                 >
-                  <img src={wazeIcon} alt="Navigate with Waze" className="waze-icon" />
+                  <img src={wazeIcon} alt="Waze" className="waze-icon" />
                 </a>
               </td>
-              <td data-label="Battery Level">
-                {bin.battery}%{' '}
-                <div className="battery-bar">
-                  <div
-                    className="battery-fill"
-                    style={{ width: `${bin.battery}%`, backgroundColor: bin.battery > 50 ? '#4caf50' : '#ff4d4f' }}
-                  ></div>
-                </div>
+              <td>{bin.battery || currentBattery}%</td>
+              <td>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEmptyBin(bin.binId);
+                  }}
+                  className="edit-btn"
+                >
+                  {getStatusIcon(bin.status)}
+                  Empty Bin
+                </button>
               </td>
             </tr>
           ))}

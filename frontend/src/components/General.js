@@ -1,62 +1,80 @@
 import React, { useEffect,useState } from 'react';
 import MapComponent from './MapComponent';
-import Sidebar from './Sidebar';
+import PageTemplate from './PageTemplate';
 import TableComponent from './TableComponent';
-import './css/general.css';
+import './css/reset.css';
+import './css/layout.css';
+import './css/components.css';
+import './css/themes.css';
+import './css/responsive.css';
 
-
-const GeneralPage = ({ onLogout, userRole, user }) => {
-  const [bins, setBins] = useState([]);
+const GeneralPage = ({ onLogout, userRole }) => {
   const [selectedBin, setSelectedBin] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    let intervalId;
-    const fetchBins = async () => {
-      try {
-        const response = await fetch("http://localhost:5005/local/getBins");
-        const data = await response.json();
-        if (data.status === "success") {
-          // عرض فقط الصناديق الممتلئة
-          const fullBins = data.bins.filter((bin) => bin.status === "Full");
-          setBins(fullBins);
-        } else {
-          setBins([]);
-        }
-      } catch (err) {
-        console.error("Error fetching bins:", err);
-        setBins([]);
-      }
-    };
-    fetchBins();
-    intervalId = setInterval(fetchBins, 10000); // Fetch every 10 seconds
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, []);
+<<<<<<<<< Temporary merge branch 1
+=========
+  // Mock bin data using UUID
+>>>>>>>>> Temporary merge branch 2
+  const mockBins = [
+    {
+      id: uuidv4().slice(0, 10),
+      status: 'Full',
+      capacity: 90,
+      time: '20:00',
+      date: '15-2-2025',
+      route: 'Route A',
+      battery: 95,
+      lat: 32.700,
+      lon: 35.312,
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      status: 'Full',
+      capacity: 87,
+      time: '20:00',
+      date: '15-1-2025',
+      route: 'Route B',
+      battery: 88,
+      lat: 32.700,
+      lon: 35.319,
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      status: 'Full',
+      capacity: 85,
+      time: '22:30',
+      date: '15-1-2025',
+      route: 'Route C',
+      battery: 94,
+      lat: 32.712,
+      lon: 35.300,
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      status: 'Full',
+      capacity: 93,
+      time: '19:30',
+      date: '15-1-2025',
+      route: 'Route D',
+      battery: 76,
+      lat: 32.6996,
+      lon: 35.3035,
+    },
+    {
+      id: uuidv4().slice(0, 10),
+      status: 'Full',
+      capacity: 88,
+      time: '18:30',
+      date: '15-1-2025',
+      route: 'Route E',
+      battery: 78,
+      lat: 32.713,
+      lon: 35.3100,
+    },
+  ];
 
-    const handleEmptyBin = async (binId) => {
-    try {
-      const response = await fetch(`http://localhost:5005/local/updateBin/${binId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: "Empty", capacity: 0 }),
-      });
+  const user = { name: 'Mohamed Mhagne', avatar: '/images/sami.png' };
 
-      const data = await response.json();
-      if (data.status === "success") {
-        setBins((prev) => prev.filter((b) => b.binId !== binId)); // إحذف من المهام
-        alert("Bin emptied successfully!");
-      } else {
-        throw new Error(data.message || "Failed to update bin");
-      }
-    } catch (err) {
-      console.error("Error updating bin:", err);
-      alert("Failed to update bin");
-    }
-  };
-
-  
   const handleSelectBin = (bin) => {
     setSelectedBin(bin);
   };
@@ -67,23 +85,13 @@ const GeneralPage = ({ onLogout, userRole, user }) => {
 
   return (
     <div className="dashboard">
-      <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
-        {isSidebarOpen ? '✖' : '☰'}
-      </button>
-      <Sidebar
-        user={user}
-        activePage="general"
-        onLogout={onLogout}
-        userRole={userRole}
-        isOpen={isSidebarOpen}
-        toggleSidebar={toggleSidebar}
-      />
+      <Sidebar user={user} activePage="general" onLogout={onLogout} userRole={userRole} />
       <div className="content">
         <div className="map-container">
-          <MapComponent bins={bins} selectedBin={selectedBin} />
+          <MapComponent bins={mockBins} selectedBin={selectedBin} />
         </div>
         <div className="table-container">
-          <TableComponent bins={bins} onSelectBin={handleSelectBin} selectedBin={selectedBin} onEmptyBin={handleEmptyBin} />
+          <TableComponent bins={mockBins} onSelectBin={handleSelectBin} selectedBin={selectedBin} />
         </div>
       </div>
     </div>

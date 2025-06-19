@@ -3,7 +3,12 @@ import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import "./css/hardware-examination.css";
 
+<<<<<<< HEAD
 const HardwareExamination = ({ onLogout, userRole, user}) => {
+=======
+const HardwareExamination = ({ onLogout, userRole,userName }) => {
+  // We store the actual UUID in "id" and remove hardwareId from display
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
   const initialHardware = [
     {
       id: uuidv4().slice(0, 10),
@@ -80,10 +85,13 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
     const { name, value } = e.target;
     setNewHardware((prev) => ({ ...prev, [name]: value }));
   };
+<<<<<<< HEAD
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+=======
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
 
   return (
     <div className="dashboard">
@@ -95,13 +103,22 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
         activePage="hardware-examination"
         onLogout={onLogout}
         userRole={userRole}
+<<<<<<< HEAD
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
+=======
+        userName={userName}
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
       />
       <div className="content">
         <h1>Hardware Examination</h1>
 
+<<<<<<< HEAD
         <div className="search-container">
+=======
+        {/* Search */}
+        <div className="form-container">
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
           <input
             type="text"
             placeholder="Search by bin ID, location, or address..."
@@ -133,6 +150,10 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
           </button>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* Hardware Table */}
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
         <div className="table-container">
           <table>
             <thead>
@@ -150,6 +171,7 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
             <tbody>
               {filteredHardware.map((hw) => (
                 <tr key={hw.id}>
+<<<<<<< HEAD
                   <td data-label="Hardware ID">{hw.id}</td>
                   <td data-label="Bin ID">{hw.binId}</td>
                   <td data-label="Location">{hw.location}</td>
@@ -158,6 +180,16 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
                   <td data-label="Battery">{hw.battery}%</td>
                   <td data-label="Last Checked">{hw.lastChecked}</td>
                   <td data-label="Actions">
+=======
+                  <td>{hw.id}</td>
+                  <td>{hw.binId}</td>
+                  <td>{hw.location}</td>
+                  <td>{hw.address}</td>
+                  <td>{hw.status}</td>
+                  <td>{hw.battery}%</td>
+                  <td>{hw.lastChecked}</td>
+                  <td>
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
                     {hw.status === "Needs Maintenance" && (
                       <button
                         onClick={() => handleMarkAsMaintained(hw.id)}
@@ -172,6 +204,11 @@ const HardwareExamination = ({ onLogout, userRole, user}) => {
             </tbody>
           </table>
         </div>
+<<<<<<< HEAD
+=======
+
+        {/* Removed the Download File button */}
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
       </div>
     </div>
   );

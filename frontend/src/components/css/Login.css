@@ -1,15 +1,27 @@
 /* src/css/Login.css */
+<<<<<<< HEAD
+=======
+
+/* Login Container */
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+<<<<<<< HEAD
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
+=======
+}
+
+
+/* Login Box */
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
 .login-box {
   background-color: #fff;
   padding: 2.5rem;
@@ -34,7 +46,11 @@
 }
 
 .form-group {
+<<<<<<< HEAD
   margin-bottom: 1.25rem;
+=======
+  margin-bottom: 20px;
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
   text-align: left;
 }
 

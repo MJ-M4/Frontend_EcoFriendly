@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 
@@ -7,6 +8,20 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+=======
+// src/components/VehiclesPage.js
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import Sidebar from "./Sidebar";
+import "./css/general.css";
+
+const VehiclesPage = ({ onLogout, userRole, userName }) => {
+  const [vehicles, setVehicles] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
+
+  // State for new vehicle form
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
   const [newVehicle, setNewVehicle] = useState({
     type: "Garbage Truck",
     licensePlate: "",
@@ -16,6 +31,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchVehicles = async () => {
       setIsLoading(true);
@@ -52,10 +68,42 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
   const handleAddVehicle = async () => {
     if (!newVehicle.licensePlate || !newVehicle.location) {
       setError("License plate and location are required");
+=======
+  // Only managers can see this page
+  if (userRole !== "manager") {
+    return <div className="error">Access Denied: Managers Only</div>;
+  }
+
+  // Fetch all vehicles from backend
+  const fetchVehicles = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/vehicles");
+      setVehicles(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch vehicles");
+    }
+  };
+
+  useEffect(() => {
+    fetchVehicles();
+  }, []); // run once
+
+  const handleAddVehicle = async () => {
+    // Validate fields
+    if (
+      !newVehicle.type ||
+      !newVehicle.licensePlate ||
+      !newVehicle.status ||
+      !newVehicle.location ||
+      !newVehicle.lastMaintenance
+    ) {
+      alert("Please fill in all fields");
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
       return;
     }
 
     try {
+<<<<<<< HEAD
       setIsLoading(true);
       const response = await fetch("http://localhost:5005/local/addVehicle", {
         method: "POST",
@@ -134,7 +182,44 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+=======
+      await axios.post("http://localhost:5000/api/vehicles", {
+        type: newVehicle.type,
+        license_plate: newVehicle.licensePlate,
+        status: newVehicle.status,
+        location: newVehicle.location,
+        last_maintenance: newVehicle.lastMaintenance,
+      });
+      // Refresh list
+      fetchVehicles();
+      // Reset form
+      setNewVehicle({
+        type: "Garbage Truck",
+        licensePlate: "",
+        status: "Available",
+        location: "",
+        lastMaintenance: "",
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to add vehicle");
+    }
   };
+
+  const handleDeleteVehicle = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/vehicles/${id}`);
+      setVehicles(vehicles.filter((v) => v.id !== id));
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete vehicle");
+    }
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
+  };
+
+  // Filter for search
+  const filteredVehicles = vehicles.filter((v) =>
+    v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    v.license_plate.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="dashboard">
@@ -147,16 +232,25 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
         {isSidebarOpen ? "✖" : "☰"}
       </button>
       <Sidebar
-        user={user}
         activePage="vehicles"
         onLogout={onLogout}
         userRole={userRole}
+<<<<<<< HEAD
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
       <div className="content">
         <h1>Vehicles</h1>
         <div className="search-container">
+=======
+        userName={userName}
+      />
+      <div className="content">
+        <h1>Vehicles</h1>
+        {error && <p className="error">{error}</p>}
+
+        <div className="form-container">
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
           <input
             type="text"
             placeholder="Search by type or license plate..."
@@ -168,11 +262,18 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
         </div>
 
         <div className="form-container">
+<<<<<<< HEAD
           <select
             value={newVehicle.type}
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, type: e.target.value })
             }
+=======
+          {/* Type */}
+          <select
+            value={newVehicle.type}
+            onChange={(e) => setNewVehicle({ ...newVehicle, type: e.target.value })}
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
             className="form-input"
           >
             <option value="Garbage Truck">Garbage Truck</option>
@@ -187,6 +288,8 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
             <option value="Water Tanker">Water Tanker</option>
             <option value="Mini Truck">Mini Truck</option>
           </select>
+
+          {/* License Plate */}
           <input
             type="text"
             placeholder="License Plate"
@@ -196,26 +299,34 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
             }
             className="form-input"
           />
+
+          {/* Status */}
           <select
             value={newVehicle.status}
+<<<<<<< HEAD
             onChange={(e) =>
               setNewVehicle({ ...newVehicle, status: e.target.value })
             }
+=======
+            onChange={(e) => setNewVehicle({ ...newVehicle, status: e.target.value })}
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
             className="form-input"
           >
             <option value="Available">Available</option>
             <option value="In Use">In Use</option>
             <option value="Under Maintenance">Under Maintenance</option>
           </select>
+
+          {/* Location */}
           <input
             type="text"
             placeholder="Location"
             value={newVehicle.location}
-            onChange={(e) =>
-              setNewVehicle({ ...newVehicle, location: e.target.value })
-            }
+            onChange={(e) => setNewVehicle({ ...newVehicle, location: e.target.value })}
             className="form-input"
           />
+
+          {/* Last Maintenance */}
           <input
             type="date"
             value={newVehicle.lastMaintenance}
@@ -224,6 +335,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
             }
             className="form-input"
           />
+<<<<<<< HEAD
           <button
             onClick={handleAddVehicle}
             disabled={isLoading}
@@ -233,6 +345,16 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
           </button>
         </div>
 
+=======
+
+          {/* Add Button */}
+          <button onClick={handleAddVehicle} className="download-report-btn">
+            Add Vehicle
+          </button>
+        </div>
+
+        {/* Vehicles Table */}
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
         <div className="table-container">
           <table>
             <thead>
@@ -246,6 +368,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
               </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
               {filteredVehicles.length > 0 ? (
                 filteredVehicles.map((vehicle) => (
                   <tr key={vehicle.licensePlate}>
@@ -275,6 +398,22 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
                     {vehicles.length === 0
                       ? "No vehicles available"
                       : "No matching vehicles found"}
+=======
+              {filteredVehicles.map((vehicle) => (
+                <tr key={vehicle.id}>
+                  <td>{vehicle.license_plate}</td>
+                  <td>{vehicle.type}</td>
+                  <td>{vehicle.status}</td>
+                  <td>{vehicle.location}</td>
+                  <td>{vehicle.last_maintenance}</td>
+                  <td>
+                    <button
+                      onClick={() => handleDeleteVehicle(vehicle.id)}
+                      className="delete-btn"
+                    >
+                      Delete
+                    </button>
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
                   </td>
                 </tr>
               )}

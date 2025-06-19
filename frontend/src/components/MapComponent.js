@@ -16,7 +16,11 @@ const MapComponent = ({ bins }) => {
   const zoomLevel = 8;
 
   return (
+<<<<<<< HEAD
     <MapContainer center={mapCenter} zoom={zoomLevel} className="map">
+=======
+    <MapContainer center={mapCenter} zoom={zoomLevel} style={{ height: '100%', width: '100%' }}>
+>>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="© OpenStreetMap"

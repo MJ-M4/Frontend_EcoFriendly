@@ -8,11 +8,7 @@ import Sidebar from "./Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-<<<<<<< HEAD
 const ReportsPage = ({ onLogout, userRole, user }) => {
-=======
-const ReportsPage = ({ onLogout, userRole,userName }) => {
->>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
@@ -45,20 +41,13 @@ const ReportsPage = ({ onLogout, userRole,userName }) => {
   const [vehicleSearch, setVehicleSearch] = useState("");
   const [hardwareSearch, setHardwareSearch] = useState("");
   const [selectedReport, setSelectedReport] = useState("");
-<<<<<<< HEAD
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-=======
->>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
 
   const binChartRef = useRef(null);
   const workerChartRef = useRef(null);
   const vehicleChartRef = useRef(null);
   const hardwareChartRef = useRef(null);
 
-<<<<<<< HEAD
-=======
-  // Filter Data with Exact Match Preference
->>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
   const filteredBins = binSearch
     ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase()).length > 0
       ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase())
@@ -187,20 +176,10 @@ const ReportsPage = ({ onLogout, userRole,userName }) => {
 
   return (
     <div className="dashboard">
-<<<<<<< HEAD
       <button className="sidebar-toggle" onClick={toggleSidebar} aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}>
         {isSidebarOpen ? '✖' : '☰'}
       </button>
       <Sidebar user={{ name: user.name, avatar: "/images/sami.png" }} activePage="reports" onLogout={onLogout} userRole={userRole} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-=======
-      <Sidebar
-       activePage="reports"
-       onLogout={onLogout} 
-       userRole={userRole}
-       userName={userName}
-        />
-       
->>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
       <div className="content">
         <h1>Reports</h1>
         <div className="dropdown-container">

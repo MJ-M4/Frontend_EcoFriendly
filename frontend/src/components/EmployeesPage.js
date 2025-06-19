@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import "./css/employees.css";
@@ -155,19 +154,6 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-=======
-// src/components/EmployeesPage.js
-
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import './css/general.css';
-import Sidebar from './Sidebar';
-
-const EmployeesPage = ({ onLogout, userRole, userId, userName }) => {
-  if (userRole !== 'manager') {
-    return <div className="error">Access Denied: Managers Only</div>;
-  }
->>>>>>> a08a4ce4171da29b4d8a47d1010489f2ba40cfae
 
   const [employees, setEmployees] = useState([]);
   const [searchId, setSearchId] = useState('');

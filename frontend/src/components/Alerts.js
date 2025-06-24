@@ -1,46 +1,80 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
-import { v4 as uuidv4 } from 'uuid';
 import Sidebar from './Sidebar';
 import './css/alerts.css';
 import './css/global.css';
 
-const AlertsPage = ({ onLogout, userRole,user }) => {
-  const mockAlerts = [
-    {
-      binId: uuidv4().slice(0, 10),
-      type: 'Critical',
-      message: 'Bin is full',
-      eventTime: '10:00',
-      date: '15-1-2025',
-    },
-    {
-      binId: uuidv4().slice(0, 10),
-      type: 'Warning',
-      message: 'Low battery',
-      eventTime: '12:30',
-      date: '15-1-2025',
-    },
-    {
-      binId: uuidv4().slice(0, 10),
-      type: 'Critical',
-      message: 'Bin is full',
-      eventTime: '14:00',
-      date: '16-1-2025',
-    },
-  ];
-  const [alerts] = useState(mockAlerts);
-  const [loading] = useState(false);
-  const [error] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Add state for sidebar toggle
+const AlertsPage = ({ onLogout, userRole, user }) => {
+  const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Fetch bins
+        const binsRes = await fetch('http://localhost:5005/local/getBins');
+        const binsData = await binsRes.json();
+
+        // Fetch hardware
+        const hardwareRes = await fetch('http://localhost:5005/local/getHardware');
+        const hardwareData = await hardwareRes.json();
+
+        let alertsArr = [];
+
+        // Bin alerts (full)
+        if (binsData.bins) {
+          binsData.bins.forEach(bin => {
+            if (bin.status === 'Full') {
+              alertsArr.push({
+                binId: bin.binId,
+                type: 'Critical',
+                message: 'Bin is full',
+                eventTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toLocaleDateString('en-GB'),
+              });
+            }
+          });
+        }
+
+        // Hardware alerts (battery low)
+        if (hardwareData.hardware) {
+          hardwareData.hardware.forEach(hw => {
+            if (hw.battery < 40) {
+              alertsArr.push({
+                binId: hw.binId || hw.id,
+                type: 'Warning',
+                message: 'Low battery',
+                eventTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toLocaleDateString('en-GB'),
+              });
+            }
+          });
+        }
+
+        setAlerts(alertsArr);
+      } catch (err) {
+        setError('Failed to fetch alerts');
+        setAlerts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAlerts();
+    const interval = setInterval(fetchAlerts, 10000); // auto-refresh every 10s
+    return () => clearInterval(interval);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">Error: {error}</div>;
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
 
   return (
     <div className="dashboard">
@@ -68,23 +102,31 @@ const AlertsPage = ({ onLogout, userRole,user }) => {
               </tr>
             </thead>
             <tbody>
-              {alerts.map((alert) => (
-                <tr key={alert.binId}>
-                  <td data-label="Bin ID">{alert.binId}</td>
-                  <td data-label="Alert Type">
-                    <FaExclamationTriangle
-                      style={{
-                        color: alert.type === 'Critical' ? '#ff4d4f' : '#ffeb3b',
-                        marginRight: '8px',
-                      }}
-                    />
-                    {alert.type}
+              {alerts.length === 0 ? (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: 'center', color: '#888' }}>
+                    No alerts 🎉
                   </td>
-                  <td data-label="Message">{alert.message}</td>
-                  <td data-label="Event Time">{alert.eventTime}</td>
-                  <td data-label="Date">{alert.date}</td>
                 </tr>
-              ))}
+              ) : (
+                alerts.map((alert, i) => (
+                  <tr key={alert.binId + alert.message + i}>
+                    <td data-label="Bin ID">{alert.binId}</td>
+                    <td data-label="Alert Type">
+                      <FaExclamationTriangle
+                        style={{
+                          color: alert.type === 'Critical' ? '#ff4d4f' : '#ffeb3b',
+                          marginRight: '8px',
+                        }}
+                      />
+                      {alert.type}
+                    </td>
+                    <td data-label="Message">{alert.message}</td>
+                    <td data-label="Event Time">{alert.eventTime}</td>
+                    <td data-label="Date">{alert.date}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -94,3 +136,5 @@ const AlertsPage = ({ onLogout, userRole,user }) => {
 };
 
 export default AlertsPage;
+// This code defines a React component for displaying alerts related to bins and hardware. It fetches data from a local server, processes it to identify critical and warning alerts, and displays them in a table format. The component also includes a sidebar for navigation and a button to toggle the sidebar visibility.
+// The alerts are fetched every 10 seconds, and the component handles loading and error states gracefully   

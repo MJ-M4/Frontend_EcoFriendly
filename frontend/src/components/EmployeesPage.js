@@ -9,12 +9,9 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5005/local/getEmployees"
-        );
+        const response = await fetch("http://localhost:5005/local/getEmployees");
         const data = await response.json();
         if (data.status === "success") {
-          console.log("Fetched employees:", data.employees);
           setEmployees(data.employees || []);
         } else {
           console.error("Failed to fetch employees:", data.message);
@@ -25,7 +22,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
         setIsLoading(false);
       }
     };
-    
+
     fetchEmployees();
   }, []);
 
@@ -42,7 +39,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const filteredEmployees = (employees || []).filter(
+  const filteredEmployees = employees.filter(
     (emp) =>
       emp.location?.toLowerCase().includes(searchValue.toLowerCase()) ||
       emp.identity?.toLowerCase().includes(searchValue.toLowerCase())
@@ -64,7 +61,6 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
     setGeneratedPassword(pwd);
   };
 
-
   const handleAddEmployee = async () => {
     if (
       newEmployee.identity &&
@@ -72,37 +68,29 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
       newEmployee.phone &&
       newEmployee.location &&
       newEmployee.joining_date &&
-      newEmployee.worker_type &&
-      newEmployee.role
+      newEmployee.role &&
+      (newEmployee.role === "manager" || newEmployee.worker_type)
     ) {
-
       const employeePayload = {
         identity: newEmployee.identity,
         name: newEmployee.name,
         phone: newEmployee.phone,
         location: newEmployee.location,
         joining_date: newEmployee.joining_date,
-        worker_type: newEmployee.worker_type,
+        worker_type: newEmployee.role === "manager" ? null : newEmployee.worker_type,
         role: newEmployee.role,
-        password: generatedPassword || "", // Send plain text password to backend
+        password: generatedPassword || "",
       };
 
       try {
-        const response = await fetch(
-          "http://localhost:5005/local/addEmployee",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(employeePayload),
-          }
-        );
+        const response = await fetch("http://localhost:5005/local/addEmployee", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(employeePayload),
+        });
 
         const data = await response.json();
-        console.log("API2025 Response:", data);
         if (data.status === "success") {
-          console.log("Employee added successfully:", data.employees);
           setEmployees((prev) => [...prev, data.employees]);
           alert("Employee added successfully");
           setNewEmployee({
@@ -128,15 +116,10 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
   const handleDeleteEmployee = async (identity) => {
     if (!confirm(`Delete Employee ${identity}?`)) return;
     try {
-      const response = await fetch(
-        `http://localhost:5005/local/deleteEmployee/${identity}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:5005/local/deleteEmployee/${identity}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
       const data = await response.json();
       if (data.status === "success") {
         setEmployees(employees.filter((emp) => emp.identity !== identity));
@@ -154,14 +137,9 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-
   return (
     <div className="dashboard">
-      <button
-        className="sidebar-toggle"
-        onClick={toggleSidebar}
-        aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
-      >
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
         {isSidebarOpen ? "✖" : "☰"}
       </button>
       <Sidebar
@@ -190,73 +168,68 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
             type="text"
             placeholder="Identity"
             value={newEmployee.identity}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, identity: e.target.value })
-            }
+            onChange={(e) => setNewEmployee({ ...newEmployee, identity: e.target.value })}
             className="form-input"
           />
           <input
             type="text"
             placeholder="Name"
             value={newEmployee.name}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, name: e.target.value })
-            }
+            onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
             className="form-input"
           />
           <input
             type="text"
             placeholder="Phone"
             value={newEmployee.phone}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, phone: e.target.value })
-            }
+            onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
             className="form-input"
           />
           <input
             type="text"
             placeholder="Location"
             value={newEmployee.location}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, location: e.target.value })
-            }
+            onChange={(e) => setNewEmployee({ ...newEmployee, location: e.target.value })}
             className="form-input"
           />
           <input
             type="date"
             value={newEmployee.joining_date}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, joining_date: e.target.value })
-            }
+            onChange={(e) => setNewEmployee({ ...newEmployee, joining_date: e.target.value })}
             className="form-input"
           />
+
+          {/* Worker Type dropdown - disabled if manager */}
           <select
-            value={newEmployee.worker_type}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, worker_type: e.target.value })
-            }
+            value={newEmployee.worker_type || ""}
+            onChange={(e) => setNewEmployee({ ...newEmployee, worker_type: e.target.value })}
             className="form-input"
+            disabled={newEmployee.role === "manager"}
           >
+            <option value="">Select type</option>
             <option value="Driver">Driver</option>
             <option value="Cleaner">Cleaner</option>
             <option value="Maintenance Worker">Maintenance Worker</option>
           </select>
 
+          {/* Role dropdown - clears worker_type if manager */}
           <select
             value={newEmployee.role}
-            onChange={(e) =>
-              setNewEmployee({ ...newEmployee, role: e.target.value })
-            }
+            onChange={(e) => {
+              const newRole = e.target.value;
+              setNewEmployee((prev) => ({
+                ...prev,
+                role: newRole,
+                worker_type: newRole === "manager" ? null : prev.worker_type,
+              }));
+            }}
             className="form-input"
           >
             <option value="worker">Worker</option>
             <option value="manager">Manager</option>
           </select>
 
-          <button
-            onClick={handleGeneratePassword}
-            className="generate-password-btn"
-          >
+          <button onClick={handleGeneratePassword} className="generate-password-btn">
             Generate Password
           </button>
 
@@ -273,13 +246,13 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
             Add Employee
           </button>
         </div>
-        { isLoading ? (
+
+        {isLoading ? (
           <p>Loading employees...</p>
         ) : (
-          <p className="employee-count">
-            Total Employees: {filteredEmployees.length}
-          </p>
+          <p className="employee-count">Total Employees: {filteredEmployees.length}</p>
         )}
+
         <div className="table-container">
           <table>
             <thead>
@@ -296,13 +269,13 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
             <tbody>
               {filteredEmployees.map((emp) => (
                 <tr key={emp.identity}>
-                  <td data-label="ID">{emp.identity}</td>
-                  <td data-label="Name">{emp.name}</td>
-                  <td data-label="Phone">{emp.phone}</td>
-                  <td data-label="Location">{emp.location}</td>
-                  <td data-label="Joining Date">{emp.joining_date}</td>
-                  <td data-label="Worker Type">{emp.worker_type}</td>
-                  <td data-label="Actions">
+                  <td>{emp.identity}</td>
+                  <td>{emp.name}</td>
+                  <td>{emp.phone}</td>
+                  <td>{emp.location}</td>
+                  <td>{emp.joining_date}</td>
+                  <td>{emp.worker_type}</td>
+                  <td>
                     <button
                       onClick={() => handleDeleteEmployee(emp.identity)}
                       className="delete-btn"

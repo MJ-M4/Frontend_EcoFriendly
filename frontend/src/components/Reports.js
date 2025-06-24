@@ -1,41 +1,24 @@
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { saveAs } from "file-saver";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { v4 as uuidv4 } from "uuid";
-import "./css/reports.css";
 import Sidebar from "./Sidebar";
+import "./css/reports.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+const API_BASE = "http://localhost:5005/local";
+const ensureArray = (res, key) => Array.isArray(res) ? res : (res[key] || []);
 
 const ReportsPage = ({ onLogout, userRole, user }) => {
   if (userRole !== "manager") {
     return <div className="error">Access Denied: Managers Only</div>;
   }
 
-  const initialBinData = [
-    { binId: uuidv4().slice(0, 10), capacity: 85, location: "Nazareth", lastCollected: "2025-03-15" },
-    { binId: uuidv4().slice(0, 10), capacity: 30, location: "Nazareth", lastCollected: "2025-03-01" },
-    { binId: uuidv4().slice(0, 10), capacity: 100, location: "Nazareth", lastCollected: "2025-03-10" },
-  ];
-  const initialWorkersData = [
-    { workerId: "207705096", name: "Worker A", phone: "050-123-4567", startDate: "2025-01-01", shift: "08:00 - 16:00" },
-    { workerId: "205548491", name: "Worker B", phone: "052-987-6543", startDate: "2025-02-15", shift: "09:00 - 17:00" },
-  ];
-  const initialVehiclesData = [
-    { licensePlate: "ABC-123", type: "Garbage Truck", status: "Available", lastMaintenance: "2025-01-10" },
-    { licensePlate: "XYZ-999", type: "Van", status: "In Use", lastMaintenance: "2025-02-05" },
-  ];
-  const initialHardwareData = [
-    { hardwareId: uuidv4().slice(0, 10), binId: uuidv4().slice(0, 10), status: "Operational", battery: 95, lastChecked: "2025-03-01" },
-    { hardwareId: uuidv4().slice(0, 10), binId: uuidv4().slice(0, 10), status: "Needs Maintenance", battery: 20, lastChecked: "2025-03-02" },
-  ];
-  
-
-  const [binData] = useState(initialBinData);
-  const [workersData] = useState(initialWorkersData);
-  const [vehiclesData] = useState(initialVehiclesData);
-  const [hardwareData] = useState(initialHardwareData);
+  const [binData, setBinData] = useState([]);
+  const [workersData, setWorkersData] = useState([]);
+  const [vehiclesData, setVehiclesData] = useState([]);
+  const [hardwareData, setHardwareData] = useState([]);
   const [binSearch, setBinSearch] = useState("");
   const [workerSearch, setWorkerSearch] = useState("");
   const [vehicleSearch, setVehicleSearch] = useState("");
@@ -48,27 +31,65 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
   const vehicleChartRef = useRef(null);
   const hardwareChartRef = useRef(null);
 
-  const filteredBins = binSearch
-    ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase()).length > 0
-      ? binData.filter(b => b.binId.toLowerCase() === binSearch.toLowerCase())
-      : binData.filter(b => Object.values(b).some(field => field.toString().toLowerCase().includes(binSearch.toLowerCase())))
-    : binData;
-  const filteredWorkers = workerSearch
-    ? workersData.filter(w => w.workerId.toLowerCase() === workerSearch.toLowerCase()).length > 0
-      ? workersData.filter(w => w.workerId.toLowerCase() === workerSearch.toLowerCase())
-      : workersData.filter(w => Object.values(w).some(field => field.toString().toLowerCase().includes(workerSearch.toLowerCase())))
-    : workersData;
-  const filteredVehicles = vehicleSearch
-    ? vehiclesData.filter(v => v.licensePlate.toLowerCase() === vehicleSearch.toLowerCase()).length > 0
-      ? vehiclesData.filter(v => v.licensePlate.toLowerCase() === vehicleSearch.toLowerCase())
-      : vehiclesData.filter(v => Object.values(v).some(field => field.toString().toLowerCase().includes(vehicleSearch.toLowerCase())))
-    : vehiclesData;
-  const filteredHardware = hardwareSearch
-    ? hardwareData.filter(h => h.hardwareId.toLowerCase() === hardwareSearch.toLowerCase()).length > 0
-      ? hardwareData.filter(h => h.hardwareId.toLowerCase() === hardwareSearch.toLowerCase())
-      : hardwareData.filter(h => Object.values(h).some(field => field.toString().toLowerCase().includes(hardwareSearch.toLowerCase())))
-    : hardwareData;
+  // FETCH DATA ON MOUNT, ALWAYS ENSURE ARRAY AND MAP IDs!
+  useEffect(() => {
+    fetch(`${API_BASE}/getBins`)
+      .then(r => r.json())
+      .then(data => setBinData(ensureArray(data, "bins")));
 
+    fetch(`${API_BASE}/getEmployees`)
+      .then(r => r.json())
+      .then(data => {
+        const arr = ensureArray(data, "employees");
+        // Map identity => workerId for frontend compatibility
+        setWorkersData(arr.map(w => ({ ...w, workerId: w.identity })));
+      });
+
+    fetch(`${API_BASE}/getVehicles`)
+      .then(r => r.json())
+      .then(data => setVehiclesData(ensureArray(data, "vehicles")));
+
+    fetch(`${API_BASE}/getHardware`)
+      .then(r => r.json())
+      .then(data => {
+        const arr = ensureArray(data, "hardware");
+        // Map id => hardwareId for frontend compatibility
+        setHardwareData(arr.map(h => ({ ...h, hardwareId: h.id })));
+      });
+  }, []);
+
+  // Defensive rendering: Always use array or empty array
+  const safeArr = arr => Array.isArray(arr) ? arr : [];
+  const filteredBins = safeArr(
+    binSearch
+      ? binData.filter(b => b.binId?.toLowerCase() === binSearch.toLowerCase()).length > 0
+        ? binData.filter(b => b.binId?.toLowerCase() === binSearch.toLowerCase())
+        : binData.filter(b => Object.values(b).some(field => (field ?? "").toString().toLowerCase().includes(binSearch.toLowerCase())))
+      : binData
+  );
+  const filteredWorkers = safeArr(
+    workerSearch
+      ? workersData.filter(w => w.workerId?.toLowerCase() === workerSearch.toLowerCase()).length > 0
+        ? workersData.filter(w => w.workerId?.toLowerCase() === workerSearch.toLowerCase())
+        : workersData.filter(w => Object.values(w).some(field => (field ?? "").toString().toLowerCase().includes(workerSearch.toLowerCase())))
+      : workersData
+  );
+  const filteredVehicles = safeArr(
+    vehicleSearch
+      ? vehiclesData.filter(v => v.licensePlate?.toLowerCase() === vehicleSearch.toLowerCase()).length > 0
+        ? vehiclesData.filter(v => v.licensePlate?.toLowerCase() === vehicleSearch.toLowerCase())
+        : vehiclesData.filter(v => Object.values(v).some(field => (field ?? "").toString().toLowerCase().includes(vehicleSearch.toLowerCase())))
+      : vehiclesData
+  );
+  const filteredHardware = safeArr(
+    hardwareSearch
+      ? hardwareData.filter(h => h.hardwareId?.toLowerCase() === hardwareSearch.toLowerCase()).length > 0
+        ? hardwareData.filter(h => h.hardwareId?.toLowerCase() === hardwareSearch.toLowerCase())
+        : hardwareData.filter(h => Object.values(h).some(field => (field ?? "").toString().toLowerCase().includes(hardwareSearch.toLowerCase())))
+      : hardwareData
+  );
+
+  // CSV Export (no change)
   const downloadCsv = (headers, rows, filename) => {
     const csvContent = [
       headers.join(','),
@@ -78,6 +99,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
     saveAs(blob, filename);
   };
 
+  // CHART DATA
   const binsChartData = {
     labels: filteredBins.map(b => b.binId),
     datasets: [{ label: "Bin Capacity", data: filteredBins.map(b => b.capacity), backgroundColor: "#3498db" }],
@@ -86,9 +108,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
     responsive: true,
     maintainAspectRatio: false,
     scales: { y: { beginAtZero: true, max: 100 } },
-    plugins: {
-      legend: { position: "top" },
-    },
+    plugins: { legend: { position: "top" } },
     onClick: (evt, elements) => {
       if (!elements || elements.length === 0) return;
       const index = elements[0].index;
@@ -111,9 +131,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
     responsive: true,
     maintainAspectRatio: false,
     scales: { y: { beginAtZero: true } },
-    plugins: {
-      legend: { position: "top" },
-    },
+    plugins: { legend: { position: "top" } },
     onClick: (evt, elements) => {
       if (!elements || elements.length === 0) return;
       const index = elements[0].index;
@@ -136,9 +154,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
     responsive: true,
     maintainAspectRatio: false,
     scales: { y: { beginAtZero: true } },
-    plugins: {
-      legend: { position: "top" },
-    },
+    plugins: { legend: { position: "top" } },
     onClick: (evt, elements) => {
       if (!elements || elements.length === 0) return;
       const index = elements[0].index;
@@ -157,9 +173,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
     responsive: true,
     maintainAspectRatio: false,
     scales: { y: { beginAtZero: true, max: 100 } },
-    plugins: {
-      legend: { position: "top" },
-    },
+    plugins: { legend: { position: "top" } },
     onClick: (evt, elements) => {
       if (!elements || elements.length === 0) return;
       const index = elements[0].index;
@@ -170,9 +184,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
     },
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className="dashboard">
@@ -183,11 +195,7 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
       <div className="content">
         <h1>Reports</h1>
         <div className="dropdown-container">
-          <select
-            value={selectedReport}
-            onChange={(e) => setSelectedReport(e.target.value)}
-            className="report-select"
-          >
+          <select value={selectedReport} onChange={(e) => setSelectedReport(e.target.value)} className="report-select">
             <option value="">Select a Report</option>
             <option value="bins">Bin Reports</option>
             <option value="workers">Workers Reports</option>
@@ -405,3 +413,5 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
 };
 
 export default ReportsPage;
+// Note: Ensure you have the necessary CSS styles in reports.css for proper layout and styling.
+// The code is designed to be responsive and user-friendly, with clear error handling and data validation.

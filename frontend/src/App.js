@@ -137,7 +137,7 @@ function App() {
         <Route
           path="/hardware-examination"
           element={
-            isAuthenticated && userRole === 'manager' ? (
+            isAuthenticated  ? (
               <HardwareExamination onLogout={handleLogout} userRole={userRole} user={userData}/>
             ) : (
               <Navigate to="/login" replace />

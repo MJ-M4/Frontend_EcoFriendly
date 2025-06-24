@@ -80,11 +80,6 @@ const Sidebar = ({ user, activePage, onLogout, userRole, isOpen, toggleSidebar }
                   <FaTrash /> Bin Management
                 </Link>
               </li>
-              <li className={activePage === 'hardware-examination' ? 'active' : ''}>
-                <Link to="/hardware-examination" onClick={toggleSidebar}>
-                  <FaTools /> Hardware Examination
-                </Link>
-              </li>
             </>
           )}
           {userRole.toLowerCase() === 'worker' && (
@@ -106,6 +101,11 @@ const Sidebar = ({ user, activePage, onLogout, userRole, isOpen, toggleSidebar }
               </li>
             </>
           )}
+          <li className={activePage === 'hardware-examination' ? 'active' : ''}>
+                <Link to="/hardware-examination" onClick={toggleSidebar}>
+                  <FaTools /> Hardware Examination
+                </Link>
+              </li>
           <li className={activePage === 'settings' ? 'active' : ''}>
             <Link to="/settings" onClick={toggleSidebar}>
               <FaCog /> Settings

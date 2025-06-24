@@ -1,9 +1,8 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MapComponent from './MapComponent';
 import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
-
 
 const GeneralPage = ({ onLogout, userRole, user }) => {
   const [bins, setBins] = useState([]);
@@ -33,7 +32,7 @@ const GeneralPage = ({ onLogout, userRole, user }) => {
     return () => clearInterval(intervalId); // Cleanup on unmount
   }, []);
 
-    const handleEmptyBin = async (binId) => {
+  const handleEmptyBin = async (binId) => {
     try {
       const response = await fetch(`http://localhost:5005/local/updateBin/${binId}`, {
         method: "PUT",
@@ -56,7 +55,6 @@ const GeneralPage = ({ onLogout, userRole, user }) => {
     }
   };
 
-  
   const handleSelectBin = (bin) => {
     setSelectedBin(bin);
   };

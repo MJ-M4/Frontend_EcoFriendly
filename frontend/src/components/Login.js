@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ecoFriendlyLogo from '../Photos/Ecofriendly.jpg';
 import './css/Login.css';
+import { loginApi } from './apis'; 
 
-const Login = ({ onLogin, isAuthenticated }) => {
+const Login = ({ onLogin }) => {
   const [identity, setIdentity] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +19,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5005/local/login', {
+      const response = await fetch(loginApi, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identity, password }),

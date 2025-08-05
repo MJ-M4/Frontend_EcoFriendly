@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import "./css/employees.css";
+import { getEmployeesApi, addEmployeeApi, deleteEmployeeApi } from "./apis";
 
 const EmployeesPage = ({ onLogout, userRole, user }) => {
   const [employees, setEmployees] = useState([]);
@@ -9,7 +10,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await fetch("http://localhost:5005/local/getEmployees");
+        const response = await fetch(getEmployeesApi);
         const data = await response.json();
         if (data.status === "success") {
           setEmployees(data.employees || []);
@@ -83,7 +84,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
       };
 
       try {
-        const response = await fetch("http://localhost:5005/local/addEmployee", {
+        const response = await fetch(addEmployeeApi, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(employeePayload),
@@ -116,7 +117,7 @@ const EmployeesPage = ({ onLogout, userRole, user }) => {
   const handleDeleteEmployee = async (identity) => {
     if (!confirm(`Delete Employee ${identity}?`)) return;
     try {
-      const response = await fetch(`http://localhost:5005/local/deleteEmployee/${identity}`, {
+      const response = await fetch(deleteEmployeeApi(identity), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });

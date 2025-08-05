@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import "./css/hardware-examination.css";
+import { getHardwareApi, addHardwareApi, deleteHardwareApi } from "./apis"; 
 
 const HardwareExamination = ({ onLogout, userRole, user }) => {
   const [hardware, setHardware] = useState([]);
@@ -12,7 +13,7 @@ const HardwareExamination = ({ onLogout, userRole, user }) => {
   // Fetch hardware list from backend
   const fetchHardware = () => {
     setIsLoading(true);
-    fetch("http://localhost:5005/local/getHardware")
+    fetch(getHardwareApi)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") setHardware(data.hardware);
@@ -35,10 +36,9 @@ const HardwareExamination = ({ onLogout, userRole, user }) => {
       (hw.binId && hw.binId.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Add hardware (allowed for everyone)
   const handleAddHardware = () => {
     if (!newHardware.binId) return alert("Please fill in Bin ID.");
-    fetch("http://localhost:5005/local/addHardware", {
+    fetch(addHardwareApi, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -62,7 +62,7 @@ const HardwareExamination = ({ onLogout, userRole, user }) => {
   // Delete hardware by id
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this hardware?")) return;
-    fetch(`http://localhost:5005/local/deleteHardware/${id}`, {
+    fetch(deleteHardwareApi(id), {
       method: "DELETE",
     })
       .then((res) => res.json())

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/propose-shifts.css';
 import './css/global.css';
+import {proposeShiftApi} from './apis';
 
 
 const ProposeShiftsPage = ({ onLogout, userRole , user }) => {
@@ -15,7 +16,7 @@ const ProposeShiftsPage = ({ onLogout, userRole , user }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const today = new Date();
-  const day = today.getDay();// 0 = الأحد، 1 = الاثنين، ... 6 = السبت
+  const day = today.getDay();// 0 = Sunday, 1 = Monday, ..., 6 = Saturday 
 
 const daysUntilNextSunday = day === 0 ? 7 : (7 - day);
 const nextSunday = new Date(today);
@@ -75,7 +76,7 @@ const handleSubmitProposal = async () => {
           end_time: shift.endTime + ':00',
           location: shift.location,
         };
-        const response = await fetch('http://localhost:5005/local/proposeShift', {
+        const response = await fetch(proposeShiftApi, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(proposalPayload),

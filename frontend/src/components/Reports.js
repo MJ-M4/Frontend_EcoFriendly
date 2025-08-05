@@ -4,10 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Sidebar from "./Sidebar";
 import "./css/reports.css";
+import { getBinsApi, getEmployeesApi, getHardwareApi, getVehiclesApi } from "./apis";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const API_BASE = "http://localhost:5005/local";
+
 const ensureArray = (res, key) => Array.isArray(res) ? res : (res[key] || []);
 
 const ReportsPage = ({ onLogout, userRole, user }) => {
@@ -34,19 +35,19 @@ const ReportsPage = ({ onLogout, userRole, user }) => {
 
   // FETCH DATA ON MOUNT, MAP FIELDS AS NEEDED
   useEffect(() => {
-    fetch(`${API_BASE}/getBins`)
+    fetch(getBinsApi)
       .then(r => r.json())
       .then(data => setBinData(ensureArray(data, "bins")));
 
-    fetch(`${API_BASE}/getEmployees`)
+    fetch(getEmployeesApi)
       .then(r => r.json())
       .then(data => setWorkersData(ensureArray(data, "employees")));
 
-    fetch(`${API_BASE}/getVehicles`)
+    fetch(getVehiclesApi)
       .then(r => r.json())
       .then(data => setVehiclesData(ensureArray(data, "vehicles")));
 
-    fetch(`${API_BASE}/getHardware`)
+    fetch(getHardwareApi)
       .then(r => r.json())
       .then(data => setHardwareData(ensureArray(data, "hardware")));
   }, []);

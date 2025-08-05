@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import "./css/shifts.css";
+import { getEmployeesApi,getShiftsApi, addShiftApi, deleteShiftApi ,updateShiftApi} from "./apis";
 
 const ShiftsPage = ({ onLogout, userRole, user }) => {
   const [shifts, setShifts] = useState([]);
@@ -31,7 +32,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
       try {
         // Fetch employees
         const empResponse = await fetch(
-          "http://localhost:5005/local/getEmployees"
+          getEmployeesApi
         );
         const empData = await empResponse.json();
         if (empData.status === "success") {
@@ -43,7 +44,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
 
         // Fetch shifts
         const shiftResponse = await fetch(
-          "http://localhost:5005/local/getShifts"
+          getShiftsApi
         );
         const shiftData = await shiftResponse.json();
         if (shiftData.status === "success") {
@@ -101,7 +102,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
       };
 
       try {
-        const response = await fetch("http://localhost:5005/local/addShift", {
+        const response = await fetch(addShiftApi, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(shiftPayload),
@@ -133,7 +134,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
     if (!confirm(`Delete shift ${shiftId}?`)) return;
     try {
       const response = await fetch(
-        `http://localhost:5005/local/deleteShift/${shiftId}`,
+        deleteShiftApi(shiftId),
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -172,7 +173,7 @@ const ShiftsPage = ({ onLogout, userRole, user }) => {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5005/local/updateShift/${updatedShift.shift_id}`,
+          updateShiftApi(updatedShift.shift_id),
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

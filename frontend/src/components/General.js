@@ -3,6 +3,7 @@ import MapComponent from './MapComponent';
 import Sidebar from './Sidebar';
 import TableComponent from './TableComponent';
 import './css/general.css';
+import { getBinsApi ,updateBinApi} from './apis'; 
 
 
 const GeneralPage = ({ onLogout, userRole, user }) => {
@@ -14,10 +15,10 @@ const GeneralPage = ({ onLogout, userRole, user }) => {
     let intervalId;
     const fetchBins = async () => {
       try {
-        const response = await fetch("http://localhost:5005/local/getBins");
+        const response = await fetch(getBinsApi);
         const data = await response.json();
         if (data.status === "success") {
-          // عرض فقط الصناديق الممتلئة
+          // Filter bins to only include those that are full
           const fullBins = data.bins.filter((bin) => bin.status === "Full");
           setBins(fullBins);
         } else {
@@ -35,7 +36,7 @@ const GeneralPage = ({ onLogout, userRole, user }) => {
 
     const handleEmptyBin = async (binId) => {
     try {
-      const response = await fetch(`http://localhost:5005/local/updateBin/${binId}`, {
+      const response = await fetch(updateBinApi(binId), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -45,7 +46,7 @@ const GeneralPage = ({ onLogout, userRole, user }) => {
 
       const data = await response.json();
       if (data.status === "success") {
-        setBins((prev) => prev.filter((b) => b.binId !== binId)); // إحذف من المهام
+        setBins((prev) => prev.filter((b) => b.binId !== binId)); // Remove the emptied bin from the state
         alert("Bin emptied successfully!");
       } else {
         throw new Error(data.message || "Failed to update bin");

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import './css/shift-proposals.css';
+import { getPendingProposalsApi ,approveProposalApi,denyProposalApi} from './apis'; 
 
 const ShiftProposalsPage = ({ onLogout, userRole, user }) => {
   const [proposals, setProposals] = useState([]);
@@ -10,7 +11,7 @@ const ShiftProposalsPage = ({ onLogout, userRole, user }) => {
   useEffect(() => {
     const fetchProposals = async () => {
       try {
-        const response = await fetch('http://localhost:5005/local/getPendingProposals');
+        const response = await fetch(getPendingProposalsApi);
         const data = await response.json();
         console.log('Fetched proposals:', data); 
         if (data.status === 'success') {
@@ -29,7 +30,7 @@ const ShiftProposalsPage = ({ onLogout, userRole, user }) => {
 
   const handleApprove = async (proposal) => {
     try {
-      const response = await fetch(`http://localhost:5005/local/approveProposal/${proposal.id}`, {
+      const response = await fetch(approveProposalApi(proposal.id), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -47,7 +48,7 @@ const ShiftProposalsPage = ({ onLogout, userRole, user }) => {
 
   const handleDeny = async (proposalId) => {
     try {
-      const response = await fetch(`http://localhost:5005/local/denyProposal/${proposalId}`, {
+      const response = await fetch(denyProposalApi(proposalId), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import "./css/payment.css";
+import { getEmployeesApi ,getPaymentsApi,addPaymentApi,deletePaymentApi,updatePaymentApi} from "./apis";
 
 const PaymentPage = ({ onLogout, userRole, user }) => {
   const [payments, setPayments] = useState([]);
@@ -20,7 +21,7 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
       try {
         // Fetch workers
         const workersResponse = await fetch(
-          "http://localhost:5005/local/getEmployees"
+          getEmployeesApi
         );
         const workersData = await workersResponse.json();
         console.log("Response from getEmployees:", workersData);
@@ -32,7 +33,7 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
 
         // Fetch payments
         const paymentsResponse = await fetch(
-          "http://localhost:5005/local/getPayments"
+          getPaymentsApi
         );
         const paymentsData = await paymentsResponse.json();
         console.log("Response from getPayments:", paymentsData);
@@ -88,7 +89,7 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:5005/local/addPayment", {
+      const response = await fetch(addPaymentApi, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(paymentPayload),
@@ -124,7 +125,7 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:5005/local/updatePayment/${payment_id}`,
+        updatePaymentApi(payment_id),
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -151,7 +152,7 @@ const PaymentPage = ({ onLogout, userRole, user }) => {
     if (!confirm(`Delete payment ${payment_id}?`)) return;
     try {
       const response = await fetch(
-        `http://localhost:5005/local/deletePayment/${payment_id}`,
+        deletePaymentApi(payment_id),
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },

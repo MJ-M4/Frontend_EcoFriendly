@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
-
-
+import { getShiftsApi } from './apis';
 
 const MyShiftsPage = ({ onLogout, userRole, user }) => {
   const [myShifts, setMyShifts] = useState([]);
@@ -11,7 +10,7 @@ const MyShiftsPage = ({ onLogout, userRole, user }) => {
   useEffect(() => {
     const fetchMyShifts = async () => {
       try {
-        const response = await fetch('http://localhost:5005/local/getShifts');
+        const response = await fetch(getShiftsApi);
         const data = await response.json();
         if (data.status === 'success') {
           console.log('Fetched shifts:', data.shifts);

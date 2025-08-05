@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import './css/settings.css';
 
 const SettingsPage = ({ onLogout, userRole, user }) => {
-  const [theme, setTheme] = useState('Light'); // Only keeping theme state
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'Light');
   const [notifications, setNotifications] = useState({
     alerts: true,
     reports: true,
@@ -12,10 +12,16 @@ const SettingsPage = ({ onLogout, userRole, user }) => {
   const [message, setMessage] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    document.body.className = `${theme.toLowerCase()}-theme`;
+  }, [theme]);
+
   const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-    setMessage(`Theme updated to ${e.target.value}!`);
-    document.body.className = `${e.target.value.toLowerCase()}-theme`;
+    const selectedTheme = e.target.value;
+    setTheme(selectedTheme);
+    localStorage.setItem('theme', selectedTheme);
+    document.body.className = `${selectedTheme.toLowerCase()}-theme`;
+    setMessage(`Theme updated to ${selectedTheme}!`);
   };
 
   const handleNotificationToggle = (type) => {
@@ -98,11 +104,7 @@ const SettingsPage = ({ onLogout, userRole, user }) => {
           </div>
 
           {message && (
-            <div
-              className={`settings-message ${
-                message.includes('success') ? 'success' : 'error'
-              }`}
-            >
+            <div className={`settings-message ${message.includes('success') ? 'success' : 'error'}`}>
               {message}
             </div>
           )}

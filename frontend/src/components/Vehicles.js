@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
+import { getVehiclesApi, addVehicleApi, deleteVehicleApi } from "./apis";
 
 
 const VehiclesPage = ({ onLogout, userRole, user }) => {
@@ -21,7 +22,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch("http://localhost:5005/local/getVehicles");
+        const response = await fetch(getVehiclesApi);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -57,7 +58,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
 
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:5005/local/addVehicle", {
+      const response = await fetch(addVehicleApi, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +96,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:5005/local/deleteVehicle/${licensePlate}`,
+        deleteVehicleApi(licensePlate),
         { method: "DELETE", 
           headers: {
             "Content-Type": "application/json",
@@ -121,7 +122,7 @@ const VehiclesPage = ({ onLogout, userRole, user }) => {
   };
 
   const filteredVehicles = vehicles
-    .filter((v) => v) // إزالة العناصر الفارغة
+    .filter((v) => v) // Ensure no null/undefined values
     .filter((v) => {
       const search = searchTerm.toLowerCase();
       return (

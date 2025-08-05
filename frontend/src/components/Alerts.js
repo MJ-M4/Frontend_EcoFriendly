@@ -3,6 +3,7 @@ import { FaExclamationTriangle } from 'react-icons/fa';
 import Sidebar from './Sidebar';
 import './css/alerts.css';
 import './css/global.css';
+import { getBinsApi, getHardwareApi } from './apis';
 
 const AlertsPage = ({ onLogout, userRole, user }) => {
   const [alerts, setAlerts] = useState([]);
@@ -16,11 +17,11 @@ const AlertsPage = ({ onLogout, userRole, user }) => {
       setError(null);
       try {
         // Fetch bins
-        const binsRes = await fetch('http://localhost:5005/local/getBins');
+        const binsRes = await fetch(getBinsApi);
         const binsData = await binsRes.json();
 
         // Fetch hardware
-        const hardwareRes = await fetch('http://localhost:5005/local/getHardware');
+        const hardwareRes = await fetch(getHardwareApi);
         const hardwareData = await hardwareRes.json();
 
         let alertsArr = [];

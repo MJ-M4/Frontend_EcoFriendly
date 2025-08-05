@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
+import { getMyPaymentsApi } from './apis'; 
 
 const MyPaymentsPage = ({ onLogout, userRole, user }) => {
   const [payments, setPayments] = useState([]);
@@ -9,7 +10,7 @@ const MyPaymentsPage = ({ onLogout, userRole, user }) => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await fetch(`http://localhost:5005/local/getMyPayments/${user.identity}`);
+        const response = await fetch(getMyPaymentsApi(user.identity));
         const data = await response.json();
         console.log('Response from getMyPayments:', data);
         if (data.status === 'success') {

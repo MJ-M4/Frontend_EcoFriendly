@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import {getBinsApi,addBinApi,deleteBinApi} from "./apis"
+
 
 const BinManagementPage = ({ onLogout, userRole, user }) => {
   const [bins, setBins] = useState([]);
@@ -13,7 +15,7 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
     const fetchBins = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:5005/local/getBins");
+        const response = await fetch(getBinsApi);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -58,7 +60,7 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:5005/local/addBin", {
+      const response = await fetch(addBinApi, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -105,7 +107,7 @@ const BinManagementPage = ({ onLogout, userRole, user }) => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:5005/local/deleteBin/${binId}`,
+        deleteBinApi(binId),
         {
           method: "DELETE",
           headers: {
